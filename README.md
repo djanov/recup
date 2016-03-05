@@ -5,7 +5,6 @@ The RecUp is a social network for musicians...
 
 <!--Core features(coming soon):-->
 <!------------------------------->
- <!--* -->
 
 What is [Symfony][1]
 ====================
@@ -26,13 +25,36 @@ What is [Symfony][1]
 $ sudo curl -LsS https://symfony.com/installer -o /usr/local/bin/symfony
 $ sudo chmod a+x /usr/local/bin/symfony
 ```
+This gives us a new **symfony** executable, run the **symfony new** and the name of the project.
 
+```
+symfony new project_name
+```
 
+The project name is only used to determine the directory name: it's not important at all.
+
+### Installation on Windows
+
+First need to install [Composer][4]
+-----------------------------------
+After installation composer, go where the project going to be then: 
+```
+$ composer create-project symfony/framework-standard-edition my_project_name "2.8.*"
+```
+
+### To test that Symfony is up and running
+
+```
+php bin/console server:run
+```
+
+Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
 <!-- links -->
 [1]:https://symfony.com/what-is-symfony
 [2]:https://knpuniversity.com/screencast/symfony/start-project
 [3]:https://symfony.com/download
+[4]:https://getcomposer.org/download/
 <!-- / end links-->
 
 
