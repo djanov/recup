@@ -50,6 +50,43 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 6, 2016
+=============
+
+> Code goes in src/ and app/. The src/ will hold all the PHP classes you created and app/ will hold everything else: mostly configuration and template files.
+
+### Building the First Page
+
+> Creating a page in Symfony - or any modern framework - is two steps: a route and a controller. The route is a bit of configuration that says what the URL is. The controller is a function that builds that page.
+
+Example:
+
+```
+<?php 
+
+namespace AppBundle\Controller;
+
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Response;
+
+class GenusController
+{
+    /**
+     * @Route("/genus")
+     */
+    public function showAction()
+    {
+        return new Response('Under the Sea!');
+    }
+
+}
+
+```
+
+The GenusController is a controller, the function that will (eventually) build the page. To create the route, use annotations: a comment that is parsed as configuration (@Route). Now just go to the **/genus** in browser.
+ The only rule for a controller is that it must return a Symfony **Response** object.
+
 <!-- links -->
 [1]:https://symfony.com/what-is-symfony
 [2]:https://knpuniversity.com/screencast/symfony/start-project
@@ -59,7 +96,4 @@ Then go to **http:/localhost:8000** in the browser. And boom symfony is working 
 
 
 
-<!-- Friday, March 4, 2016
-=====================
- -->
 
