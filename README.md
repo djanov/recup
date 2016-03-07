@@ -50,6 +50,37 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 7, 2016
+=============
+
+### The Console
+
+> We can create bundles manually, but we can use **console** instead, to see all the tricks it knows:
+
+```
+php app/console
+```
+
+### Generating the RecordBundle
+
+Run the **generate:bundle** command:
+
+```
+php app/console generate:bundle
+```
+
+Say yes to sharing bundle across multiple applications, for the bundle namespace, type **RecUp/RecordBundle**. A bundle namespace always has two parts: a vendor name and a name describing the bundle.
+Next add a nickname for our bundle, **RecordBundle**. The only rule is that it must ends with **Bundle**.
+Use the target default directory, and choose **yml** as the configuration format.
+
+### What the Generator Did
+
+> This did three things.
+> First, it made a **src/RecUp/RecordBundle** directory whit some sample bundle files.
+> Second, it plugged the bundle into the motherboard by adding a line in **AppKernel** class.
+> Third, it added a line to the **routing.yml** file that imports routes from the bundle.
+
+
 March 6, 2016
 =============
 

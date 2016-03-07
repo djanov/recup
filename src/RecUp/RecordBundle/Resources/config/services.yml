@@ -1,0 +1,4 @@
+services:
+#    record.example:
+#        class: RecUp\RecordBundle\Example
+#        arguments: ["@service_id", "plain_value", %parameter%]
