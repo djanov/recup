@@ -5,3 +5,7 @@ record:
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
+
+songs:
+        resource: "@RecordBundle/Controller"
+        type:     annotation

@@ -50,8 +50,95 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
-March 7, 2016
-=============
+
+March 8, 2016 (Routing)
+=======================
+
+There are 2 ways (without annotations and with annotations) to handle routing in symfony.
+
+**Example:** Creating homepage route. We just want to link path **/** to an action of our **HomeController**
+  **1. Without annotations**
+
+In **app/config/routing.yml**:
+
+```
+front_homepage:
+    path: /
+    defaults: { _controller: BlogFrontBundle:Home:index }
+```
+In **src/Blog/FrontBundle/Controller/HomeController.php**:
+
+```
+<?php
+namespace Blog\FrontBundle\Controller;
+
+class HomeController
+{
+    public function indexAction()
+    {
+        //... create and return a Response object
+    } 
+}
+```
+
+In **routing.yml**, we declared a simple configuration for the route named **front_homepage** with 2 parameters: the path and the action of the controller we want to target. In the controller it doesn't need anything more or special here. In the **HomeController.php** we just return the Response object from the indexAction.
+
+ **2. With annotations**
+
+In **app/config/routing.yml**:
+
+```
+blog_front:
+    resource: "@BlogFrontBundle/Controller/"
+    type:     annotation
+    prefix:   /
+```
+In **src/Blog?FrontBundle/Controller/HomeController.php**
+
+```
+<?php
+
+namespace Blog\FrontBundle\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
+class HomeController
+{
+    /**
+     * @Route("/", name="blog_home_index")
+     */
+    public function indexAction() { /* ... */ }
+}
+```
+
+In **routing.yml**: 
+* **resource** targets the controller to impact
+* **type** defines the way we declare routes
+* **prefix** defines a prefix for all actions of controller class (optional)
+
+But the magic is in the controller. Before everything else, we have to call the relevant class of the **SensioFrameworkExtraBundle**: **use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;**. Now we can implement the route and the parameters we want to assign: in this case only the path and the name: **@Route("/", name="blog_homepage")**.
+
+### Debugging Routes
+
+To see all URLs in the app:
+
+```
+php app/console router:debug
+```
+
+### Returning a Response
+
+Controller functions are simple, and there's just one big rule: it must return a Symfony **Response** object.
+
+
+Links:
+------
+  * [@Route and @Method][5]
+  * [Getting Started with Symfony2 Route Annotations][6]
+  * [Returning a JSON Response][7]
+
+
+March 7, 2016 (The Console, Generating Bundles)
+===============================================
 
 ### The Console
 
@@ -81,8 +168,8 @@ Use the target default directory, and choose **yml** as the configuration format
 > Third, it added a line to the **routing.yml** file that imports routes from the bundle.
 
 
-March 6, 2016
-=============
+March 6, 2016 (Build the first page)
+====================================
 
 > Code goes in src/ and app/. The src/ will hold all the PHP classes you created and app/ will hold everything else: mostly configuration and template files.
 
@@ -123,6 +210,9 @@ The GenusController is a controller, the function that will (eventually) build t
 [2]:https://knpuniversity.com/screencast/symfony/start-project
 [3]:https://symfony.com/download
 [4]:https://getcomposer.org/download/
+[5]:https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/routing.html
+[6]:http://www.sitepoint.com/getting-started-symfony2-route-annotations/
+[7]:https://symfony.com/doc/2.8/components/http_foundation/introduction.html#creating-a-json-response
 <!-- / end links-->
 
 

@@ -2,12 +2,18 @@
 
 namespace RecUp\RecordBundle\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
-    public function indexAction()
+    /**
+     * @Route("/test/{wat}")
+     */
+    public function indexAction($wat)
     {
-        return $this->render('RecordBundle:Default:index.html.twig');
+        return new Response('hi from '.$wat);
+//        return $this->render('RecordBundle:Default:index.html.twig');
     }
 }
