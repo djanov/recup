@@ -50,7 +50,71 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 9, 2016 (service controller, rendering the twig template)
+===============================================================
 
+### Service Container
+
+To keep track off all of the services, Symfony puts them into one big associative array called the container. Each object has a key - like **mailer**, **logger** or **templating**. The container is actually an object. But think of it like an array: each useful object has an associated key. If I give you the container, you can ask for the **logger** service and it'll give you that object. 
+The first half of Symfony: **route-controller-response**. The second half of Symfony is all about finding out what objects are available and how to use them. We can evan add our own service objects to the container.
+
+**Example**: In **RecordBundle** controller render the index.html.twig page.
+
+**Accessing the Container**
+
+We need the first object **templating** service: it renders the Twig templates. To get acces to the service container, we need to extend Symfony's base controller.
+
+```
+class DefaultController extends Controller
+```
+
+To get the **templating** service, add ``` $templating = $this->container->get('templating'); ```
+
+The container pretty much only has one method: **get**. Give it the nickname to the service and it will return that object. it's super simple.
+
+**Rendering a Template**
+
+With the templating object we can render a template! Add ``` $html = $templating->render('')``` followed by the name of the template.
+
+```
+<?php
+
+namespace RecUp\RecordBundle\Controller;
+  ...
+
+class DefaultController extends Controller
+{
+  ...
+    public function indexAction($wat)
+{
+    $templating = $this->container->get('templating');
+    $html = $templating->render('RecordBundle:Default:index.html.twig', array(
+        'name' => $wat
+    ));
+
+    return new Response($html);
+}
+}
+
+```
+
+We can pass variables like ``` 'name' => $wat ``` and finally what we always have to do return a Symfony's **Response** ojbect ```return new Response($html)```
+
+**Create the Template**
+
+go to src/Recup/RecordBundle/Resources/views/Default/index.html.twig 
+
+```
+<h1>Hello {{ name }}!</h1>
+
+```
+
+Just pass the variable what we define in the controller ( the 'name' => $wat).
+
+Links:
+-----
+  * [Service Container][8]
+    
 March 8, 2016 (Routing)
 =======================
 
@@ -213,6 +277,7 @@ The GenusController is a controller, the function that will (eventually) build t
 [5]:https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/routing.html
 [6]:http://www.sitepoint.com/getting-started-symfony2-route-annotations/
 [7]:https://symfony.com/doc/2.8/components/http_foundation/introduction.html#creating-a-json-response
+[8]:https://symfony.com/doc/2.8/book/service_container.html
 <!-- / end links-->
 
 

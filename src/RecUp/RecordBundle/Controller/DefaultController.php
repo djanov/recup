@@ -12,8 +12,12 @@ class DefaultController extends Controller
      * @Route("/test/{wat}")
      */
     public function indexAction($wat)
-    {
-        return new Response('hi from '.$wat);
-//        return $this->render('RecordBundle:Default:index.html.twig');
-    }
+{
+    $templating = $this->container->get('templating');
+    $html = $templating->render('RecordBundle:Default:index.html.twig', array(
+        'name' => $wat
+    ));
+
+    return new Response($html);
+}
 }
