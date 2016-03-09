@@ -50,8 +50,8 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
-March 9, 2016 (service controller, rendering the twig template)
-===============================================================
+March 9, 2016 (service controller, rendering the twig template, rendering template shortcut)
+============================================================================================
 
 ### Service Container
 
@@ -110,6 +110,45 @@ go to src/Recup/RecordBundle/Resources/views/Default/index.html.twig
 ```
 
 Just pass the variable what we define in the controller ( the 'name' => $wat).
+
+### Rendering template shortcut
+
+> Rendering a template is pretty common, so there's a shortcut when you'r in a controller. Replace all of the previous code with a simple **return $this->render**
+
+```
+class DefaultController extends Controller
+{
+    ...
+    public function indexAction($wat)
+{
+    return $this->render('RecordBundle:Default:index.html.twig', array(
+        'name' => $wat
+    ));
+}
+}
+```
+
+> That's it. The render function is simply goes out to the **templating** service - just like we did - and calls a method named **renderResponse()**. This method is like the **render()** function we called, exept that it wraps the HTML in a Response object for convenience.
+
+> So the base **Controller** class has a lot of shortcut methods that we can use. But behind the scenes, these don't activate some weird, core functionality in Symfony. Instead, everything is done by one of the services in the container. Symfony doesn't really do anything: all the work is done by different services.
+
+**What Services are there?**
+
+> To find out what other services are hiding in the container use the console:
+
+```
+php app/console debug:container
+```
+> There are over 200 useful objects in Symfony that you have access to out of the box. In the symfony docs, you'll find out which ones are important to you and your project.
+
+> We can search from the list for the example if we wan't to know if ther is service for logging:
+
+```
+php app/console debug:container log
+```
+
+> There is 17, but usually what we want is the one with the shortest name(16 logger). This command also shows you what class you'll get back, which you can use to find the methods on it just type the number what you see before the service name in this case 16.
+
 
 Links:
 -----
