@@ -84,6 +84,45 @@ To print out the notes, add a **ul** and open up a **for** tag with **{% for not
 </ul>
 ```
 
+### {% twig_layouts %}
+
+To get a leyout, add a new do something tag at the top of **index.html.twig: extends 'base.html.twig'**:
+After that the page will not work because in the **base.html.twig** we have **blocks** and we need to use these blocks (rewrite). You can rename them and you can have as many as you need.
+So add body block for our content and change the override the title block too, the order of block doesn't matter: this could be above or below the body.  
+
+```
+{% extends '::base.html.twig' %}
+{% block title %} {{ name }} {% endblock %}
+{% block body %}
+<h1>Hello {{ name }}!</h1>
+
+<ul>
+    {% for note in notes %}
+        <li>{{ note }}</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+```
+
+**Template name and path explanation/examples**
+
+the **::base.html.twig** filename using the exact same syntax as the controller.
+ Remember that template name always has trhee parts:
+ * the bundle name
+ * a subdirecotry
+ * and the template filename
+ 
+ In this case the bundle name and subdirecotry are just missing. When a template name has the bundle part, it means the template lives in the **Resources/views** directory of that bundle. But when this part is missing, like here, it means the template lives in the **app/Resources/views** direcotry. And since the second part is missing too, it means it lives directly there, and not in a subdirectory.
+ 
+ **Examples**:
+ 
+ * **RecordBundle:Default:index.html.twig**
+ src/RecUp/RecordBundle/Resources/views/Default/index.html.twig
+ * **RecordBundle::index.html.twig**
+ src/RecUp/RecordBundle/Resources/views/index.html.twig
+ * **::base.hml.twig**
+ app/Resources/views/index.html.twig
 
 March 9, 2016 (service controller, rendering the twig template, rendering template shortcut)
 ============================================================================================
