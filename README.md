@@ -50,6 +50,41 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 10, 2016 (Twig)
+=====================
+
+### Twig
+
+Twig has two syntaxes: **{{ }}** - whic is the "say something" tag - and **{% %}** - whic is the "do something" tag.
+```
+{{ SaySomething }}, {% DoSomething %}
+```
+
+If you're printing something, you always write **{{** then a variable name, string or any expression: Twig looks a lot like javaScript.
+
+If you're writing code that won't print something - like an **if** statement a **for** loop, or setting a variable you'll use {% %}.
+In the Twig's website at [twig.sensilabs.org][9] click the Documentation and scroll down, there is a list of everything Twig does.
+
+**The dump() Finction**
+
+Create **$notes** variables in the controller with some text and pass into our Twig template. But before loop over, there is a function called **dump()**. This is like **var_dump()** in PHP, but better, and you can use it without any arguments to print details about every available variable.
+```
+{{ dump() }}
+```
+
+**The for Tag**
+
+To print out the notes, add a **ul** and open up a **for** tag with **{% for note in noites**. Close it with an **{% endfor $}**
+
+```
+<ul>
+    {% for note in notes %}
+        <li>{{ note }}</li>
+    {% endfor %}
+</ul>
+```
+
+
 March 9, 2016 (service controller, rendering the twig template, rendering template shortcut)
 ============================================================================================
 
@@ -317,6 +352,7 @@ The GenusController is a controller, the function that will (eventually) build t
 [6]:http://www.sitepoint.com/getting-started-symfony2-route-annotations/
 [7]:https://symfony.com/doc/2.8/components/http_foundation/introduction.html#creating-a-json-response
 [8]:https://symfony.com/doc/2.8/book/service_container.html
+[9]:http://twig.sensiolabs.org/
 <!-- / end links-->
 
 
