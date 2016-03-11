@@ -50,6 +50,35 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 11, 2016 (Loading CSS & JS Assets)
+========================================
+
+The **web/** direcotry is the document root. In other words, anything in **web/** can be accessed by the public. If you want load up the **favico.ico**, just use like **http://localhost:8000/favicon.ico**. If a file is outside of the web, then it's not publicly accessible.
+
+### Including Static Assets
+
+To add assets we just include CSS and JS files the way we always do, with tru **link** and **script** tags. These paths are relative to the **web/** directory, because that's the document root.
+The **stylesheets** and **javascripts** blocks are not doing much but in the future, we have the power to add page-specific CSS and JS by adding more **link** tags to the bottom of the **stylesheets** or the **javascripts** block from inside a child template.
+
+```
+ {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+            <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/font-awesome.min.css') }}">
+        {% endblock %}
+```
+
+```
+        {% block javascripts %}
+            <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+            <script src="{{ asset('js/main.js') }}"></script>
+        {% endblock %}
+```
+
+### The asset function
+
+the **asset()** function is Whenever you refer to a static file, you'll wrap the path in **{{ asset() }}**. This in general don't do anything **BUT** if we deploy and use a **CDN**, it will save time. With just one tiny config change, Symfony can prefix every static URL with your CDN host. So **/css/style.css** becomes **http://somecdn.com/css/style.css**. So use **asset()** in case you need it. You can also do some cool cahce-busting stuff to make the page download your asset (generating random number before the file name, for more later.).
+
 March 10, 2016 (Twig)
 =====================
 
