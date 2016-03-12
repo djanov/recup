@@ -50,6 +50,23 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 12, 2016 (JSON Response)
+==============================
+
+### Creating API Endpoints
+
+Symfony is always returns a **Response** but Symfony doesn't care whether that holds HTML, JSON, or CSV.
+Create a new controller like **getNotesAction()**. This will return notes. Use **@Route("/test/{wat}/notes")**. The endpoint will be used for **GET** request to this URL. Add **@Method("GET")** when you type method don't forget when you use annotations, let PhpStorm autocomplete them for you. That's important because when you do that, PhpStorme adds a **use** statement at the top of the file that you need. If you forget this, you'll get an error about it.
+After that check the route if its working **php app/console debug:router**.
+
+### The JSON Controller
+
+Create **$data** variable, set it to an array, and put the **$notes** in a **notes** key inside that. Its for JSON structure.
+Finally return **$data** as JSON **return new Response(json_encode($data));** its going to work.
+But we can make it easier. Replace the Response with **return new JsonResponse($data);**.
+This does two things. First it calls **json_encode()** for you. And second, it sets the **application/json Content-Type** header on the Response, which we can set manually but with this is easier.
+
+
 March 11, 2016 (Loading CSS & JS Assets)
 ========================================
 
