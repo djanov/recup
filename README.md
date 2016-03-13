@@ -50,6 +50,35 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 13, 2016 (Generating URLs)
+================================
+
+To put the URL to the **getNotesAction** page. Fill this **/test/{{ name ]}/notes** in the new anchor tag in the **index.html.twig** page. It's working but it's **WRONG**, this will only work if we don't change the URL for this route, because we then need to hunt down all the update every link on the site.
+Instead, routing has a second purpose: the abillity to generate the URL to a specific route. But to we need to give the route a unique name. After the URL, add comma and **name="record_show_notes"**
+
+```
+   /**
+     * @Route("/test/{wat}/notes", name="record_show_notes")
+     * @Method("GET")
+     */
+    public function getNoteAction()
+    .......
+```
+
+The name can be anything, but it's usually underscored and lowercased.
+
+### The Twig path() Function
+
+To generate URL in Twig, use the **path()** function. This has two arguments. The first is the name of the route - **record_show_notes**. The second, which is optional, is an associative array. In Twig, an associative array is written using **{ }**, just like JavaScript or JSON. Pass in the values for any wildcards that are in the route. This route has **{wat}**, so pass it **wat** set to the **name** variable:
+
+```
+ <a href="{{ path('record_show_notes', {'wat': name}) }}">Json Notes</a>
+```
+
+This generates the same URL, but if we ever need to change the URL for the route, all the links would automatically update if we have a **unique** name in the controller route options and we call that with the **path()** function in thw twig file.
+
+
+
 March 12, 2016 (JSON Response)
 ==============================
 
