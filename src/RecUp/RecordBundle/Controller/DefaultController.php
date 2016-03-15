@@ -22,9 +22,9 @@ class DefaultController extends Controller
 }
 
     /**
-     * @Route("/test/{wat}/notes", name="record_show_notes")
-     * @Method("GET")
-     */
+ * @Route("/test/{wat}/notes", name="record_show_notes")
+ * @Method("GET")
+ */
     public function getNoteAction()
     {
         $notes = [

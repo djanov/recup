@@ -50,6 +50,104 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 15, 2016 (ReactJs talks to my API)
+========================================
+
+### Page-Specific JavaScript(or CSS)
+
+The script tags that live in a **javascripts** block, we can ovveride that block **{% block javascripts %}** then **{% endblock %)**. When we override them we override them completely. The solution to this is the **parent()** function. This prints all of the content from the parent block, and then we can put our stuff below that.
+
+### Including the ReactJs Code
+
+We need some JavaScript that will make an AJAX request to the notes API endpoint and use that to render them with the same markup we had before. We'll use ReactJs to do this. First we need to include three external script tags for React itself, and one more that points to our project.
+
+```
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <script type="text/babel" src="{{ asset('js/notes.react.js') }}"></script>
+{% endblock %}
+```
+
+### The ReactJS App
+
+This is a small ReactJS app that uses our API to build all of the same markup that we had on the page before dynamically. It uses jQuery to make the AJAX call (**$.ajax({...});**).
+Back in the template, we need to start up the ReactJS app. Add a **script** tag with **type="text/babel** that's a React thing. To boot the app add **ReactDOM.render** and Render the **NoteSection** into **document.getElementById('js-notes-wrapper')**
+
+```
+ <script type="text/babel">
+    ReactDOM.render(
+          <NoteSection />,
+          document.getElementById('js-notes-wrapper')
+        );
+   </script>
+```
+
+In the HTML area, clear things out and add an empty div with the same **id**.
+
+```
+<div id="js-notes-wrapper"></div>
+```
+
+Now refresh, It's working we can try to delete one comment in the controller to see if dynamically is changing (its checks for new comments every two seconds). 
+We have hardcoded URL right now we need to change that.
+
+### Generating the URL for JavaScript
+
+in the **notes.react.js** we change the value for the url to **this.props.url**:
+
+```
+var NoteSection = React.createClass({
+
+    loadNotesFromServer: function() {
+        $.ajax({
+            url: this.props.url,
+
+        });
+    },
+
+});
+
+
+```
+
+This means that we will pass **url** property to **NoteSection**. Since we create that in the Twig template, we'll pass it in there.
+
+First, we need to get the URL to the API endpoint. Add **var notesUrl = ''**. Inside generate the URL with twig using **path()** pass it **record_show_notes**, and the **wat** set to name:
+
+```
+{% block javascripts %}
+
+    <script type="text/babel">
+        var notesUrl = '{{ path('record_show_notes', {'wat': name}) }}';
+
+    </script>
+{% endblock %}
+
+
+```
+Yes its Twig inside of JavaScript, and yes it's going to work. 
+Finally, pass this into React as a prop using **url={notesUrl}**
+
+```
+
+        ReactDOM.render(
+          <NoteSection url={notesUrl} />,
+          document.getElementById('js-notes-wrapper')
+        );
+
+
+```
+
+And it's the same but we have dynamical URL not that ugly hardcoded one.
+
+Links:
+------
+ * [For generating URLs purely fomr JavaScript][10]  
+
 March 13, 2016 (Generating URLs)
 ================================
 
@@ -467,6 +565,7 @@ The GenusController is a controller, the function that will (eventually) build t
 [7]:https://symfony.com/doc/2.8/components/http_foundation/introduction.html#creating-a-json-response
 [8]:https://symfony.com/doc/2.8/book/service_container.html
 [9]:http://twig.sensiolabs.org/
+[10]:https://github.com/FriendsOfSymfony/FOSJsRoutingBundle
 <!-- / end links-->
 
 
