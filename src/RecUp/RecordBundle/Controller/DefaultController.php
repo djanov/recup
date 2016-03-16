@@ -16,8 +16,10 @@ class DefaultController extends Controller
      */
     public function indexAction($wat)
 {
+    $funFact = 'Octopuses can change the color of their body in just *three-tenths* of a second!';
     return $this->render('RecordBundle:Default:index.html.twig', array(
         'name' => $wat,
+        'funFact' => $funFact,
     ));
 }
 

@@ -50,12 +50,57 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 16, 2016 (2nd Part symfony, installing a Bundel to get more Services in **container**)
+============================================================================================
+
+### The 2 Parts of Symfony.
+
+The first part of the Symfony is: create a **route**, create a **controller** function, make sure the function returns a **Response**, So **Route->Controller->Response** and that's half of the Symfony.
+
+The second half of Symfony is all about the huge optional useful objects that can help the work done. For example, there's a logger object, a mailer object, and a templating object. The **$this->render()** shortcut we've using in the controller is just a shortcut to go out to the **templating** object and call a method on it.
+All of these useful objects - or services - are put into one big beautiful object called container. If We have the container, then we can fetch any object we want and do anything.
+
+To see what handy services are inside of the container use the **php app/console debug:container** command.
+
+### But Where do Services Come From?
+
+In **app/AppKernel.php**
+
+The kernel is the heart of the Symfony application, but it doesn't do much. It's main job is to initialize all the bundles we need. A bundle is basically just a Symfony plugin, and its main job is to add services to our container. 
+When we use the debug:container command, that giant list is provided to us from one of these bundles.
+
+>But the simplest explanation: a bundle is basiacally just a directory full of PHP classes, configuration and other goodies.
+We have our own: **RecordBundle**
+
+### Install a Bundle: Get more Services
+
+If we don't find the service that we need like a markdown parsing service, we have the symfony community to the rescue! In this case, there is: it's called **KnpMarkdownBundle**.
+To get this bundle go to [KnpMarkdownBundle][11].
+Copy its **composer require** line.
+```
+    composer require knplabs/knp-markdown-bundle
+```
+To enable the bundle, grab the **new** statement fomr the docs and paste that into **ApKernel** the order of these doesn't matter
+```
+$bundles = array(
+    // ...
+   , new Knp\Bundle\MarkdownBundle\KnpMarkdownBundle()
+);
+```
+That's it! 
+To test it. Try rinning **debug:container** again with a search for **markdown**
+
+```
+php app/console debug:container markdown
+```
+We have two services matching. These are comming from the bundle we just installed.
+
 March 15, 2016 (ReactJs talks to my API)
 ========================================
 
 ### Page-Specific JavaScript(or CSS)
 
-The script tags that live in a **javascripts** block, we can ovveride that block **{% block javascripts %}** then **{% endblock %)**. When we override them we override them completely. The solution to this is the **parent()** function. This prints all of the content from the parent block, and then we can put our stuff below that.
+The script tags that live in a **javascripts** block, we can override that block **{% block javascripts %}** then **{% endblock %)**. When we override them we override them completely. The solution to this is the **parent()** function. This prints all of the content from the parent block, and then we can put our stuff below that.
 
 ### Including the ReactJs Code
 
@@ -566,6 +611,7 @@ The GenusController is a controller, the function that will (eventually) build t
 [8]:https://symfony.com/doc/2.8/book/service_container.html
 [9]:http://twig.sensiolabs.org/
 [10]:https://github.com/FriendsOfSymfony/FOSJsRoutingBundle
+[11]:https://github.com/KnpLabs/KnpMarkdownBundle
 <!-- / end links-->
 
 
