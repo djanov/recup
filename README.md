@@ -93,7 +93,58 @@ To test it. Try rinning **debug:container** again with a search for **markdown**
 ```
 php app/console debug:container markdown
 ```
-We have two services matching. These are comming from the bundle we just installed.
+We have two services matching. These are coming from the bundle we just installed.
+
+### Using the markdown Service
+
+First remove the text in twig that we want to use the service on. 2nd add the removed text to a variable in the container. 
+```
+  public function indexAction($wat)
+ {
+     $funFact = 'Octopuses can change the color of their body in just *three-tenths* of a second!';
+     ........
+ }
+```
+
+Add some asterisks around **three-tenths** Markdown should eventually turn taht into italics.
+
+Pass **funFact** into the template:
+
+```
+....
+ return $this->render('RecordBundle:Default:index.html.twig', array(
+        'name' => $wat,
+        'funFact' => $funFact,
+    ));
+```
+
+Then render it with the normal **{{ funFact }}** in twig.
+
+When we refresh the browser, we have the exact same text, but with the unparsed asterisks. We need to use the **markdown.parser** service to turn those asterisks into italics.
+
+### Fetch the Service and Use it!
+
+We have access to the container from inside a controller. So start with **$funFact = $this->container->get('markdown.parser')**. Now have the parser object and can call a method on it. The one we want is **transform()** pass that string to parse:
+
+```
+     $funFact = $this->container->get('markdown.parser')
+            ->transform($funFact);
+```
+
+So we know the object has a **transform()** method because of the documentation of the bundle.
+
+When we try it's not going to work exactly because the HTML tags are being escaped into HTML entities.
+This is Twig by default, because twig one of the best features is that it automatically escapes any HTML we render. That gives us free security from XSS attacks(Cross-Site Scripting (XSS) attacks are a type of injection, in which malicious scripts are injected into otherwise benign and trusted web sites. XSS attacks occur when an attacker uses a web application to send malicious code, generally in the form of a browser side script, to a different end user). And for those few times when we want to print HTML, just add the **|raw** filter:
+
+```
+ {{ funFact|raw }}
+```
+
+Now it's rendering the italics.
+
+**Fetching Services the lazy way**
+
+We can fetch the services easier with less code. In the controller, replace **$this->controller->get()** with just **$this->get()**. This does the same thing as before.
 
 March 15, 2016 (ReactJs talks to my API)
 ========================================
