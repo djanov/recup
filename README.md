@@ -50,8 +50,65 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
-March 16, 2016 (2nd Part symfony, installing a Bundel to get more Services in **container**)
-============================================================================================
+March 17, 2016
+==============
+
+### Control Center for Services (Config.yml)
+
+To configure and control how the services behave, we have just one file: **app/config/config.yml**. One file is responsible for controlling everything from the log file to the database_password.
+ 
+in **config.yml** other then **imports** - which loads other files and **parameters**. Every root key in this file like **framework, twig and doctrine** - corresponds to a bundle that is being configured. For example:
+All of stuff under **framework** is configuration for the **FrameworkBundle**.
+Everything under **twig** is used to control the behavior of the services from **TwigBundle**.
+The job of a bundle is to give us services. And this is our chance to tweak how to those services behave.
+
+### Get a big list of all Configuration
+
+We can use the documentation in the symfony.com website there is everything we can control for each bundle.
+
+But we can see what Bundles we have and all of there configuration. first run this in terminal **php app/console debug:config** to see all the Bundles and there 'alias' names, after that re-run the command with an argument (the alis of one of the Bundles) like **twig** so
+```
+php app/console debug:config twig
+```
+
+Its going to dump a yml example of not everything we can configure but usually enough to find what we need under the **twig** key.
+
+### Changing the Configuration
+
+If we add a random big number like **99999** and sent through a bult in filter called **number-format**
+
+```
+index.html.twig
+.....
+ {{ '99999'|number_format }}
+....
+```
+
+Then when we refresh the filter gives us a **99,999**, formatted-string. But if we live in a contry that formats using a **.** instead we need to change this in twig bundle service.
+
+In **debug:config twig** dump, there's a **number_format**, **thousands_separator** key. In **config.yml** add **number_format** then **thousands_separator: '.'**
+ 
+```
+app/config/config.yml
+
+# Twig Configuration
+twig:
+
+    number_format:
+        thousands_separator: '.'
+
+```
+
+Behind the scenes, this changes how the service behaves, and now e have **99.999**.
+
+So we can control virtually every behavior  of any service in Symfony. And since everything is done with a service, that makes us powerful.
+
+**IF** *we make a typo we get a huge error. All of the configuration is validated. if we make a type, Symfony has our backs.
+
+
+
+March 16, 2016 (2nd Part symfony, installing a Bundle to get more Services in **container**, using the markdown service)
+========================================================================================================================
 
 ### The 2 Parts of Symfony.
 

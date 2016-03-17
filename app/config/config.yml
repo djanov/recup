@@ -36,6 +36,9 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
 
+    number_format:
+      thousands_seperator: '.'
+
 # Doctrine Configuration
 doctrine:
     dbal:
