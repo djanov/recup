@@ -50,6 +50,95 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+<!--March 19, 2016 (using the Cache Service what was created) -->
+
+March 18, 2016 (adding Cache Service)
+=====================================
+
+We're going to be rendering lot of for example markdown, and we don't want to do this on every request - I'ts just too slow. We need to cache the parsed markdown. Symfony have a bundel called **DoctrineCacheBundle** for that.
+
+### Enabling DoctrineCacheBundle
+
+1.) First to get the latest stable version of the bundle run:
+
+```
+composer require doctrine/doctrine-cache-bundle
+```
+
+2.) Enable the bundle
+
+```
+<?php
+// app/AppKernel.php
+
+// ...
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+        $bundles = array(
+            // ...
+
+            new Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
+        );
+
+        // ...
+    }
+
+    // ...
+}
+```
+
+### Configure the Bundle
+
+First we need to configure the bundle to find configuration for the bundle run:
+
+```
+php app/console debug:config doctrine_cache
+```
+
+**Configuring a Cache Service**
+
+Our gol is to get a cache service we can use to avoid processing markdown on each request. When we added **KnpMarkdownBundle**, we magically had a new service. But this bundle, we need to configure each service we want.
+ 
+Open **config.yml** and add **doctrine_cache**. Below that, add a **providers** key:
+
+```
+doctrine_cache:
+    providers:
+```
+
+Next, the config has a **name** key. This **Prototype** comment above that is a confusing term that means that we can call this **name** anything we want. Let's make it **my_markdown_cache**:
+
+```
+doctrine_cache:
+    providers:
+        my_markdown_cache:
+```
+
+Finally, tell Doctrine what type of cache this is by setting **type** to **file_system**:
+
+```
+doctrine_cache:
+    providers:
+        my_markdown_cache:
+            type: file_system
+```
+
+Now run in the terminal:
+
+```
+ php app/console debug:container markdown_cache
+```
+
+We hava new service called **doctrine_cache.providers.my_markdown_cache**.
+
+Links:
+------
+* [Github - DoctrineCacheBundle github][12]
+* [Documentation - DoctrineCacheBundle][13]
+
+
 March 17, 2016
 ==============
 
@@ -720,6 +809,8 @@ The GenusController is a controller, the function that will (eventually) build t
 [9]:http://twig.sensiolabs.org/
 [10]:https://github.com/FriendsOfSymfony/FOSJsRoutingBundle
 [11]:https://github.com/KnpLabs/KnpMarkdownBundle
+[12]:https://github.com/doctrine/DoctrineCacheBundle
+[13]:https://symfony.com/doc/current/bundles/DoctrineCacheBundle/index.html
 <!-- / end links-->
 
 
