@@ -50,8 +50,8 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
-March 19, 2016 (Configuring the DoctrineCacheBundle Service)
-============================================================
+March 19, 2016 (Configuring the DoctrineCacheBundle Service, Environments)
+==========================================================================
 
 We have now new service, let's use it: **$cache = $this->get('')** and start typing **markdown**, and there's our service the IDE auto completes it.
 
@@ -100,13 +100,41 @@ It should be slow the first time, and then super fast the second time.
 **The big picture: bundles give you services, and those services can be controlled in config.yml . Every bundle works little bit different - but if we can understand this basic concept, we can figure out and do whatever configuration we need**
 
 
+### Environments
 
+If **config.yml** is so important then the question is what ar all of those other files - like **config_dev.yml**, **config_test.yml**, **parameters.yml**, **security.yml** and **service.yml**?
+
+The answer is **Environments**. In Symfony, an environment is a set of configuration. Environments are also one of the most powerful features.
+ 
+Think about it: an application is a big collection of code. But to get the code running it needs configuration. It needs to know what your database  password, what file your logger should write to, and what priority of messages it should bother logging.
+ 
+### The dev and prod Environments
+
+Symfony has two environments by default: **dev** and **prod**. In the **dev** environment your code is booted with a lot of logging and debugging tools. But in the **prod** environment, that same code is booted with minimal logging and other configuration that makes everything fast.
+
+> There's a third environment called **test** for writing automated tests.
+
+**app.php** versus **app_dev.php**
+
+These are lives in **web** directory, which is the document root. This is the only directory whose files can be accessed publicly.
+
+These two files - **app.php** and **app_dev.php** - are the keys. When we visit the app, we always executing one of these files. Since we're using the **server:run** built-in web server we're executing **app_dev.php**
+The web server is preconfigured to hit this file.
+
+That mean's when we go to **localhost:8000/test/watever** that's equivalent to going to **localhost:8000/app_dev.php/test/watever**. With that URL, the page still loads exactly before.
+
+So to switch to the **prod** environment just copy that URL and change **app_dev.php** to **app.php**.
+Now we are in the **prod** environment: same app, but no web toolbar or other dev tools, this is optimized for speed.
+
+In production we won't have this ugly **app.php* in the URL: you'll configure the web server to execute that file when nothing appears in the URL.
+
+Other than on your production server, we are always want to be in the **dev** environment.
 
 
 March 18, 2016 (adding Cache Service)
 =====================================
 
-We're going to be rendering lot of for example markdown, and we don't want to do this on every request - I'ts just too slow. We need to cache the parsed markdown. Symfony have a bundel called **DoctrineCacheBundle** for that.
+We're going to be rendering lot of for example markdown, and we don't want to do this on every request - I'ts just too slow. We need to cache the parsed markdown. Symfony have a bundle called **DoctrineCacheBundle** for that.
 
 ### Enabling DoctrineCacheBundle
 
