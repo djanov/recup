@@ -50,7 +50,58 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
-<!--March 19, 2016 (using the Cache Service what was created) -->
+March 19, 2016 (Configuring the DoctrineCacheBundle Service)
+============================================================
+
+We have now new service, let's use it: **$cache = $this->get('')** and start typing **markdown**, and there's our service the IDE auto completes it.
+
+```
+$cache = $this->get('doctrine_cache.providers.my_markdown_cache');
+```
+
+The goal is to make sure the same string doesn't get parsed twice through markdown. To do that create a **$key = md5($funFact);**. To use the cache service add **if ($cache->contains($key)).** in this case, just set **$funFact = $cache->fetch($key);** Else we need to parse through Markdown. For test purpose add a **sleep(1);** to pretend like our markdown transformation is really long time, then parse the fun fact and finish with **$cache->save($key, $funFact);**
+ 
+```
+ $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
+    $key = md5($funFact);
+    if ($cache->contains($key)) {
+        $funFact = $cache->fetch($key);
+    } else {
+        sleep(1); // fake how slow this could be
+        $funFact = $this->get('markdown.parser')
+            ->transform($funFact);
+        $cache->save($key, $funFact);
+    }
+```
+
+The default place the cache goes in **app/cache** we have there a **doctrine** direcotry with **cache/file_system** inside. There is our cached markdown.
+
+### Configuring the Cache Path
+
+to configure the cache path rerun the command:
+
+```
+php app/console debug:config doctrine_cache
+```
+
+We can see a **directory** in **file_system**, so we need to add new **direcotry** key and set it to for example **/tmp/doctrine_cache** in config.yml:
+
+```
+doctrine_cache:
+  providers:
+    my_markdown_cache:
+      type: file_system
+      file_system:
+        directory: /tmp/doctrine_cache
+```
+
+It should be slow the first time, and then super fast the second time.
+
+**The big picture: bundles give you services, and those services can be controlled in config.yml . Every bundle works little bit different - but if we can understand this basic concept, we can figure out and do whatever configuration we need**
+
+
+
+
 
 March 18, 2016 (adding Cache Service)
 =====================================
