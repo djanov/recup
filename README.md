@@ -37,7 +37,7 @@ The project name is only used to determine the directory name: it's not importan
 
 First need to install [Composer][4]
 -----------------------------------
-After installation composer, go where the project going to be then: 
+After installation composer, go where the project going to be then:
 ```
 $ composer create-project symfony/framework-standard-edition my_project_name "2.8.*"
 ```
@@ -57,7 +57,7 @@ March 20, 2016 (config_dev.yml vs config_prod.yml)
 
 We have two environments, compare **app.php** and **app_dev.php**. The important difference is a single line: **$kernel = new AppKernel()**. That's the class that lives in the **app/** directory.
 
-The first argument to **AppKernel** is **prod** in **app.php** 
+The first argument to **AppKernel** is **prod** in **app.php**
 
 ```
 web/app.php
@@ -131,7 +131,59 @@ monolog:
 This handle will show log messages right in the browser. Make sure to install **FirePHP** extension in the browser, then enable it and go to the page "Inspect Element" after that refresh the page and we can evan see what route was mathed fro our ajax call. We don't want this to happen on production, so we only enabled this in the **dev** environment.
 
 
- 
+### Caching in the prod Environment Only
+
+We need to cache our markdown processing, but what if we need to tweak how the markdown renders? In that case, we don't want caching. We need to disable caching in the **dev** environment only!
+
+Copy the **doctrine_cache** from **config.yml** and paste it into **config_dev.yml**, change **type** from **file_system** to **array**:
+
+```
+doctrine_cache:
+    providers:
+        my_markdown_cache:
+            type: array
+```
+The **array** type is a "fake" cache: it won't ever store anything. Now try, its working because it takes entire second of the **sleep()** if we try again same. In the **prod** still really fast.
+
+### Clearing prod Cache
+
+If we change in **config.yml** the **thousands_separator** back to comma:
+
+```
+# Twig Configuration
+twig:
+    number_format:
+        thousands_separator: ','
+```
+
+In the **dev** environment we have no problems, but in the **prod** environment we have still a period.
+
+So in the **prod** environment is primed for speed. And that means, when you change any configuration, you need to manually clear the cache before you'll see those changes.
+
+To do that in the terminal, run:
+
+```
+php app/console cache:clear --env=prod
+```
+
+Even in the console script executes your app in a specific environment. By default IT USES THE **dev** ENVIRONMENT.
+Now in **prod** should be a comma.
+
+### The other Files: services.yml, security.yml
+
+All of these configuration files are imported in the top of the **config.yml**:
+
+```
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+```
+
+The key point is that all of the files are just loading each other: it's all the sam system.
+
+In fact, I could copy all of **security.yml**, paste it into **config.yml**, completely delete **security.yml** and everything would be fine. The only reason **security.yml** even exists is because it good to keep that stuff in tis own file. The same goes for **services.yml**
+
 
 March 19, 2016 (Configuring the DoctrineCacheBundle Service, Environments)
 ==========================================================================
@@ -143,7 +195,7 @@ $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
 ```
 
 The goal is to make sure the same string doesn't get parsed twice through markdown. To do that create a **$key = md5($funFact);**. To use the cache service add **if ($cache->contains($key)).** in this case, just set **$funFact = $cache->fetch($key);** Else we need to parse through Markdown. For test purpose add a **sleep(1);** to pretend like our markdown transformation is really long time, then parse the fun fact and finish with **$cache->save($key, $funFact);**
- 
+
 ```
  $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
     $key = md5($funFact);
@@ -188,9 +240,9 @@ It should be slow the first time, and then super fast the second time.
 If **config.yml** is so important then the question is what ar all of those other files - like **config_dev.yml**, **config_test.yml**, **parameters.yml**, **security.yml** and **service.yml**?
 
 The answer is **Environments**. In Symfony, an environment is a set of configuration. Environments are also one of the most powerful features.
- 
+
 Think about it: an application is a big collection of code. But to get the code running it needs configuration. It needs to know what your database  password, what file your logger should write to, and what priority of messages it should bother logging.
- 
+
 ### The dev and prod Environments
 
 Symfony has two environments by default: **dev** and **prod**. In the **dev** environment your code is booted with a lot of logging and debugging tools. But in the **prod** environment, that same code is booted with minimal logging and other configuration that makes everything fast.
@@ -262,7 +314,7 @@ php app/console debug:config doctrine_cache
 **Configuring a Cache Service**
 
 Our gol is to get a cache service we can use to avoid processing markdown on each request. When we added **KnpMarkdownBundle**, we magically had a new service. But this bundle, we need to configure each service we want.
- 
+
 Open **config.yml** and add **doctrine_cache**. Below that, add a **providers** key:
 
 ```
@@ -307,7 +359,7 @@ March 17, 2016
 ### Control Center for Services (Config.yml)
 
 To configure and control how the services behave, we have just one file: **app/config/config.yml**. One file is responsible for controlling everything from the log file to the database_password.
- 
+
 in **config.yml** other then **imports** - which loads other files and **parameters**. Every root key in this file like **framework, twig and doctrine** - corresponds to a bundle that is being configured. For example:
 All of stuff under **framework** is configuration for the **FrameworkBundle**.
 Everything under **twig** is used to control the behavior of the services from **TwigBundle**.
@@ -338,7 +390,7 @@ index.html.twig
 Then when we refresh the filter gives us a **99,999**, formatted-string. But if we live in a contry that formats using a **.** instead we need to change this in twig bundle service.
 
 In **debug:config twig** dump, there's a **number_format**, **thousands_separator** key. In **config.yml** add **number_format** then **thousands_separator: '.'**
- 
+
 ```
 app/config/config.yml
 
@@ -374,7 +426,7 @@ To see what handy services are inside of the container use the **php app/console
 
 In **app/AppKernel.php**
 
-The kernel is the heart of the Symfony application, but it doesn't do much. It's main job is to initialize all the bundles we need. A bundle is basically just a Symfony plugin, and its main job is to add services to our container. 
+The kernel is the heart of the Symfony application, but it doesn't do much. It's main job is to initialize all the bundles we need. A bundle is basically just a Symfony plugin, and its main job is to add services to our container.
 When we use the debug:container command, that giant list is provided to us from one of these bundles.
 
 >But the simplest explanation: a bundle is basiacally just a directory full of PHP classes, configuration and other goodies.
@@ -395,7 +447,7 @@ $bundles = array(
    , new Knp\Bundle\MarkdownBundle\KnpMarkdownBundle()
 );
 ```
-That's it! 
+That's it!
 To test it. Try rinning **debug:container** again with a search for **markdown**
 
 ```
@@ -405,7 +457,7 @@ We have two services matching. These are coming from the bundle we just installe
 
 ### Using the markdown Service
 
-First remove the text in twig that we want to use the service on. 2nd add the removed text to a variable in the container. 
+First remove the text in twig that we want to use the service on. 2nd add the removed text to a variable in the container.
 ```
   public function indexAction($wat)
  {
@@ -496,7 +548,7 @@ In the HTML area, clear things out and add an empty div with the same **id**.
 <div id="js-notes-wrapper"></div>
 ```
 
-Now refresh, It's working we can try to delete one comment in the controller to see if dynamically is changing (its checks for new comments every two seconds). 
+Now refresh, It's working we can try to delete one comment in the controller to see if dynamically is changing (its checks for new comments every two seconds).
 We have hardcoded URL right now we need to change that.
 
 ### Generating the URL for JavaScript
@@ -533,7 +585,7 @@ First, we need to get the URL to the API endpoint. Add **var notesUrl = ''**. In
 
 
 ```
-Yes its Twig inside of JavaScript, and yes it's going to work. 
+Yes its Twig inside of JavaScript, and yes it's going to work.
 Finally, pass this into React as a prop using **url={notesUrl}**
 
 ```
@@ -689,11 +741,11 @@ the **::base.html.twig** filename using the exact same syntax as the controller.
  * the bundle name
  * a subdirecotry
  * and the template filename
- 
+
  In this case the bundle name and subdirecotry are just missing. When a template name has the bundle part, it means the template lives in the **Resources/views** directory of that bundle. But when this part is missing, like here, it means the template lives in the **app/Resources/views** direcotry. And since the second part is missing too, it means it lives directly there, and not in a subdirectory.
- 
+
  **Examples**:
- 
+
  * **RecordBundle:Default:index.html.twig**
  src/RecUp/RecordBundle/Resources/views/Default/index.html.twig
  * **RecordBundle::index.html.twig**
@@ -706,7 +758,7 @@ March 9, 2016 (service controller, rendering the twig template, rendering templa
 
 ### Service Container
 
-To keep track off all of the services, Symfony puts them into one big associative array called the container. Each object has a key - like **mailer**, **logger** or **templating**. The container is actually an object. But think of it like an array: each useful object has an associated key. If I give you the container, you can ask for the **logger** service and it'll give you that object. 
+To keep track off all of the services, Symfony puts them into one big associative array called the container. Each object has a key - like **mailer**, **logger** or **templating**. The container is actually an object. But think of it like an array: each useful object has an associated key. If I give you the container, you can ask for the **logger** service and it'll give you that object.
 The first half of Symfony: **route-controller-response**. The second half of Symfony is all about finding out what objects are available and how to use them. We can evan add our own service objects to the container.
 
 **Example**: In **RecordBundle** controller render the index.html.twig page.
@@ -753,7 +805,7 @@ We can pass variables like ``` 'name' => $wat ``` and finally what we always hav
 
 **Create the Template**
 
-go to src/Recup/RecordBundle/Resources/views/Default/index.html.twig 
+go to src/Recup/RecordBundle/Resources/views/Default/index.html.twig
 
 ```
 <h1>Hello {{ name }}!</h1>
@@ -804,7 +856,7 @@ php app/console debug:container log
 Links:
 -----
   * [Service Container][8]
-    
+
 March 8, 2016 (Routing)
 =======================
 
@@ -831,7 +883,7 @@ class HomeController
     public function indexAction()
     {
         //... create and return a Response object
-    } 
+    }
 }
 ```
 
@@ -864,7 +916,7 @@ class HomeController
 }
 ```
 
-In **routing.yml**: 
+In **routing.yml**:
 * **resource** targets the controller to impact
 * **type** defines the way we declare routes
 * **prefix** defines a prefix for all actions of controller class (optional)
@@ -934,7 +986,7 @@ March 6, 2016 (Build the first page)
 Example:
 
 ```
-<?php 
+<?php
 
 namespace AppBundle\Controller;
 
@@ -974,7 +1026,3 @@ The GenusController is a controller, the function that will (eventually) build t
 [12]:https://github.com/doctrine/DoctrineCacheBundle
 [13]:https://symfony.com/doc/current/bundles/DoctrineCacheBundle/index.html
 <!-- / end links-->
-
-
-
-

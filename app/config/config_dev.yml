@@ -33,3 +33,9 @@ monolog:
 
 #swiftmailer:
 #    delivery_address: me@example.com
+
+doctrine_cache:
+  providers:
+    my_markdown_cache:
+      type: array # The array type is "fake" cache: it won't
+                  # ever store anything
