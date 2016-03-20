@@ -50,6 +50,89 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 20, 2016 (config_dev.yml vs config_prod.yml)
+==================================================
+
+### The **dev** and **prod** environments
+
+We have two environments, compare **app.php** and **app_dev.php**. The important difference is a single line: **$kernel = new AppKernel()**. That's the class that lives in the **app/** directory.
+
+The first argument to **AppKernel** is **prod** in **app.php** 
+
+```
+web/app.php
+
+$kernel = new AppKernel('prod', false);
+```
+
+And **dev** in **app_dev.php**
+
+```
+web/app_dev.php
+
+$kernel = new AppKernel('dev', true);
+```
+
+This defines the environments. The second argument - **true** or **false** - is a debug flag and basically controls whether or not errors should be shown.
+
+### config_dev.yml versus config_prod.yml
+
+So the **dev** and **prod** strings are used when Symfony boots, and it loads only one configuration file for the entire system. The **dev** environment loads only **config_dev.yml** and **prod** loads **config_prod.yml**.
+
+We can see the first lne of **config_dev.yml** or **config_prod.yml**
+
+```
+imports:
+    - { resource: config.yml }
+```
+
+It imports the main **config.yml**: the main shared configuration. Then, It overrides any configuration that's special for the **dev** or **prod** environment.
+
+In **config_dev.yml** under **monolog** - which is the bundle that gives us the **logger** service - it configures extra logging for the **dev** environment:
+
+```
+monolog:
+    handlers:
+        main:
+
+            level:  debug
+```
+
+By setting **level** to **debug**, we're saying "log everything no matter its priority"
+
+In **config_prod.yml** we have similar setup for the logger, but now it says **action_level: error**:
+
+```
+monolog:
+    handlers:
+        main:
+
+            action_level: error
+
+```
+
+This only logs messages that are at or above the **error** leve. So only messages when things break.
+
+**Using the firephp in confing_dev.yml**
+
+In **dev** environment under **monolog**, uncomment the **firephp** line:
+
+```
+monolog:
+    handlers:
+        # uncomment to get logging in your browser
+        # you may have to allow bigger header sizes in your Web server configuration
+        firephp:
+            type:   firephp
+            level:  info
+
+```
+
+This handle will show log messages right in the browser. Make sure to install **FirePHP** extension in the browser, then enable it and go to the page "Inspect Element" after that refresh the page and we can evan see what route was mathed fro our ajax call. We don't want this to happen on production, so we only enabled this in the **dev** environment.
+
+
+ 
+
 March 19, 2016 (Configuring the DoctrineCacheBundle Service, Environments)
 ==========================================================================
 
