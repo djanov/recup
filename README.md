@@ -50,8 +50,110 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
-March 20, 2016 (config_dev.yml vs config_prod.yml)
-==================================================
+March 21, 2016 (parameters)
+===========================
+
+### Parameters: The Variables of Configuration
+
+in the **config.yml** file: one of the settings - **default_locale** - is set to a strange-looking value: **%local%**:
+
+```
+app/config/config.yml
+framework:
+
+    default_locale:  "%locale%"
+```
+
+Scrolling up a bit, there's another root key called **parameters** with **locale: en**:
+
+```
+# Put parameters here that don't need to change on each machine where the app is deployed
+# http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: en
+```
+
+It's called a power of a special "variable system" inside config files, in any of these configuration files, we can have a **parameters** key. And below that we can create variables like **locale** and set that to a value. We can reuse that value in any other file by saying **%locale%**.
+
+In the **doctrine** key:
+
+```
+app/config/config.yml
+# Doctrine Configuration
+doctrine:
+    dbal:
+
+        host:     "%database_host%"
+        port:     "%database_port%"
+        dbname:   "%database_name%"
+        user:     "%database_user%"
+        password: "%database_password%"
+```
+
+We can see there is a bunch of these like **%database_host%** and **%database_port%**. These are just like **locale** but in a different file: **parameters.yml**:
+
+```
+# This file is a "template" of what your parameters.yml file should look like
+# Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
+# http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
+parameters:
+    database_host:     127.0.0.1
+    database_port:     ~
+    database_name:     symfony
+    database_user:     root
+    database_password: ~
+```
+
+So that's it, if you add a new key under **parameters**, you can use that in any other file by saying **%parameter_name%**.
+
+And just like services, we can get a list of every parameter available. Run in the console:
+
+```
+php app/console debug:container --parameters
+```
+
+### Creating new Parameter
+
+In the **prod** environment, we use the **file_system** cache. In **dev**, we use **array**. We can impore this.
+Create a new parameter called **cache_type** and set that to **file_system**. Scroll down and set **type** to **%cache_type%**
+
+```
+app/config/config.yml
+parameters:
+
+    cache_type: file_system
+
+doctrine_cache:
+    providers:
+        my_markdown_cache:
+            type: %cache_type%
+```
+
+Now run over the terminal to see the new parameter that we created:
+
+```
+php app/console debug:container --parameters
+```
+
+It's there now clear the cache in the **prod** environment so we can check everything is still working:
+
+```
+php app/console cache:clear --env=prod
+```
+
+The main part or the meaning of this was that now in the **config_dev.yml** we can use less code just add **parameters** key from **config.yml** and chnage its value to **array** and then completely remove the **doctrine_cache** key at the tbottom:
+ 
+```
+ app/config/config_dev.yml
+ parameters:
+    cache_type: array # The array type is "fake" cache: it won't
+                      # ever store anything
+```
+
+Its the same but with less code in the **dev** environment.
+
+March 20, 2016 (config_dev.yml vs config_prod.yml, Caching the prod environment only)
+=====================================================================================
 
 ### The **dev** and **prod** environments
 
