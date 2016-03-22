@@ -50,6 +50,52 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 22, 2016 (kernel.cache_dir, kernel.root_dir, for what is parameters.yml)
+==============================================================================
+
+There are some special parameters in the big list **debug:container** gave us.
+Notice **kernel.debug** - whether or not we're in debug mode - and **kernel.environment**. But the best one is the **kernel.cache_dir** - where Symfony stores its cache and **kernel.rooot_dir** - which is the **app/** direcotry where the **AppKernel** class lives. Anytime we need to reference a path in the project, use the **kernel.root_dir** and build the path from it.
+
+We have cache path for the markdown cache in referencing absolute path, that's not a good practice. So let's use the **kernel.cache_dir**.
+Just change the **directory** to **%kernel.cache_dir%** then **/markdown_cache**:
+
+```
+app/config/config.yml
+doctrine_cache:
+    providers:
+        my_markdown_cache:
+            type: %cache_type%
+            file_system:
+                directory: %kernel.cache_dir%/markdown_cache
+
+```
+
+Its ok to mix the parameters inside larger strings.
+Clear the cache in the **prod** and in the **dev** environment:
+
+```
+php app/console cache:clear --env=prod    # prod
+php app/console cache:clear               # dev  
+```
+
+And there's the cached markdown in **app/prod/**
+
+### Why is parameters.yml Special?
+
+**parameters.yml** holds any configuration that will be different from one machine where the code deployed to another.
+
+For example, your database password is most likely not the same as my database password, but if we put that password right in the middle of **config.yml**, that would be a nightmare! Because if i commit my password to git and then you need to change it to your password but the not try to commit that change.
+
+Instead of that confusing mess, we use parameters in **config.yml**. That allows to isolate the machine-specific configuration to **parameters.yml**. And here's the final key: **parameters.yml** is not committed to the repository - there's an entry for it in **.gitignore**:
+
+```
+/app/config/parameters.yml
+```
+
+If you just clone this project, the project won't have a **parameters.yml** file: you have to create it manually. Actually, this is the exact reason for this other file: **parameters.yml.dist**.
+This is not read by Symfony, it's just a template of all of the parameters this project needs. If you add or remove things from the **parameters.yml**, be sure to add or remove them from **parameters.yml.dist**, because you commit this file to git.
+>But when you install the project running the **composer install**, Symfony will read **parameters.yml.dist** and ask you to fill in any values that are missing from **parameters.yml**. So we actually then generating the **parameters.yml**
+
 March 21, 2016 (parameters)
 ===========================
 
