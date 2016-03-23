@@ -50,6 +50,108 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 23, 2016 (Doctrine and the database, creating an entity class)
+====================================================================
+
+For fetching data from the database we are going to use [Doctrine][14]. Is Doctrine part of Symfony? No! Symfony doesn't care how or if you talk to database at all. You could use a direct PDO connection, use Doctrine, or do something else entirely. As usual, you're in control.
+
+**Doctrine is an ORM**
+
+ORM: Object Relation Mapper. In short, that means that every table - lke **record** - will have a corresponding PHP class that we will create. When you query, the **record** table, Doctrine will give you a **Record** object. Every property in the class maps to a column in the table. The main goal is mapping between a table and a PHP class in Doctrine.
+
+### 1) Creating an Entity Class
+
+Let's create a **record** table in the database and load all of this dynamically from there. We don't create a database table in Doctrine. Our job is to create a class, then Doctrine will create the table based on that class.
+
+Create **Entity** directory in RecUp/RecordBundle and then create normal class inside called **Record**:
+
+```
+namespace RecUp\RecordBundle\Entity;
+
+class Record
+{
+}
+```
+
+The **entity** is a class that Doctrine map to a databse table.
+
+### 2) Configuration with Annotations!
+
+To do that - Doctrine needs to know two things: what the table should be called and what columns it needs, and for that we are going to use annotations! Whenever we are using annoation, we need a **use* statement for it.
+
+```
+namespace RecUp\RecordBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+```
+
+Every entity class will have the same **use** statement, next create **ORM Class**:
+
+```
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="record")
+ */
+class Record
+{
+
+}
+```
+When you use annotations in the Doctrine we need to use the **@ORM** prefix for every Doctrine Mapping Types. 
+Doctrine now knows this class should map to a table called **genus**.
+
+### Configuring the Columns
+
+But that table won't have any columns yet, Add two properties **id** and **name**. To tell Doctrine that these should map to columns, use the **ORM Annotation**:
+
+```
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="record")
+ */
+class Record
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $name;
+}
+```
+
+The **id** columns is special - it will almost always look exactly like this: it basically says that **id** is the primary key.
+
+The **type** option that's set to **string** is a Doctrine "type", and it will map to a **varchar** in MySQL. There are other [Doctrine types][15].
+
+If we have the database configured in **parameters.yml** then we can run this command to create the databse
+```
+php app/console doctrine:databse:create
+```
+
+Make sure that XAMPP is running, and if we have the database then before we are executing the the tables run:
+```
+php app/console doctrine:schema:update --dump-sql
+```
+
+If we are satisfied run this command to to execute the query:
+```
+php app/console doctrine:schema:update --force
+```
+Now we can see in phpmyadmin the table that was created by doctrine.
+
+links
+-----
+
+* [Doctrine Mapping Types][15]
+* [Doctrine 2 ORM’s documentation][16]
+* [21. Annotations Reference][17]
+
 March 22, 2016 (kernel.cache_dir, kernel.root_dir, for what is parameters.yml)
 ==============================================================================
 
@@ -1173,4 +1275,8 @@ The GenusController is a controller, the function that will (eventually) build t
 [11]:https://github.com/KnpLabs/KnpMarkdownBundle
 [12]:https://github.com/doctrine/DoctrineCacheBundle
 [13]:https://symfony.com/doc/current/bundles/DoctrineCacheBundle/index.html
+[14]:http://www.doctrine-project.org/
+[15]:http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/basic-mapping.html#doctrine-mapping-types
+[16]:http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/index.html
+[17]:http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/annotations-reference.html
 <!-- / end links-->
