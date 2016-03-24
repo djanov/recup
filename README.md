@@ -50,6 +50,120 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 24, 2016 (Inserting new objects using doctrine)
+=====================================================
+
+When we need to record new song we need a system to add that. We would have a URL like **record/new**. The user would fill out a form, hit submit, and the databse would insert a new record to the **record** table.
+
+So create a **newAction()** with the URL **/record/new**:
+
+```
+class DefaultController extends Controller
+{
+    /**
+     * @Route("/record/new")
+     */
+    public function newAction()
+    {
+
+    }
+
+    /**
+     * @Route("/test/{wat}")
+     */
+    public function indexAction($wat)
+    {
+
+    }
+
+}
+```
+
+**BE Careful with Route Ordering!**
+
+I put **newAction()** above **indexAction()**. Routes match from top to bottom. If i had put **newAction()** below **indexAction()**, going to **/test/new** would have matched **indexAction()** - passing the word "new" as the **wat**. To avoid this, put most generic-matching routes ner the bottom.
+We can use [route requirements][18] to make a wildcard only match certain patters (instead of matching everything).
+
+### Inserting a Record
+
+we are not going to do with forms for now.
+
+Instead, insert some hardcoded data. To start: **$record = new Record**(to make new Record object, also don't forget the **use statement for the Record object**), put some data on that object and tell Doctrine to save it:
+
+```
+class DefaultController extends Controller
+{
+    /**
+     * @Route("/record/new")
+     */
+    public function newAction()
+    {
+        $record = new Record();
+    }
+
+}
+```
+
+Doctrine wants to stop thinking about queries, and instead think about objects.
+
+In the **Entity/Record** we have the **name** the only real field we have. And it's a private property, To make mutable (changeable) make the getters and setters for the name:
+
+```
+class Record
+{
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+}
+```
+
+Now go back to **DefaultController** and use **$record->setName** and call it **Lenny** and add some random number for the end if we make not just one.
+We have the object populated with data now we need to tell Doctrine: I want you to save this to our record table.
+
+Everything in Symfony is done with a service and Doctrine is no exeption: it has one magical service that saves and queries. it's called, the entity manager. It's has its own controller shortcut to get it: **$em = $this->getDoctrine()->getManager()**.
+
+To save data, use two methods **$em->persist($record)** and **$em->flush**:
+
+```
+        $record = new Record();
+        $record->setName('Lenny'.rand(1, 100));
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($record);
+        $em->flush();
+```
+
+We need both lines. The persist tells Doctrine that we want to save this. But the query isn't made until we call **flush()**. And we use these exact two lines whether we're inserting a new Record or updating an existing one. Doctrine figures out the right query to use.
+
+### Finishing the New Page
+
+The controller must always return the **Response** object. Skip the template for now and just **return new Response()**:
+```
+return new Response('song created!');
+```
+When we open in the web browser /record/new we see no errors but we are missing the web debug toolbar, to se if the query is goin through. That's because we don't have a full, valid HTML page - so go back to the controller and hack in some HTML markup into the response:
+```
+return new Response('<html><body>song created!</body></html>');
+```
+Try it again. now there is the fancy web debug toolbar. And there is actually three database queries. We can check the queries out by click the icon to enter the profiler. And there's the insert query, hiding inside a transaction, and we can see in 3 different format: formatted query, a runnable version, or run EXPLAIN on a slow query for debugging its great.
+
+### Running SQL Queries  in the Terminal
+
+We can even  check in the terminal using the doctrine query:
+
+```
+php app/console doctrine:query:sql "SELECT * from record"
+```
+Or in the phpmyadmin.
+
+
 March 23, 2016 (Doctrine and the database, creating an entity class)
 ====================================================================
 
@@ -97,7 +211,7 @@ class Record
 
 }
 ```
-When you use annotations in the Doctrine we need to use the **@ORM** prefix for every Doctrine Mapping Types. 
+When you use annotations in the Doctrine we need to use the **@ORM** prefix for every Doctrine Mapping Types.
 Doctrine now knows this class should map to a table called **genus**.
 
 ### Configuring the Columns
@@ -290,7 +404,7 @@ php app/console cache:clear --env=prod
 ```
 
 The main part or the meaning of this was that now in the **config_dev.yml** we can use less code just add **parameters** key from **config.yml** and chnage its value to **array** and then completely remove the **doctrine_cache** key at the tbottom:
- 
+
 ```
  app/config/config_dev.yml
  parameters:
@@ -1279,4 +1393,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [15]:http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/basic-mapping.html#doctrine-mapping-types
 [16]:http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/index.html
 [17]:http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/annotations-reference.html
+[18]:https://symfony.com/doc/current/book/routing.html#adding-requirements
 <!-- / end links-->

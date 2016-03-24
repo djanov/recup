@@ -2,6 +2,7 @@
 
 namespace RecUp\RecordBundle\Controller;
 
+use RecUp\RecordBundle\Entity\Record;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -10,6 +11,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
+    /**
+     * @Route("/record/new")
+     */
+    public function newAction()
+    {
+        $record = new Record();
+        $record->setName('Lenny'.rand(1,100));
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($record);
+        $em->flush();
+
+        return new Response('<html><body>song created!</body></html>');
+    }
 
     /**
      * @Route("/test/{wat}")
