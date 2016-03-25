@@ -50,6 +50,112 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 25, 2016 (Adding more columns to the record table)
+========================================================
+
+If we want to add new fields to the record table we need to create first the properties:
+
+```
+
+class Record
+{
+    private $artist;
+
+    private $genre;
+
+    private $about;
+}
+```
+
+Now add the **Column** annotations above each:
+
+```
+class Record
+{
+/**
+ * @ORM\Column(type="string")
+ */
+private $artist;
+
+/**
+ * @ORM\Column(type="string")
+ */
+private $genre;
+
+/**
+ * @ORM\Column(type="string")
+ */
+private $about;
+}
+```
+
+If we need another field type we can find in the Doctrine types docs. The most common ones are **string**, **integer**, **text** and **float**.
+
+Now create the getters and setters:
+
+```
+
+    /**
+     * @return mixed
+     */
+    public function getArtist()
+    {
+        return $this->artist;
+    }
+
+    /**
+     * @param mixed $artist
+     */
+    public function setArtist($artist)
+    {
+        $this->artist = $artist;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGenre()
+    {
+        return $this->genre;
+    }
+
+    /**
+     * @param mixed $genre
+     */
+    public function setGenre($genre)
+    {
+        $this->genre = $genre;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAbout()
+    {
+        return $this->about;
+    }
+
+    /**
+     * @param mixed $about
+     */
+    public function setAbout($about)
+    {
+        $this->about = $about;
+    }
+```
+
+And that's it. Create the properties, add the annotations and the getters and setters if you need them.
+
+### Updating the Table schema
+
+To update the **record** table the **NOT** safe way is to just run the:
+```
+php app/console doctrine:schema:update --force
+```
+command, but if we have the project deployed, then if we rename a property, then this command might drop the existing column and add a new one. All the data from the old column would be gone! The point is: runnig **doctrine:schema:update** is just too dangerous on production.
+
+
+
 March 24, 2016 (Inserting new objects using doctrine)
 =====================================================
 
