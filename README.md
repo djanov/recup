@@ -50,8 +50,8 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
-March 25, 2016 (Adding more columns to the record table)
-========================================================
+March 25, 2016 (Adding more columns to the record table, DoctrineMigrationsBundle)
+==================================================================================
 
 If we want to add new fields to the record table we need to create first the properties:
 
@@ -153,6 +153,108 @@ To update the **record** table the **NOT** safe way is to just run the:
 php app/console doctrine:schema:update --force
 ```
 command, but if we have the project deployed, then if we rename a property, then this command might drop the existing column and add a new one. All the data from the old column would be gone! The point is: runnig **doctrine:schema:update** is just too dangerous on production.
+
+### Database Migrations
+
+and for that we have database migration (the safe way). To install **DoctrineMigrationsBundle** run in terminal:
+
+```
+composer require doctrine/doctrine-migrations-bundle
+```
+
+Then add the **new** statement to the **AppKernel** class:
+
+```
+app/AppKernel.php
+
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+        $bundles = array(
+
+            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+
+        );
+
+    }
+
+}
+```
+
+### The Migrations Workflow
+
+Our goal is to find a way to safely update our database schema both locally and on production. To do this right, drop the database entirely to remove all the tables: like we have a new project:
+
+```
+php app/console doctrine:database:drop --force
+```
+
+This is the only time you'll need to do this. Now re-create the database:
+
+```
+php app/console doctrine:database:create
+```
+
+Now, instead of running **doctrine:schema:update**, run:
+
+```
+php app/console doctrine:migrations:diff
+```
+
+This created a new file in **app/DoctrineMigrations**. The **up()** method in the file executes the exact SQL that we would have gotten from the **doctrine:schema:update** command. But instead of running it, it saves it into this file. This is our chance to look at it and make sure it's perfect, so we can change something if its wrong.
+
+When we are ready, run the migration with:
+
+```
+php app/console doctrine:migrations:migrate
+```
+
+Done! When we deploy, we'll also run this command. But this command will only run the migration files that have not been executed before. Behind the scenes, this bundle crates a **migrations_versions** table that keep stack of which migration files it has already executed. This means we can safely run **doctrine:migrations:migrate** on every deploy: the bundle will take care of only running the new files.
+
+### Making Columns nullable
+
+In **newAction()**, add some code that sets fake data on **SongName**, **Artist**, **Genre** but leave the **About** blank:
+
+```
+public function newAction()
+{
+    $record = new Record();
+    $record->setSongName('the best of '.rand(1,100));
+    $record->setArtist('Lenny');
+    $record->setGenre('rock');
+  }
+```
+
+When we try in browser we got a huge error, that **About** cannot be null.
+Doctrine configures all columns to be required in the database by default, if we want column to be "nullable", find the column and add **nullable=true**:
+
+```
+class Record
+{
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $about;
+
+}
+```
+
+**Creating Another Migration**
+
+It's not makes our table automatically updated, so if we made this change we need another migration:
+
+```
+php app/console doctrine:migrations:diff
+```
+
+This creates the new migration file, we can see there **ALTER TABLE record CHANGE about** to have a default of **null**. This is what we want so execute the migration:
+
+```
+php app/console doctrine:migrations:migrate
+```
+Refresh the page and no errors!
 
 
 

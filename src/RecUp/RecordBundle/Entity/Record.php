@@ -26,7 +26,7 @@ class Record
     /**
      * @ORM\Column(type="string")
      */
-    private $name;
+    private $songName;
 
     /**
      * @ORM\Column(type="string")
@@ -39,24 +39,24 @@ class Record
     private $genre;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $about;
 
     /**
      * @return mixed
      */
-    public function getName()
+    public function getSongName()
     {
-        return $this->name;
+        return $this->songName;
     }
 
     /**
-     * @param mixed $name
+     * @param mixed $songName
      */
-    public function setName($name)
+    public function setSongName($songName)
     {
-        $this->name = $name;
+        $this->songName = $songName;
     }
 
     /**

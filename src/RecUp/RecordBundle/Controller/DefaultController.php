@@ -17,7 +17,9 @@ class DefaultController extends Controller
     public function newAction()
     {
         $record = new Record();
-        $record->setName('Lenny'.rand(1,100));
+        $record->setSongName('the best of '.rand(1,100));
+        $record->setArtist('Lenny');
+        $record->setGenre('rock');
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($record);
