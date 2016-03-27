@@ -50,6 +50,38 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+March 27, 2016 (Query for a list of songs)
+===========================================
+
+To list all of the songs. Create **public function listAction()** give it a route path of **/songs**
+
+```
+    /**
+     * @Route("/songs")
+     */
+    public function listAction()
+    {
+
+    }
+```
+
+To query we need the entity manager. Everything in Doctrine starts with the entity manager. Get it with **$em = $this->getDoctrine()->getManage()**
+
+To make the query, we always start the same way **$songs = $em->getRepository()**. Pass the class name not the table name that you want to query from. This gives us a repository object, we can now query from songs table. We can use a bunch of useful methods on it **findAll()** and **findOneBy**. use **findAll()**.
+
+```
+    public function listAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $songs = $em->getRepository('RecordBundle:Record')
+            ->findAll();
+    }
+```
+And now we have the query of the songs to test if it works add a **dump($songs);die;**.
+
+
+
 March 25, 2016 (Adding more columns to the record table, DoctrineMigrationsBundle)
 ==================================================================================
 

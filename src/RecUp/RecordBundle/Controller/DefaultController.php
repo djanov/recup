@@ -29,6 +29,17 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/songs")
+     */
+    public function listAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $songs = $em->getRepository('RecordBundle:Record')
+            ->findAll();
+    }
+
+    /**
      * @Route("/test/{wat}")
      */
     public function indexAction($wat)
