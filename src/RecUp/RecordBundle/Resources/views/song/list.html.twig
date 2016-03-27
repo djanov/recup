@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Song Name</th>
+        <th># of song</th>
+        <th>Last updated</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for song in songs %}
+        <tr>
+            <td>{{ song.songName }}</td>
+            <td>{{ song.genre }}</td>
+            <td>{{ song.updatedAt|date('Y-m-d') }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{% endblock %}

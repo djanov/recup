@@ -107,5 +107,9 @@ class Record
         $this->about = $about;
     }
 
+    public function getUpdatedAt()
+    {
+        return new \DateTime('-'.rand(0, 100).' days');
+    }
 
 }

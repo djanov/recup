@@ -37,6 +37,10 @@ class DefaultController extends Controller
 
         $songs = $em->getRepository('RecordBundle:Record')
             ->findAll();
+
+        return $this->render('@Record/song/list.html.twig', [
+           'songs' => $songs
+        ]);
     }
 
     /**

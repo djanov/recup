@@ -50,8 +50,8 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
-March 27, 2016 (Query for a list of songs)
-===========================================
+March 27, 2016 (Query for a list of songs, page real with a template from query data)
+=====================================================================================
 
 To list all of the songs. Create **public function listAction()** give it a route path of **/songs**
 
@@ -79,6 +79,58 @@ To make the query, we always start the same way **$songs = $em->getRepository()*
     }
 ```
 And now we have the query of the songs to test if it works add a **dump($songs);die;**.
+
+
+### Make this page real with a template.
+
+Return: **$this->render('@Record/song/list.html.twig')** and pass ita **songs** variable:
+
+```
+    /**
+     * @Route("/songs")
+     */
+    public function listAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $songs = $em->getRepository('RecordBundle:Record')
+            ->findAll();
+
+        return $this->render('@Record/song/list.html.twig', [
+           'songs' => $songs
+        ]);
+    }
+```
+
+Now create a new file the **list.html.twig** in **RecordBundle/Resources/views/song/**. Extend the **base.html.twig** and ovveride the **body** block.
+
+Since the **songs** is an array, loop over it and get the songName, genre. Notice that the **songName** and **genre** is a private property. But Twig behind the scenes, noticed that **songName** was private and called **getName()** instead. And it does the same thing with **song.genre**. Twig is smart enough to figure out how to access data and this lets us keep the template simple. We can add a third column to the table called "Last Updated". This wont work yet, but we need to say **{{ song.updatedAt}}**. If this existed and returned a DateTime object, we could pipe through the built in **date** filter format. But this won't work there is not an **updateAt** property. We can add later, but we can fake it. just add a **public function getUpdatedAt()** and return a random **DateTime** object. Twig doesn't care that there is no **updateAt** property it will call the getter function anyway.
+
+```
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Song Name</th>
+        <th># of song</th>
+        <th>Last updated</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for song in songs %}
+        <tr>
+            <td>{{ song.songName }}</td>
+            <td>{{ song.genre }}</td>
+            <td>{{ song.updatedAt|date('Y-m-d') }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{% endblock %}
+```
 
 
 
