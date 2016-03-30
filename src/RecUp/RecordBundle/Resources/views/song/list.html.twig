@@ -3,21 +3,25 @@
 {% block body %}
 
 <table class="table table-striped">
-    <thead>
+  <thead>
     <tr>
-        <th>Song Name</th>
-        <th># of song</th>
-        <th>Last updated</th>
+      <th>Song Name</th>
+      <th>genre</th>
+      <th>Last updated</th>
     </tr>
-    </thead>
-    <tbody>
+  </thead>
+  <tbody>
     {% for song in songs %}
-        <tr>
-            <td>{{ song.songName }}</td>
-            <td>{{ song.genre }}</td>
-            <td>{{ song.updatedAt|date('Y-m-d') }}</td>
-        </tr>
+    <tr>
+      <td>
+        <a href="{{ path('record_show', {'track': song.songName}) }}">
+          {{ song.songName }}
+        </a>
+      </td>
+      <td> {{ song.genre }}</td>
+      <td> {{ song.updatedAt|date('Y-m-d') }} </td>
+    </tr>
     {% endfor %}
-    </tbody>
-    </table>
+  </tbody>
+</table>
 {% endblock %}

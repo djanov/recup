@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Genus {{ name }}{% endblock %}
+{% block title %}Genus {{ name.songName }}{% endblock %}
 
 {% block body %}
-    <h2 class="genus-name">{{ name }}</h2>
+    <h2 class="genus-name">{{ name.songName }}</h2>
 
     <div class="sea-creature-container">
         <div class="genus-photo"></div>
@@ -11,11 +11,11 @@
             <dl class="genus-details-list">
                 <dd>{{ '99999'|number_format }}</dd>
                 <dt>Subfamily:</dt>
-                <dd>Octopodinae</dd>
+                <dd>{{ name.artist }}</dd>
                 <dt>Known Species:</dt>
-                <dd>289</dd>
+                <dd>{{ name.genre }}</dd>
                 <dt>Fun Fact:</dt>
-                <dd>{{ funFact|raw }}</dd>
+                <dd>{{ name.about }}</dd>
             </dl>
         </div>
     </div>
@@ -31,7 +31,7 @@
     <script type="text/babel" src="{{ asset('js/notes.react.js') }}"></script>
 
     <script type="text/babel">
-        var notesUrl = '{{ path('record_show_notes', {'wat': name}) }}'
+        var notesUrl = '{{ path('record_show_notes', {'track': name.songName}) }}'
 
         ReactDOM.render(
             <NoteSection url={notesUrl} />,

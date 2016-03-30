@@ -44,12 +44,15 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/test/{wat}")
+     * @Route("/test/{track}", name="record_show")
      */
-    public function indexAction($wat)
+    public function indexAction($track)
 {
-    $funFact = 'Octopuses can change the color of their body in just *three-tenths* of a second!';
+    $em = $this->getDoctrine()->getManager();
 
+    $songs = $em->getRepository('RecordBundle:Record')
+        ->findOneBy(['songName' => $track]);
+    /*
     $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
     $key = md5($funFact);
     if ($cache->contains($key)) {
@@ -60,15 +63,15 @@ class DefaultController extends Controller
             ->transform($funFact);
         $cache->save($key, $funFact);
     }
+    */
 
     return $this->render('RecordBundle:Default:index.html.twig', array(
-        'name' => $wat,
-        'funFact' => $funFact,
+        'name' => $songs,
     ));
 }
 
     /**
- * @Route("/test/{wat}/notes", name="record_show_notes")
+ * @Route("/test/{track}/notes", name="record_show_notes")
  * @Method("GET")
  */
     public function getNoteAction()
