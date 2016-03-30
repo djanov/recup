@@ -46,7 +46,7 @@ class DefaultController extends Controller
     /**
      * @Route("/test/{track}", name="record_show")
      */
-    public function indexAction($track)
+    public function showAction($track)
 {
     $em = $this->getDoctrine()->getManager();
 
@@ -65,7 +65,7 @@ class DefaultController extends Controller
     }
     */
 
-    return $this->render('RecordBundle:Default:index.html.twig', array(
+    return $this->render('@Record/Default/show.html.twig', array(
         'name' => $songs,
     ));
 }

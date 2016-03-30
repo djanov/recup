@@ -50,6 +50,117 @@ php bin/console server:run
 
 Then go to **http:/localhost:8000** in the browser. And boom symfony is working now
 
+Important changes:
+=================
+
+* **March 30**:
+  - Changing indexAction (index.html.twig) to showAction (show.html.twig)
+  - Changing {wat} to {track}
+
+
+March 30, 2016 (Querying from songs not from hard coded data, and handle a 404 page)
+====================================================================================
+
+We have a song list page, and the show page lets link them together.
+
+First add name (**record_show**) to the showAction route its to be easier in the future when we change the route URL, then we don't have to hunt down all the update every link on the site so for that we add this unique name to the route, and use the **name** instead.
+
+```
+src/RecUp/Controller/DefaultController.php
+
+/**
+ * @Route("/test/{track}", name="record_show")
+ */
+public function showAction($track)
+{
+  ....
+}
+```
+
+Next in the **list.html.twig** add an **a** tag and use the **path()** twig function to point to the **record_show** route. Remember this route has a **{track}** wildcard, so we must pass value for that here. Finish with **track: song.songName**. And make sure to the text is still **song.songName**:
+
+```
+src/RecUp/Resources/views/song/list.html.twig
+
+{% for song in songs %}
+<tr>
+  <td>
+    <a href="{{ path('record_show', {'track': song.songName}) }}">
+      {{ song.songName }}
+    </a>
+  </td>
+  <td> {{ song.genre }}</td>
+  <td> {{ song.updatedAt|date('Y-m-d') }} </td>
+</tr>
+{% endfor %}
+```
+
+Its going to work now but only the **songName** is going to be dynamically working the rest is the hardcoded stuff.
+
+**Querying for One Song**
+
+In the controller get rid of $funfact. We need to query from Record that matches the **track**. First fetch the entity manager:
+
+```
+src/RecUp/Controller/DefaultController.php
+
+
+    public function showAction($track)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+    }
+
+}
+```
+
+Then, **  $songs = $em->getRepository()** with the **RecordBundle:Record**. Next use the **findOneBy** method, this works by passing it an array of things to find by - in our case **'songName' => $track**:
+
+```
+$em = $this->getDoctrine()->getManager();
+
+$songs = $em->getRepository('RecordBundle:Record')
+    ->findOneBy(['songName' => $track]);
+```
+
+Comment out the caching fro now.
+
+Finally, since we have a **Record** object, we can simplify the **render()** buy only passing the **'name' => 'songs'** (so we don't need to pass each value individually because we have the object).
+
+```
+return $this->render('@Record/Default/show.html.twig', array(
+    'name' => $songs,
+```
+
+Next we need to change the variables passed into the **show.html.twig** template and add the other variables from the object (artist,genre,about), and remove the **raw** filter temporarily.
+
+```
+src/RecUp/Resources/views/Default/show.html.twig
+
+{% block body %}
+    <h2 class="genus-name">{{ name.songName }}</h2>
+
+    <div class="sea-creature-container">
+        <div class="genus-photo"></div>
+        <div class="genus-details">
+            <dl class="genus-details-list">
+                <dd>{{ '99999'|number_format }}</dd>
+                <dt>Subfamily:</dt>
+                <dd>{{ name.artist }}</dd>
+                <dt>Known Species:</dt>
+                <dd>{{ name.genre }}</dd>
+                <dt>Fun Fact:</dt>
+                <dd>{{ name.about }}</dd>
+            </dl>
+        </div>
+    </div>
+  <div id="js-notes-wrapper"></div>
+{% endblock %}
+```
+
+Next change in the javaScript to **'track' name.songName** because we use the findOneBy() method.
+
+
 March 27, 2016 (Query for a list of songs, page real with a template from query data)
 =====================================================================================
 
