@@ -160,6 +160,29 @@ src/RecUp/Resources/views/Default/show.html.twig
 
 Next change in the javaScript to **'track' name.songName** because we use the findOneBy() method.
 
+### Handling 404's
+
+If somebody went to songs name that did not exist, we get a twig error. Because in (show.html.twig) on line 3 **name.songName** is null not a Record object(we pass to the name the Record object in the DefaultController). In the **prod** environment, this would be a 500 page. We want the user to see the 404 page, to make that go in to the DefaultController the **findOneBy()** method eather return one Record object or null. if it does not return an object throw **$this->createNotFoundException('song not found')**:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+public function showAction($track)
+{
+$em = $this->getDoctrine()->getManager();
+
+$songs = $em->getRepository('RecordBundle:Record')
+    ->findOneBy(['songName' => $track]);
+
+    if(!$songs) {
+      throw $this->createNotFoundException('song not found');
+    }
+```
+The message will only be show in dev mode not in prod.
+
+In the **prod** environment the user will se the 404 error template page that we can customize.
+
+
 
 March 27, 2016 (Query for a list of songs, page real with a template from query data)
 =====================================================================================
@@ -194,7 +217,7 @@ And now we have the query of the songs to test if it works add a **dump($songs);
 
 ### Make this page real with a template.
 
-Return: **$this->render('@Record/song/list.html.twig')** and pass ita **songs** variable:
+Return: **$this->render('@Record/song/list.html.twig')** and pass it a **songs** variable:
 
 ```
     /**

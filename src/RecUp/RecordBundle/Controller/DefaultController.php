@@ -52,6 +52,10 @@ class DefaultController extends Controller
 
     $songs = $em->getRepository('RecordBundle:Record')
         ->findOneBy(['songName' => $track]);
+
+        if(!$songs) {
+          throw $this->createNotFoundException('song not found');
+        }
     /*
     $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
     $key = md5($funFact);
