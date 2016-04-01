@@ -57,6 +57,77 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 1, 2016 (dummy data using DoctrineFixturesBundle)
+=======================================================
+
+To make easily dummy data I will use the **DoctrineFixturesBundle** with this bundle we can quickly re-populate our local database with a really rich set of fake data, or fixtures.
+
+The first step is to search for **DoctrineFixturesBundle** bundle and copy the **composer require** line, But also download: **nelmio/alice**. That's just a normal PHP library, not a bundle, more on this later.
+
+```
+composer require --dev doctrine/doctrine-fixtures-bundle nelmio/alice
+```
+
+The **--dev** flag means that these lines will be added to the **require-dev** section of **composer.json**. And that's meant for libraries that are only needed for development or to run tests.
+
+Next add the **new** bundle line to the **AppKernel** but in the section that's inside of the **def if** statement:
+
+```
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+
+        if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {
+
+            $bundles[] = new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
+        }
+
+    }
+
+}
+```
+This makes the bundle - and any services, commands, etc. that it gives us - not available in the **prod** environment. This is a development tool and this keeps the **prod** environment a little smaller.
+
+**Creating the Fixtures Class**
+
+This bundle gives us a new console command **doctrine:fixtures:load**. When we run that it'll look for "fixture classes" and run them. And in those classes, we'll create dummy data.
+
+Make a new **DataFixtures/ORM** directory in the **RecUp/RecordBundle**, then add a new PHP class called **LoadFixtures** (it doesn't matter what we call). And paste the example class from the docs and update its class name to be **LoadFixtures**, but don't add the **User** code. We need to create songs, copy the code from **newAction()** and use the **$manager** instead of the **em** what we used in the **newAction()**, because the **$manager** argument passed to this function is the entity manager (**oBjectManager $manager**), don't forget the **Record use** statement.
+
+```
+
+namespace RecUp\RecordBundle\DataFixtures\ORM;
+
+
+use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+use RecUp\RecordBundle\Entity\Record;
+
+class LoadFixtures implements FixtureInterface
+{
+    public function load(ObjectManager $manager)
+    {
+        $record = new Record();
+        $record->setSongName('the best of '.rand(1,100));
+        $record->setArtist('Johnny');
+        $record->setGenre('rock');
+
+
+        $manager->persist($record);
+        $manager->flush();
+    }
+}
+```
+
+Finally to run this, run in the terminal:
+
+```
+php app/console doctrine:fixtures:load
+```
+This clears out the database and runs all of the fixture classes.
+
+
 
 March 30, 2016 (Querying from songs not from hard coded data, and handle a 404 page)
 ====================================================================================
