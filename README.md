@@ -57,7 +57,7 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
-April 1, 2016 (dummy data using DoctrineFixturesBundle)
+April 1, 2016 (dummy data using DoctrineFixturesBundle, and with **Alice**)
 =======================================================
 
 To make easily dummy data I will use the **DoctrineFixturesBundle** with this bundle we can quickly re-populate our local database with a really rich set of fake data, or fixtures.
@@ -126,6 +126,62 @@ Finally to run this, run in the terminal:
 php app/console doctrine:fixtures:load
 ```
 This clears out the database and runs all of the fixture classes.
+
+The more easier and best way to add some dummy data is with **Alice**
+---------------------------------------------------------------------
+
+I installed the library called [nelmio/alice][19]. This library lets us add fixtures data via YAML files. It has an expressive syntax and it has a bunch of built-in functions for generating random data. It uses yet another library behinde the scenes called [Faker][20] to do that.
+
+**Creating the Fixtures YAML file**
+
+In the ORM directory create the nwe file **fixtures.yml** (it doesn't matter).
+
+Start with the class name we want to create - **RecUp\RecordBundle\Entity\Record** next, each Record needs an internal unique name - it could be anything, but finish the name with **1..10**:
+
+```
+RecUp\RecordBundle\Entity\Record:
+  record_{1..10}:
+```
+With this syntax, Alice will loop over and cerate 10 Record objects.
+
+To finish things, set values on each of the Record properties. **songName: <text(20)>**. We can but any value here, but when use **<>**, we're calling a built-in Faker function, next add the other properties.
+
+```
+RecUp\RecordBundle\Entity\Record:
+  record_{1..10}:
+    songName: <text(20)>
+    artist: <text(15)>
+    genre: <text(5)>
+    about: <sentence()>
+```
+
+To load this file, open the **LoadFixtures** and remove all the other code from load function. Replace it with **Fixtures** don't forget the use statement for **Nelmio\Alice\Fixtures** The **Fixtures** are from the **Alice** library and we are using the **load** function to get the path to our **fixtures.yml** file, add the directory path then the entity manager:
+
+```
+
+use Nelmio\Alice\Fixtures;
+
+class LoadFixtures implements FixtureInterface
+{
+    public function load(ObjectManager $manager)
+    {
+        $objects = Fixtures::load(__DIR__.'/fixtures.yml', $manager);
+    }
+}
+```
+
+Run the doctrine command again
+```
+php app/console doctrine:fixtures:load
+```
+
+Now after refresh 10 completely random dummy songs data. Alice is easy but in the **Faker** library docs we can see all the built-in functions like (**numberBetween, word, sentence**) and much more.
+
+Links:
+-----
+
+* [nelmio/alice][19]
+* [Faker][20]
 
 
 
@@ -1891,4 +1947,6 @@ The GenusController is a controller, the function that will (eventually) build t
 [16]:http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/index.html
 [17]:http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/annotations-reference.html
 [18]:https://symfony.com/doc/current/book/routing.html#adding-requirements
+[19]:https://github.com/nelmio/alice
+[20]:https://github.com/fzaninotto/Faker
 <!-- / end links-->

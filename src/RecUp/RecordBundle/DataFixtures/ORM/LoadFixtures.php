@@ -11,19 +11,14 @@ namespace RecUp\RecordBundle\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use RecUp\RecordBundle\Entity\Record;
+use Nelmio\Alice\Fixtures;
+//use RecUp\RecordBundle\Entity\Record; do't need if we use Alice
+
 
 class LoadFixtures implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $record = new Record();
-        $record->setSongName('the best of '.rand(1,100));
-        $record->setArtist('Johnny');
-        $record->setGenre('rock');
-
-
-        $manager->persist($record);
-        $manager->flush();
+        $objects = Fixtures::load(__DIR__.'/fixtures.yml', $manager);
     }
 }
