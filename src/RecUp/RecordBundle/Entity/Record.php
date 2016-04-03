@@ -46,6 +46,12 @@ class Record
     /**
      * @return mixed
      */
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isPublished = true;
+
     public function getSongName()
     {
         return $this->songName;
@@ -112,4 +118,8 @@ class Record
         return new \DateTime('-'.rand(0, 100).' days');
     }
 
+    public function setIsPublished($isPublished)
+    {
+        $this->isPublished = $isPublished;
+    }
 }
