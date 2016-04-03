@@ -57,6 +57,142 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+
+April 3, 2016 (adding custom Alice function, adding isPublished)
+================================================================
+
+To make the song names more realistic, we can use our own function:
+```
+src/RecUp/RecordBundle/DataFixtures/ORM/fixtures.yml
+
+RecUp\RecordBundle\Entity\Record:
+  record_{1..10}:
+    songName: <songs()>
+
+```
+If we run this now we get this error:
+```
+Unknow formattter "songs"
+```
+
+ Faker calls the "formatters" function. We need to create our own formatter.
+
+**Adding a Custom Formatter**
+
+Each of the generator properties (like "name", "address", "lorem") are called "formatters". A [faker][21] generator has many of them, packaged in **providers**. We can easily override existing formatters, just add a provider containing method name after the formatters we want to override, or make our own.
+
+In **loadeFixtures** in the **load()** function we can add a third argument - it's sort of an "options" array. Give it a key called **providers** - these will be additional objects that provide formatter functions - and set it to an array with **$this**:
+
+```
+src/RecUp/RecordBundle/DataFixtures/ORM/LoadFixtures.php
+
+class LoadFixtures implements FixtureInterface
+{
+    public function load(ObjectManager $manager)
+    {
+        $objects = Fixtures::load(
+            __DIR__.'/fixtures.yml',
+            $manager,
+            [
+                'providers' => [$this]
+            ]);
+    }
+}    
+```
+
+To add a new **songs** formatter, add **public function songs()**. And add some song names array to it. finish it with **$key = array_rand($names)** and then **return $names[$key]**:
+
+```
+src/RecUp/RecordBundle/DataFixtures/ORM/LoadFixtures.php
+
+public function songs()
+{
+    $names = [
+        'Rockin Anarchy',
+        'Devastation Will Eat You',
+        'White Lazer',
+        'Raging Consequence',
+        'Doubt Stabbed Me In The Back',
+        'Stealing Lesbianism',
+        'Satin Shadow',
+        'Lock Up The Mother',
+        'Fairness Overdose',
+        'Sick Of The Shadow',
+        'Bleeding Riff',
+        'Violent Psycho',
+        'Chrome Cigarette',
+        'Feel That Firecracker',
+        'Choking On Persuasion',
+        'Crystal Strength',
+        'Expensive Runaround',
+        'Strange Waste',
+        'Secret Loser',
+        'Stoned Sin'
+    ];
+
+    $key = array_rand($names);
+
+    return $names[$key];
+}
+```
+
+Run:
+```
+php app/console doctrine:fixtures:load
+```
+
+### New random boolean column
+
+To have the ability to have published and unpublished songs, we need a new property for that.
+
+To cerate the new property make a new **private property** call it **$isPublished**, add the annotations and at the bottom add the setter function:
+
+```
+class Record
+{
+...
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isPublished = true;
+...
+    public function setIsPublished($isPublished)
+    {
+        $this->isPublished = $isPublished;
+    }
+}
+```
+
+We need to update the fixtures. but first, generate the migration:
+
+```
+php app/console doctrine:migrations:diff
+```
+
+This generate the new migration file. check the file and run the migrate command:
+
+```
+php app/console doctrine:migrations:migrate
+```
+
+Now we have the new field in the database and the values are all 0, so we nned to have few published by random. Faker to help again there is a **boolean()** function and we can add a value to it to have chance on getting the boolean value to 1 the variable is called [$changeOfGettingTrue][22]. so in the fixtures files, add **isPublished** and set that to **boolean(75)** (75%) - so that most songs are published:
+
+```
+RecUp\RecordBundle\Entity\Record:
+  record_{1..10}:
+    ...
+    isPublished: <boolean(75)>
+```
+
+Run the fixtures:
+```
+php app/console doctrine:fixtures:load
+```
+
+Its working now, the values are changed some of the songs to 1, but we can see the songs with the **isPublished** value of 0 too, so next we need to make a custom query.
+
+
+
 April 1, 2016 (dummy data using DoctrineFixturesBundle, and with **Alice**)
 =======================================================
 
@@ -1949,4 +2085,6 @@ The GenusController is a controller, the function that will (eventually) build t
 [18]:https://symfony.com/doc/current/book/routing.html#adding-requirements
 [19]:https://github.com/nelmio/alice
 [20]:https://github.com/fzaninotto/Faker
+[21]:https://github.com/fzaninotto/Faker#formatters
+[22]:https://github.com/fzaninotto/Faker#fakerprovidermiscellaneous
 <!-- / end links-->
