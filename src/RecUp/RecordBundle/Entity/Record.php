@@ -11,7 +11,7 @@ namespace RecUp\RecordBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="RecUp\RecordBundle\Repository\SongsRepository")
  * @ORM\Table(name="record")
  */
 class Record

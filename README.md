@@ -56,7 +56,103 @@ Important changes:
 * **March 30**:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
+April 4, 2016 (Making Custom Queries)
+=====================================
 
+To make the **isPublished** field to work, I need only yo show published songs on the list page. We have the **findAll()** and the **findOneBy** methods for the queries. We need to make our custom query.
+
+**What is the Repository**
+
+To query, we always use repository object, to see what object is dump it
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+public function listAction()
+{
+    $em = $this->getDoctrine()->getManager();
+
+    dump($em->getRepository('RecordBundle:Record'));die;
+}
+```
+
+Run the page, it turns out this is an **EntityRepository** object. From the core Doctrine. And this class has the methods like **findAll()** and **findOneBy()**.
+
+**Creating own Repository**
+
+To make new methods, we need to create our own repository class. Create new directory called **Repository** inside add a new class **SongRepository.php**. This is not important. Make sure to extend **EntityRepository** class to that, to have still the original helpful methods:
+
+```
+src/RecUp/RecordBundle/Repository/SongsRepository.php
+
+<?php
+
+namespace RecUp\RecordBundle\Repository;
+
+use Doctrine\ORM\EntityRepository;
+
+
+class SongsRepository extends EntityRepository
+{
+
+}
+```
+
+Next, we need to tell Doctrine to use this class instead when we call **getRepository()**. To do that open **Record**, and at the top, add **repositoryClass=** in the parentheses of the **@ORM\Entity**, then the full class name to the new **SongsRepository**.
+
+```
+src/RecUp/RecordBundle/Entity/Record.php
+
+/**
+ * @ORM\Entity(repositoryClass="RecUp\RecordBundle\Repository\SongsRepository")
+ * @ORM\Table(name="record")
+ */
+class Record
+```
+
+>Now if we refresh we see the dump shows a **SongsRepository** object. Now we add the custom function to make custom queries. So, each entity that needs a custom query will have its own repository class. And every custom query you write will live inside of these repository classes. That's going to keep queries organized.
+
+ **Adding a custom query**
+
+ Add a new **public function**. The Doctrine naming convention is **findeALLSOMETHING** for array or **findSOMETHING** for a single result. so call the function **findAllPublished**. Custom queries always look the same: start with, return **$this->createQueryBuilder('song')**. This returns a **QueryBuilder**. Because we're in the **SongsRepository**, the query already knows to select from that table the **song** part is the table alias- it's like in MySQL when we say **SELECT * FROM record g** in this case **g** is an alias we can use the rest of the query. In my case i chose the **song** alias.
+To add **Where** clause, chain **->andWhere()** with **song.isPublished = :isPublished**. The **:isPublished** looks weird (it doesn't matter what we call)- it's a parameter, like a placeholder. To fill it in, add **->setParameter('isPublished', true);**. We always set variables like this using parameters to avoid SQL injection attacks. Never concatenate strings in a query.
+To execute the query, add **->getQuery()** and then **execute()**:
+
+```
+src/RecUp/RecordBundle/Repository/SongsRepository.php
+
+return $this->createQueryBuilder('song')
+    ->andWhere('song.isPublished = :isPublished')
+    ->setParameter('isPublished', true)
+    ->getQuery()
+    ->execute();
+```
+
+The query will always end with either **execute()** if we want an array of results - or **getOneOrNullResult()** - if we want just one result or null if nothing is matched.
+
+**Using the Custom Query**
+
+Using the new method is simple. Replcae **findAll()** with **findAllPublished()**:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+public function listAction()
+{
+    $em = $this->getDoctrine()->getManager();
+
+//        dump($em->getRepository('RecordBundle:Record'));die;
+
+    $songs = $em->getRepository('RecordBundle:Record')
+        ->findAllPublished();
+```
+
+Now refresh, and few songs are disappeared.
+
+Links
+-----
+
+* [Go Pro with Doctrine Queries][23]
 
 April 3, 2016 (adding custom Alice function, adding isPublished)
 ================================================================
@@ -2087,4 +2183,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [20]:https://github.com/fzaninotto/Faker
 [21]:https://github.com/fzaninotto/Faker#formatters
 [22]:https://github.com/fzaninotto/Faker#fakerprovidermiscellaneous
+[23]:https://knpuniversity.com/screencast/doctrine-queries
 <!-- / end links-->
