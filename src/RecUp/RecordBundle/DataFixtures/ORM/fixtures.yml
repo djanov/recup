@@ -5,3 +5,10 @@ RecUp\RecordBundle\Entity\Record:
     genre: <text(5)>
     about: <sentence()>
     isPublished: <boolean(75)>
+
+RecUp\RecordBundle\Entity\RecordComment:
+  record.comment_{1..100}:
+    username: <userName()>
+    userAvatarFilename: '50%? leanna.jpg : ryan.jpg'
+    comment: <paragraph()>
+    createdAt: <dateTimeBetween('-6 months', 'now')>

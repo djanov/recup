@@ -56,6 +56,172 @@ Important changes:
 * **March 30**:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
+
+April 5, 2016 (Creating new Entity (RecordComment) and making 100 dummy comments)
+=================================================================================
+
+**Create the RecordComment** 
+
+Create the new RcordComment.php entity in **src/RecUp/RecordBundle/Entity**. Copy the ORM **use** statement from **Record** that all entities need and paste it. 
+Next add the **ORM Class**.
+Next add the properties **id**, **username**, **userAvatarFilename**, **comment** and **createdAt**.
+Next make the setters and getters for all, except the $id, for id add only the getter.
+
+```
+<?php
+src/RecUp/RecordBundle/Entity/RecordComment.php
+
+
+namespace RecUp\RecordBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="record_comment")
+ */
+class RecordComment
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $username;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $userAvatarFilename;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    private $comment;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * @param mixed $username
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserAvatarFilename()
+    {
+        return $this->userAvatarFilename;
+    }
+
+    /**
+     * @param mixed $userAvatarFilename
+     */
+    public function setUserAvatarFilename($userAvatarFilename)
+    {
+        $this->userAvatarFilename = $userAvatarFilename;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
+     * @param mixed $comment
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+}
+```
+
+**Generate Migrations**
+
+Entity done. Now generate the migration and if everything is alright run the migration:
+
+```
+php app/console doctrine:migrations:diff
+php app/console doctrine:migrations:migrate
+```
+
+**Adding Fixtures**
+
+Open the **fixtures.yml** file and add a new section for **RecUp\RecordBundle\Entity\RecordComment**. and start like before: **record.comment_** and create 100 comments:
+
+```
+src/RecUp/RecordBundle/DataFixtures/ORM/fixtures.yml
+
+RecUp\RecordBundle\Entity\RecordComment:
+  record.comment_{1..100}:
+    username: <userName()>
+    userAvatarFilename: '50%? leanna.jpg : ryan.jpg'
+    comment: <paragraph()>
+    createdAt: <dateTimeBetween('-6 months', 'now')>
+```
+And fill each property using the Faker functions. for the **userAvatarFilename** let's select one of the 2 random jpg picture with Alice: **50%? leanna.jpeg : ryan.jpeg**.
+
+Finally run the fixtures:
+
+```
+php app/console doctrine:fixtures:load
+```
+
+and check the query:
+
+```
+php app/console doctrine:query:sql 'SELECT * FROM record_comment'
+```
+And now we can see all 100 random generated comments.
+
+
 April 4, 2016 (Making Custom Queries)
 =====================================
 
