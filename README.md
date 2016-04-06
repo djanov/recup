@@ -57,12 +57,38 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 6, 2016 (ManyToOne relation)
+==================================
+Each record will have many comments, but each comment that someone adds will relate to only one record. The two most common relations are  **ManyToOne** and **ManyToMany**. For example **ManyToMany** will be if each **product** had many tags, but also each tag related to many products.
+
+To decide if we have a **ManyToOne** or **ManyToMany** relationship. Just answer this question:
+
+> Do either of the sides of the relationship belong to only one of the other?
+
+Each **RecordComment** belongs to only one **Record**, so we have a classic **ManyToOne** relationship.
+
+Setting up a **ManyToOne**
+
+A ManyToOne relation to work just go to **RecordComment** entity add ad a new private **$record** property  and give it a **ManyToOne** annotation. Inside that, add **targetEntity="Record"**:
+
+```
+src/RecUp/RecordBundle/Entity/RecordComment.php
+
+/**
+ * @ORM\ManyToOne(targetEntity="Record"))
+ */
+private $record;
+```
+
+If the two entities do not live in the same namespace/directory, then the targetEntity must use the full namespace **RecUp\RecordBundle\Entity\Record**. But in this situation we have the entities in the same namespace/directory.
+
+
 April 5, 2016 (Creating new Entity (RecordComment) and making 100 dummy comments)
 =================================================================================
 
-**Create the RecordComment** 
+**Create the RecordComment**
 
-Create the new RcordComment.php entity in **src/RecUp/RecordBundle/Entity**. Copy the ORM **use** statement from **Record** that all entities need and paste it. 
+Create the new RcordComment.php entity in **src/RecUp/RecordBundle/Entity**. Copy the ORM **use** statement from **Record** that all entities need and paste it.
 Next add the **ORM Class**.
 Next add the properties **id**, **username**, **userAvatarFilename**, **comment** and **createdAt**.
 Next make the setters and getters for all, except the $id, for id add only the getter.

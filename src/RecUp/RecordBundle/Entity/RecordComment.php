@@ -44,6 +44,11 @@ class RecordComment
     private $createdAt;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Record"))
+     */
+    private $record;
+
+    /**
      * @return mixed
      */
     public function getId()
