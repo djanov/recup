@@ -3,6 +3,7 @@
 namespace RecUp\RecordBundle\Controller;
 
 use RecUp\RecordBundle\Entity\Record;
+use RecUp\RecordBundle\Entity\RecordComment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,8 +22,16 @@ class DefaultController extends Controller
         $record->setArtist('Lenny');
         $record->setGenre('rock');
 
+        $comment = new RecordComment();
+        $comment->setUsername('Daniel');
+        $comment->setUserAvatarFilename('ryan.jpeg');
+        $comment->setComment('I think ths song is amazing');
+        $comment->setCreatedAt(new \DateTime('-1 month'));
+        $comment->setRecord($record);
+
         $em = $this->getDoctrine()->getManager();
         $em->persist($record);
+        $em->persist($comment);
         $em->flush();
 
         return new Response('<html><body>song created!</body></html>');

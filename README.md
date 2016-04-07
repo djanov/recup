@@ -57,6 +57,96 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 7, 2016 (Saving a Relationship)
+======================================
+
+Doctrine will create a **record_id** integer column for this property and a foreign key to **record**. Generate the getter and setter and add Record type to **setRecord**:
+
+```
+src/RecUp/RecordBundle/Entity/RecordComment
+
+class RecordComment
+{
+    ...
+
+    public function getRecord()
+    {
+        return $this->record;
+    }
+
+    public function setRecord(Record $record)
+    {
+        $this->record = $record;
+    }
+}
+```
+I will call the **setRecord()** and pass it an entire **Record** object not an ID.
+
+**Generate the Migration**
+```
+php app/console doctrine:migrations:diff
+```
+
+And then check it out:
+
+```
+app/DoctrineMigrations/Version20160407204418
+
+class Version20160407204418 extends AbstractMigration
+{
+
+    public function up(Schema $schema)
+    {
+      ...
+
+        $this->addSql('ALTER TABLE record_comment ADD record_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE record_comment ADD CONSTRAINT FK_23AB52114DFD750C FOREIGN KEY (record_id) REFERENCES record (id)');
+        $this->addSql('CREATE INDEX IDX_23AB52114DFD750C ON record_comment (record_id)');
+    }
+```
+Even though we called the property **record**, it sets up the database exactly how would we have normally: with a **record_id** integer column and a foreign key.
+
+Run the migration:
+
+```
+php app/console doctrine:migrations:migrate
+```
+
+**Saving a relation**
+
+In the **DefaultController**. In **newAction**, create a new **RecordComment**:
+
+```
+src/Recup/RecordBundle/Controller/DefaultController.php
+
+  $comment = new RecordComment();
+  $comment->setUsername('Daniel');
+  $comment->setUserAvatarFilename('ryan.jpeg');
+  $comment->setComment('I think ths song is amazing');
+  $comment->setCreatedAt(new \DateTime('-1 month'));
+```
+
+To link the **RecordComment** to **Record** is simple: **$note->setComment()** and pass it the entire **$record**. The only tricky part is that we set the entire object, not the ID. With Doctrine relations, we almost need to forget about ID's entirely: our job is to link one object to another. When we save, Doctrine works out the details of how this should look in the database.
+Don't forget to persist the **$comment**:
+
+```
+src/Recup/RecordBundle/Controller/DefaultController.php
+
+...
+$comment->setRecord($record);
+
+$em = $this->getDoctrine()->getManager();
+$em->persist($record);
+$em->persist($comment);
+$em->flush();
+```
+
+And we can persist in any order. Doctrine automatically knows that it needs to insert the **$record** first and then the **$comment**.
+
+Go to ```http://localhost:8000/record/new``` and, if we check the **phpmyadmin** we can see the new **record** and the new **comment** for the **record**, we can see that the **id** of the **record** is matched with the **comment record_id**.
+
+
+
 April 6, 2016 (ManyToOne relation)
 ==================================
 Each record will have many comments, but each comment that someone adds will relate to only one record. The two most common relations are  **ManyToOne** and **ManyToMany**. For example **ManyToMany** will be if each **product** had many tags, but also each tag related to many products.

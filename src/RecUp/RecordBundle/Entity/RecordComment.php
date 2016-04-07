@@ -119,4 +119,21 @@ class RecordComment
     {
         $this->createdAt = $createdAt;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getRecord()
+    {
+        return $this->record;
+    }
+
+    /**
+     * @param mixed $record
+     */
+    public function setRecord(Record $record)
+    {
+        $this->record = $record;
+    }
+
 }
