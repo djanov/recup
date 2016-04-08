@@ -12,3 +12,4 @@ RecUp\RecordBundle\Entity\RecordComment:
     userAvatarFilename: '50%? leanna.jpg : ryan.jpg'
     comment: <paragraph()>
     createdAt: <dateTimeBetween('-6 months', 'now')>
+    record: '@record_*'

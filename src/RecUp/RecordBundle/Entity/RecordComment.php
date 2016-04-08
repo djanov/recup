@@ -45,6 +45,7 @@ class RecordComment
 
     /**
      * @ORM\ManyToOne(targetEntity="Record"))
+     * @ORM\JoinColumn(nullable=false)
      */
     private $record;
 

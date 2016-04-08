@@ -57,6 +57,60 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 8, 2016
+=============
+
+Can I save a **RecordComment** without setting a **Record** on it? No! I need to make that false. Go to **ManyToOne** annotation and add a new annotation below it: **JoinColumn**. Inside set **nullable=false**:
+
+```
+src/RecUp/RecordBundle/Entity/RecordComment.php
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Record"))
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $record;
+```
+The **JoinColumn** annotation controls how the foreign key looks in the database. It's optional. Another option is **onDelete**: that changes the **ON DELETE** behaivor in the database- the default is **RESTRICT** but we can also use **CASCADE** or **SET NULL**.
+
+Before we make the migration we need to drop the database and then re-create it, and re-migrate from the beginning, because we have bunch of existing **RecordComment** rows in the database, and each still has a **null record_id**. I can't set that column to **NOT NULL** because of the data that's already in the database. (If the app were already deployed to production, we would need to fix the migration: maybe UPDATE each existing record_comment and set the record_id to the first record in the table.).
+
+```
+php app/console doctrine:database:drop --force
+php app/console doctrine:database:create
+php app/console doctrine:migrations:migrate
+```
+
+The last step is to fix the broken fixures. We need to associate each **RecordComment** with a **Record**. In alice it's easy: use **record: @** then the internal name of one of the record - like **record_1**. But we can make to match this by random each time change to **record_**:
+
+```
+RecUp\RecordBundle\Entity\Record:
+  record_{1..10}:
+    ...
+
+RecUp\RecordBundle\Entity\RecordComment:
+  record.comment_{1..100}:
+    username: <userName()>
+    userAvatarFilename: '50%? leanna.jpg : ryan.jpg'
+    comment: <paragraph()>
+    createdAt: <dateTimeBetween('-6 months', 'now')>
+    record: '@record_*'
+```
+
+The record_ is need to match how we called it before (record_{1..10}). but we can change that two (in this case) to anything (only can't for the actaul name of the object record) 
+
+Reload the fixtures:
+```
+php app/console doctrine:fixtures:load
+```
+Check the result:
+```
+php app/console doctrine:query:sql "SELECT * FROM record_comment"
+```
+Every single one has a random record (id).
+
+
+
 April 7, 2016 (Saving a Relationship)
 ======================================
 

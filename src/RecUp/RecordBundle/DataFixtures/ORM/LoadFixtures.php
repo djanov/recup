@@ -12,7 +12,7 @@ namespace RecUp\RecordBundle\DataFixtures\ORM;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Nelmio\Alice\Fixtures;
-//use RecUp\RecordBundle\Entity\Record; do't need if we use Alice
+//use RecUp\RecordBundle\Entity\Record; don't need if we use Alice
 
 
 class LoadFixtures implements FixtureInterface

@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20160407204418 extends AbstractMigration
+class Version20160408121658 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -18,7 +18,7 @@ class Version20160407204418 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE record_comment ADD record_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE record_comment ADD record_id INT NOT NULL');
         $this->addSql('ALTER TABLE record_comment ADD CONSTRAINT FK_23AB52114DFD750C FOREIGN KEY (record_id) REFERENCES record (id)');
         $this->addSql('CREATE INDEX IDX_23AB52114DFD750C ON record_comment (record_id)');
     }
