@@ -57,8 +57,107 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
-April 8, 2016
-=============
+April 10, 2016(first steps for making the comments dynamic)
+=============================================================
+
+The comments are loaded by ReactJS app. and that makes an AJAX call to an API endpoint in **DefaultController**. In **getNoteAction()**:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+ /**
+     * @Route("/test/{name}/notes", name="record_show_notes")
+    * @Method("GET")
+    */
+    public function getNoteAction()
+    {
+
+    }
+```
+Step 1: use the **track** argument to query from **Record**. So get the entity manager, get the Record repository, and then call a method on it **findOneBy()**:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+    /**
+     * @Route("/test/{track}", name="record_show")
+     */
+    public function showAction($track)
+{
+    $em = $this->getDoctrine()->getManager();
+
+    $songs = $em->getRepository('RecordBundle:Record')
+        ->findOneBy(['songName' => $track]);
+}
+```
+We have this already, now change the **{name}** in the route to **songName**. This doesn't change the URL to this page, but it does break all the links we have to this route.
+To fix those, go to terminal and search for the route name:
+
+```
+git grep record_show_notes
+```
+We have used in one spot in **show.html.twig** open, and find at the bottom, just change the key from **name** to **songName**:
+
+```
+src/RecUp/RecordBundle/Resources/views/Default/show.htm.twig
+
+{%  block javascripts %}
+    ...
+    <script type="text/babel">
+        var notesUrl = '{{ path('record_show_notes', {'songName': name.songName}) }}'
+
+      ...
+    </script>
+{% endblock %}
+``` 
+
+**Using parameters conversion**
+
+Now type-hint the argument with the **Record** class and add **$record**:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+    /**
+     * @Route("/test/{songName}/notes", name="record_show_notes")
+    * @Method("GET")
+    */
+    public function getNoteAction(Record $record)
+    {
+    ...
+    }
+```
+
+I just violated one of the cardinal rules of routing: that every argument must match the name of a routing wildcard. If I type-hint an argument with an entity class name - like **Record** - Symfony will automatically query for it. This works as long as the wildcard has the same name as a property on **Record**. That's why i changed **name** to **songName**. And this is called "param conversion" more about [@ParamConverter][24].
+Dump the **$record** to see it's working:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+...
+public function getNoteAction(Record $record)
+    {
+        dump($record);
+    ...
+    }
+```
+We won't see the dump because it's actually an AJAX call - one that happens automatically each second.
+
+**Seeing the Profiler for an AJAX Request**
+
+Go to the symfony debug toolbar and there are new AJAX request every second, click one of them and we can see the **Record** object, or click the profile id and in the **Debug** panel there's the dump.
+
+**Notice:**
+
+We can't always use param conversion. If we want to run custom query we can't use, we need then to use like before: get the entity manager and query like normal, Use the shortcut when it helps!
+
+Links:
+------
+* [@ParamConverter][24]
+
+
+
+April 8, 2016 (seting JoinColumn for record, fixing the realations in fixtures)
+===============================================================================
 
 Can I save a **RecordComment** without setting a **Record** on it? No! I need to make that false. Go to **ManyToOne** annotation and add a new annotation below it: **JoinColumn**. Inside set **nullable=false**:
 
@@ -71,7 +170,7 @@ src/RecUp/RecordBundle/Entity/RecordComment.php
      */
     private $record;
 ```
-The **JoinColumn** annotation controls how the foreign key looks in the database. It's optional. Another option is **onDelete**: that changes the **ON DELETE** behaivor in the database- the default is **RESTRICT** but we can also use **CASCADE** or **SET NULL**.
+The **JoinColumn** annotation controls how the foreign key looks in the database. It's optional. Another option is **onDelete**: that changes the **ON DELETE** behavior in the database- the default is **RESTRICT** but we can also use **CASCADE** or **SET NULL**.
 
 Before we make the migration we need to drop the database and then re-create it, and re-migrate from the beginning, because we have bunch of existing **RecordComment** rows in the database, and each still has a **null record_id**. I can't set that column to **NOT NULL** because of the data that's already in the database. (If the app were already deployed to production, we would need to fix the migration: maybe UPDATE each existing record_comment and set the record_id to the first record in the table.).
 
@@ -81,7 +180,7 @@ php app/console doctrine:database:create
 php app/console doctrine:migrations:migrate
 ```
 
-The last step is to fix the broken fixures. We need to associate each **RecordComment** with a **Record**. In alice it's easy: use **record: @** then the internal name of one of the record - like **record_1**. But we can make to match this by random each time change to **record_**:
+The last step is to fix the broken fixtures. We need to associate each **RecordComment** with a **Record**. In alice it's easy: use **record: @** then the internal name of one of the record - like **record_1**. But we can make to match this by random each time change to **record_**:
 
 ```
 RecUp\RecordBundle\Entity\Record:
@@ -2520,4 +2619,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [21]:https://github.com/fzaninotto/Faker#formatters
 [22]:https://github.com/fzaninotto/Faker#fakerprovidermiscellaneous
 [23]:https://knpuniversity.com/screencast/doctrine-queries
+[24]:https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/converters.html
 <!-- / end links-->
