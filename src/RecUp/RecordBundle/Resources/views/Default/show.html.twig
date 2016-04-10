@@ -31,7 +31,7 @@
     <script type="text/babel" src="{{ asset('js/notes.react.js') }}"></script>
 
     <script type="text/babel">
-        var notesUrl = '{{ path('record_show_notes', {'track': name.songName}) }}'
+        var notesUrl = '{{ path('record_show_notes', {'songName': name.songName}) }}'
 
         ReactDOM.render(
             <NoteSection url={notesUrl} />,

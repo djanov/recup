@@ -79,6 +79,8 @@ class DefaultController extends Controller
         $cache->save($key, $funFact);
     }
     */
+    $this->get('logger')
+        ->info('Showing records: '.$track);
 
     return $this->render('@Record/Default/show.html.twig', array(
         'name' => $songs,
@@ -86,11 +88,12 @@ class DefaultController extends Controller
 }
 
     /**
- * @Route("/test/{track}/notes", name="record_show_notes")
- * @Method("GET")
- */
-    public function getNoteAction()
+     * @Route("/test/{songName}/notes", name="record_show_notes")
+    * @Method("GET")
+    */
+    public function getNoteAction(Record $record)
     {
+        dump($record);
         $notes = [
             ['id' => 1, 'username' => 'AquaPelham', 'avatarUri' => '/images/leanna.jpeg', 'note' => 'Octopus asked me a riddle, outsmarted me', 'date' => 'Dec. 10, 2015'],
             ['id' => 2, 'username' => 'AquaWeaver', 'avatarUri' => '/images/ryan.jpeg', 'note' => 'I counted 8 legs... as they wrapped around me', 'date' => 'Dec. 1, 2015'],
