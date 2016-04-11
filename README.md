@@ -165,6 +165,9 @@ Mapping the other side - the **OneToMany** inverse side - is always optional. It
 We didn't add a **setComment()** method to **Record**. That's because we cannot set data on the inverse side: we can only set it on the owning side. In other word, **$recordComment->setRecord()** will work, but **$record->setComments()** will not work: Doctrine will ignore that when saving.
 So when we setup the inverse side of relation, do not generate the setter function.
 
+Links:
+------
+* [Doctrine mappedBy & inversedBy][25]
 
 
 April 10, 2016(first steps for making the comments dynamic)
@@ -2730,4 +2733,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [22]:https://github.com/fzaninotto/Faker#fakerprovidermiscellaneous
 [23]:https://knpuniversity.com/screencast/doctrine-queries
 [24]:https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/converters.html
+[25]:http://docs.doctrine-project.org/en/latest/reference/unitofwork-associations.html
 <!-- / end links-->
