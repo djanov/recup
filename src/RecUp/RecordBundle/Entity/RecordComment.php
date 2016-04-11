@@ -44,7 +44,7 @@ class RecordComment
     private $createdAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Record"))
+     * @ORM\ManyToOne(targetEntity="Record", inversedBy="comments"))
      * @ORM\JoinColumn(nullable=false)
      */
     private $record;

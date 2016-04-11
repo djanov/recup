@@ -57,6 +57,116 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 11, 2016(setting up the OneToMany inverse side of the relation)
+=====================================================================
+
+**Setting up the OneToMany side**
+
+We can think about any relationship in two directions: each **RecordComment** has one **Record**. Or each **Record** has many **RecordComment**. In Doctrine we can map just one side of a relationship, or both.
+Open **Record** and add a new **comments** property. This is the inverse side of the relationship. Add a **OneToMAny** annotation with **targetEntity** set to **RecordComment** and a **mappedBy** set to **record** - that's the property in **RecordComment** that forms the main side of the relation:
+
+```
+src/RecUp/RecordBundle/Entity/Record.php
+
+...
+class Record {
+    /**
+     * @ORM\OneToMany(targetEntity="RecordComment", mappedBy="record")
+     */
+    private $comments;
+    ...
+}
+```
+
+Now there's still only one relation in the database: but now there are two ways to access the data on it: **$recordComment->getRecord()** and now **$record->getComments()**.
+
+Add an **inversedBy** set to **comments** on this side: to pint to the other property:
+
+```
+src/RecUp/RecordBundle/Entity/RecordComment.php
+
+class RecordComment 
+{
+     /**
+     * @ORM\ManyToOne(targetEntity="Record", inversedBy="comments"))
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $record;
+}
+```
+Its in symfony documentation not sure why its needed.
+
+This didn't cause any changes in the database: we just added some sugar to our Doctrine setup, we don't need to migrate.
+
+**Add the ArrayCollection**
+
+In **Record**, add a **__construct()** method and initialize the **comments** property to a new **ArrayCollection**:
+
+```
+src/RecUp/RecordBundle/Entity/Record.php
+
+use Doctrine\Common\Collections\ArrayCollection;
+
+class Record
+{
+ ...
+   public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
+ ...
+}
+```
+The object is like  a PHP array on steroids. We can loop over it like an array, but it has other super powers. Doctrine always returns one of these for relationships instead of a normal PHP array.
+
+Finally, go to the bottom of the class and add a getter for **comments**:
+
+```
+src/RecUp/RecordBundle/Entity/Record.php
+
+class Record
+{
+ ...
+    public function getComments()
+    {
+        return $this->comments;
+    }
+}
+```
+
+To test it In **getNoteAction()** loop over **$record->getComments()** as **$comment** and **dump($comment)**:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+class DefaultController extends Controller 
+{
+ ...
+   public function getNoteAction(Record $record)
+    {
+        foreach($record->getComments() as $comment) {
+            dump($comment);
+        }
+  ...
+}
+```
+Refresh the app, let the AJAX call happen and the go to symfony debug toolbar and check the AJAX calls clcik the profile id and in debug side toolbar, to find the dump. A bunch of **RecordComment** objects. Check the Doctrine section: we can see the extra query that was made to fetch these. This query doesn't happen until we actually call **$record->getComments()**.
+
+**Owning the Inverse sides**
+
+Whenever we have a relation: start by figuring out which entity should have the foreign key column and then add the **ManToOne** relationship there first. This is the only side of the relationship that must have - it's called the "owning" side.
+
+Mapping the other side - the **OneToMany** inverse side - is always optional. It's not needed until we need to - either because we want to cute shortcut like **$record->getComments()** or because we want to join the query from **Record** to **RecordComment**.
+
+**ManyToMany** relationships - the only other real type of relationship - also have an owning and inverse side, but we can choose which is which.
+
+**Notice:**
+
+We didn't add a **setComment()** method to **Record**. That's because we cannot set data on the inverse side: we can only set it on the owning side. In other word, **$recordComment->setRecord()** will work, but **$record->setComments()** will not work: Doctrine will ignore that when saving.
+So when we setup the inverse side of relation, do not generate the setter function.
+
+
+
 April 10, 2016(first steps for making the comments dynamic)
 =============================================================
 

@@ -8,6 +8,7 @@
 
 namespace RecUp\RecordBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -44,8 +45,14 @@ class Record
     private $about;
 
     /**
-     * @return mixed
+     * @ORM\OneToMany(targetEntity="RecordComment", mappedBy="record")
      */
+    private $comments;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
 
     /**
      * @ORM\Column(type="boolean")
@@ -122,4 +129,13 @@ class Record
     {
         $this->isPublished = $isPublished;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
 }
