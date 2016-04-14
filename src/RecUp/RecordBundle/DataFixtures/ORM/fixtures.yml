@@ -9,7 +9,7 @@ RecUp\RecordBundle\Entity\Record:
 RecUp\RecordBundle\Entity\RecordComment:
   record.comment_{1..100}:
     username: <userName()>
-    userAvatarFilename: '50%? leanna.jpg : ryan.jpg'
+    userAvatarFilename: '50%? leanna.jpeg : ryan.jpeg'
     comment: <paragraph()>
     createdAt: <dateTimeBetween('-6 months', 'now')>
     record: '@record_*'

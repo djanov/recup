@@ -93,17 +93,20 @@ class DefaultController extends Controller
     */
     public function getNoteAction(Record $record)
     {
+        $comments = [];
+
         foreach($record->getComments() as $comment) {
-            dump($comment);
+            $comments[] = [
+                'id' => $comment->getId(),
+                'username' => $comment->getUsername(),
+                'avatarUri' => '/images/'.$comment->getUserAvatarFilename(),
+                'comment' => $comment->getComment(),
+                'date' => $comment->getCreatedAt()->format('M, d, Y')
+            ];
         }
-        $notes = [
-            ['id' => 1, 'username' => 'AquaPelham', 'avatarUri' => '/images/leanna.jpeg', 'note' => 'Octopus asked me a riddle, outsmarted me', 'date' => 'Dec. 10, 2015'],
-            ['id' => 2, 'username' => 'AquaWeaver', 'avatarUri' => '/images/ryan.jpeg', 'note' => 'I counted 8 legs... as they wrapped around me', 'date' => 'Dec. 1, 2015'],
-            ['id' => 3, 'username' => 'AquaPelham', 'avatarUri' => '/images/leanna.jpeg', 'note' => 'Inked!', 'date' => 'Aug. 20, 2015'],
-        ];
 
         $data = [
-            'notes' => $notes,
+            'notes' => $comments,
         ];
 
         return new JsonResponse($data);

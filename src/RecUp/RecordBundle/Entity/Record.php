@@ -46,6 +46,7 @@ class Record
 
     /**
      * @ORM\OneToMany(targetEntity="RecordComment", mappedBy="record")
+     * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $comments;
 
@@ -131,7 +132,7 @@ class Record
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection|RecordComment[]
      */
     public function getComments()
     {

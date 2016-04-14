@@ -1,5 +1,5 @@
-the project RecUp
-=================
+2the project RecUp
+==================
 
 The RecUp is a social network for musicians...
 
@@ -56,9 +56,76 @@ Important changes:
 * **March 30**:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
+  
+April 13, 2016 (final steps for dynamic comments)
+=================================================
 
-April 11, 2016(setting up the OneToMany inverse side of the relation)
-=====================================================================
+Remove the hardcoded stuff in the **getNoteAction** add make it dynamic.
+First in the **Record** entity add annotation for the **getComments** so that PhpStorm have the auto-complete thi is not necessary.
+ ```
+ src/RecUp/RecordBundle/Entity/Record.php
+
+ /**
+ class Record
+ {
+  ...
+      * @return ArrayCollection|RecordComment[]
+      */
+     public function getComments()
+     {
+         return $this->comments;
+     }
+}
+ ```
+
+Now create the **$comments** structure, with real data. Above the **$foreach** add a new **$comments** variable. Inside, add a new entry to that and start populating it with id, username, avatarUri, comment and createdAt:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php;
+
+  public function getNoteAction(Record $record)
+    {
+        $comments = [];
+
+        foreach($record->getComments() as $comment) {
+            $comments[] = [
+                'id' => $comment->getId(),
+                'username' => $comment->getUsername(),
+                'avatarUri' => '/images/'.$comment->getUserAvatarFilename(),
+                'comment' => $comment->getComment(),
+                'date' => $comment->getCreatedAt()->format('M, d, Y')
+            ];
+        }
+
+        $data = [
+            'notes' => $comments,
+        ];
+
+        return new JsonResponse($data);
+    }
+```
+
+Refresh and there are the random comments (depends on how many are by the record(id) and the record_id in recordComment), using AJAX request, Alice and Faker. But the ordering is weird. To control that Open **Record** and add another annotation to **comment**:
+
+```
+src/RecUp/RecordBundle/Entity/Record.php
+
+  /**
+     * @ORM\OneToMany(targetEntity="RecordComment", mappedBy="record")
+     * @ORM\OrderBy({"createdAt" = "DESC"})
+    */
+    private $comments;
+```
+
+Now the Newest ones on top, oldest ones on the bottom. So we have some control.
+
+Links:
+-----
+* [More about Doctrine Annotations (example: OrderBy)][26]
+
+
+April 11, 2016 (setting up the OneToMany inverse side of the relation)
+======================================================================
 
 **Setting up the OneToMany side**
 
@@ -2734,4 +2801,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [23]:https://knpuniversity.com/screencast/doctrine-queries
 [24]:https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/converters.html
 [25]:http://docs.doctrine-project.org/en/latest/reference/unitofwork-associations.html
+[26]:https://doctrine-orm.readthedocs.org/projects/doctrine-orm/en/latest/reference/annotations-reference.html
 <!-- / end links-->

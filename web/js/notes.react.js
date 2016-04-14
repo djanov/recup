@@ -36,7 +36,7 @@ var NoteList = React.createClass({
     render: function() {
         var noteNodes = this.props.notes.map(function(note) {
             return (
-                <NoteBox username={note.username} avatarUri={note.avatarUri} date={note.date} key={note.id}>{note.note}</NoteBox>
+                <NoteBox username={note.username} avatarUri={note.avatarUri} date={note.date} key={note.id}>{note.comment}</NoteBox>
             );
         });
 
