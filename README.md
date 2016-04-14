@@ -59,8 +59,8 @@ Important changes:
 
 April 14, 2016
 ==============
-tricks with ArrayCollection for showing recent comments (bad way if we have many comments), Querying on a relationship
-----------------------------------------------------------------------------------------------------------------------
+tricks with ArrayCollection for showing recent comments (bad way if we have many comments), Querying on a relationship, query using JOIN
+----------------------------------------------------------------------------------------------------------------------------------------
 
 To make a new section on top to easily see how many comments have been posted during the past 3 months, in **showAction()**, we need to count all the recent notes from **Record**.
 The **getComments()** returns an **ArrayCollection** object and it has some tricks on it, one of that is **filter()** method. Make things work call the **getComments()** and call on that **filter()** method and pass an anonymous function with a **RecordComment** argument. The **ArrayCollection** will call this function for each item. If we return true, it says. If we return false, it disappears.
@@ -192,6 +192,75 @@ class RecordCommentRepository extends EntityRepository
 ```
 
 Now we have the same result just before using the ArrayCollection but we have now better performance and  more customizability.
+
+### Query using JOIN
+
+Order **songs** by the most recent comment - a column that lives on an entirely different table.
+
+In **SongRepository** rename the query function name to **findAllPublishedOrderedByRecentlyActive**:
+
+```
+src/RecUp/RecordBundle/Repository/SongsRepository.php
+
+class SongsRepository extends EntityRepository
+{
+    /**
+     * @return Record[]
+     */
+    public function findAllPublishedOrderedByRecentlyActive()
+    {
+
+    }
+}
+```
+Also change in **DefaultController** too:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+class DefaultController extends Controller
+{
+ ...
+  public function listAction()
+     {
+         $em = $this->getDoctrine()->getManager();
+
+
+         $songs = $em->getRepository('RecordBundle:Record')
+             ->findAllPublishedOrderedByRecentlyActive();
+         ...
+     }
+}
+```
+Now we need to order by the **createdAt** field in the **record_comment** table. And to do that in SQL we need to join over to that table. Do that with, **->leftJoin('song.comments')** because the alis was set to song in the QueryBuilder.
+**comments** property name is the name in **Record** that references  the relationship, and just by mentioning it, Doctrine has all the info it needs to generate the full JOIN SQL.
+Give the **leftJoin()** a second argument: **record_comment** - this is the alias we can use during the rest of the query to reference fields on the joined **record_comment** table. With this we can order the comments to be the newest first:
+
+```
+src/RecUp/RecordBundle/Repository/SongsRepository.php
+
+class SongsRepository extends EntityRepository
+{
+    /**
+     * @return Record[]
+     */
+    public function findAllPublishedOrderedByRecentlyActive()
+    {
+            return $this->createQueryBuilder('song')
+                ->andWhere('song.isPublished = :isPublished')
+                ->setParameter('isPublished', true)
+                ->leftJoin('song.comments', 'record_comment')
+                ->orderBy('record_comment.createdAt', 'DESC')
+                ->getQuery()
+                ->execute();
+    }
+}
+```
+
+Refresh and the order did change, and its kinda working (not working entirely need to check?!)
+
+And this is working because we have set the inverse side of the relationship, we added this for the **$record->getComments**, and this is the second reason to do the inverse side of the relation, if we're doing a JOIN in this direction.
+>**Tip:** it is possible to query over this join without mapping the side of the relationship, but that is more complicated.
 
 
 Links:

@@ -47,7 +47,7 @@ class DefaultController extends Controller
 //        dump($em->getRepository('RecordBundle:Record'));die;
 
         $songs = $em->getRepository('RecordBundle:Record')
-            ->findAllPublished();
+            ->findAllPublishedOrderedByRecentlyActive();
 
         return $this->render('@Record/song/list.html.twig', [
            'songs' => $songs

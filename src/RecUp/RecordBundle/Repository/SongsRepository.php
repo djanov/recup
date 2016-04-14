@@ -17,11 +17,13 @@ class SongsRepository extends EntityRepository
     /**
      * @return Record[]
      */
-    public function findAllPublished()
+    public function findAllPublishedOrderedByRecentlyActive()
     {
         return $this->createQueryBuilder('song')
             ->andWhere('song.isPublished = :isPublished')
             ->setParameter('isPublished', true)
+            ->leftJoin('song.comments', 'record_comment')
+            ->orderBy('record_comment.createdAt', 'DESC')
             ->getQuery()
             ->execute();
     }
