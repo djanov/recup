@@ -109,11 +109,97 @@ So for this case make the custom query that only returns the **RecordComment** o
 
 ### Querying on a Relationship
 
+Create a query that returns the RecordComment that belong to a specific **Record** and are less then 3 months old. To keep things organize, custom queries to the **RecordComment** table should live in the **RecordCommentRepository**. So create it.
+After creating it add a new **public function findAllRecentCommentsForRecord()** and give it a **Record** argument, next just like before when creating custom queries use the query builder:
+
+```
+src/RecUp/RecordBundle/Repository/RecordCommentRepository.php
+
+class RecordCommentRepository extends EntityRepository
+{
+    /**
+     * @param Record $record
+     * @return RecordComment[]
+     */
+    public function findAllRecentCommentsForRecord(Record $record)
+    {
+    return $this->createQueryBuilder('record_comment')
+            ->getQuery()
+            ->execute();
+    }
+}
+```
+
+Doctrine does not know about this new repository class yet, so go and add itt to **RecordComment**, find the **@ORM\Entity** and add the repositoryclass:
+
+```
+src/RecUp/RecordBundle/Entity/RecordComment.php
+
+/**
+ * @ORM\Entity(repositoryClass="RecUp\RecordBundle\Repository\RecordCommentRepository")
+ * @ORM\Table(name="record_comment")
+ */
+class RecordComment
+{
+
+}
+```
+
+Finally, use the new method in **DefaultController** and render the **$recentComments**:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+class DefaultController extends Controller
+{
+     public function showAction($track)
+     {
+     ...
+      $recentComments = $em->getRepository('RecordBundle:RecordComment')
+             ->findAllRecentCommentsForRecord($songs);
+
+         return $this->render('@Record/Default/show.html.twig', array(
+             'name' => $songs,
+             'recentCommentCount' => count($recentComments)
+         ));
+     }
+}
+```
+
+If we refresh we see the 100 notes, so we need to customize the query using the relationships:
+
+```
+src/RecUp/RecordBundle/Repository/RecordCommentRepository.php
+
+class RecordCommentRepository extends EntityRepository
+{
+    /**
+     * @param Record $record
+     * @return RecordComment[]
+     */
+    public function findAllRecentCommentsForRecord(Record $record)
+    {
+    return $this->createQueryBuilder('record_comment')
+       return $this->createQueryBuilder('record_comment')
+            ->andWhere('record_comment.record = :record')          // return only the comments belongs to record
+            ->setParameter('record', $record)
+            ->andWhere('record_comment.createdAt > :recentDate')  // return value only the recent 3 months
+            ->setParameter('recentDate', new \DateTime('-3 months'))
+            ->getQuery()
+            ->execute();
+    }
+}
+```
+
+Now we have the same result just before using the ArrayCollection but we have now better performance and  more customizability.
+
+
 Links:
 ------
 * [ArrayCollection][27]
 
-  
+
+
 April 13, 2016 (final steps for dynamic comments)
 =================================================
 

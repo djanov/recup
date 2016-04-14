@@ -11,7 +11,7 @@ namespace RecUp\RecordBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="RecUp\RecordBundle\Repository\RecordCommentRepository")
  * @ORM\Table(name="record_comment")
  */
 class RecordComment

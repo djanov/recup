@@ -82,10 +82,9 @@ class DefaultController extends Controller
     $this->get('logger')
         ->info('Showing records: '.$track);
 
-    $recentComments = $songs->getComments()
-        ->filter(function(RecordComment $comment){
-            return $comment->getCreatedAt() > new \DateTime('-3 months');
-});
+    $recentComments = $em->getRepository('RecordBundle:RecordComment')
+        ->findAllRecentCommentsForRecord($songs);
+
     return $this->render('@Record/Default/show.html.twig', array(
         'name' => $songs,
         'recentCommentCount' => count($recentComments)
