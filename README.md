@@ -56,6 +56,63 @@ Important changes:
 * **March 30**:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
+
+April 14, 2016
+==============
+tricks with ArrayCollection for showing recent comments (bad way if we have many comments), Querying on a relationship
+----------------------------------------------------------------------------------------------------------------------
+
+To make a new section on top to easily see how many comments have been posted during the past 3 months, in **showAction()**, we need to count all the recent notes from **Record**.
+The **getComments()** returns an **ArrayCollection** object and it has some tricks on it, one of that is **filter()** method. Make things work call the **getComments()** and call on that **filter()** method and pass an anonymous function with a **RecordComment** argument. The **ArrayCollection** will call this function for each item. If we return true, it says. If we return false, it disappears.
+Next pass the new **recentCommentCount** variable into twig that's set to **count($recentComments)**:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+class DefaultController extends Controller
+{
+    ...
+     public function showAction($track) {
+     ...
+      $recentComments = $songs->getComments()
+             ->filter(function(RecordComment $comment){
+                 return $comment->getCreatedAt() > new \DateTime('-3 months');
+     });
+         return $this->render('@Record/Default/show.html.twig', array(
+             'name' => $songs,
+             'recentCommentCount' => count($recentComments)
+         ));
+     }
+}
+```
+
+In the template, add a new **dt** for **Recent Comments** and a **dd** with **{{recentCommentCount}}**:
+
+```
+src/RecUp/RecordBundle/Resources/views/Default/show.html.twig
+
+{% block body %}
+    ...
+      <dt>Recent Comments</dt>
+     <dd>{{ recentCommentCount }}</dd>
+     ...
+{% endblock %}
+```
+
+Now if we refresh we see for example six comments, but we have a lot more than six in total but remember we only want to know the recent comments (< 3 months).
+The [ArrayCollection][27] has a lot of methods like this for example **contains()**, **containsKey()**, **forAll()**, **map()** and others.
+
+**Notice:**
+**Don't use ArrayCollection** if we have many comments, because **ArrayCollection** queries for all of the comments, even though we don't need them all, and we will fell the performance impact of loading up hundreds of extra objects.
+
+So for this case make the custom query that only returns the **RecordComment** object we need.
+
+### Querying on a Relationship
+
+Links:
+------
+* [ArrayCollection][27]
+
   
 April 13, 2016 (final steps for dynamic comments)
 =================================================
@@ -2802,4 +2859,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [24]:https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/converters.html
 [25]:http://docs.doctrine-project.org/en/latest/reference/unitofwork-associations.html
 [26]:https://doctrine-orm.readthedocs.org/projects/doctrine-orm/en/latest/reference/annotations-reference.html
+[27]:http://www.doctrine-project.org/api/common/2.1/class-Doctrine.Common.Collections.ArrayCollection.html
 <!-- / end links-->
