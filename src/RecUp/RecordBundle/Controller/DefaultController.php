@@ -4,6 +4,7 @@ namespace RecUp\RecordBundle\Controller;
 
 use RecUp\RecordBundle\Entity\Record;
 use RecUp\RecordBundle\Entity\RecordComment;
+use RecUp\RecordBundle\Service\MarkdownTransformer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -67,6 +68,9 @@ class DefaultController extends Controller
         if(!$songs) {
           throw $this->createNotFoundException('song not found');
         }
+
+        $markdownParser = new MarkdownTransformer();
+        $about = $markdownParser->parse($songs->getAbout());
     /*
     $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
     $key = md5($funFact);
@@ -87,7 +91,8 @@ class DefaultController extends Controller
 
     return $this->render('@Record/Default/show.html.twig', array(
         'name' => $songs,
-        'recentCommentCount' => count($recentComments)
+        'recentCommentCount' => count($recentComments),
+        'about' => $about,
     ));
 }
 

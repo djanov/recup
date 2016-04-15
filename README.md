@@ -1,5 +1,5 @@
-2the project RecUp
-==================
+The project RecUp
+=================
 
 The RecUp is a social network for musicians...
 
@@ -57,8 +57,8 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
-April 15, 2016 (services)
-========================
+April 15, 2016 (services, creating a Service class)
+===================================================
 
 Symfony is just a big container of useful objects called **services**, and everything
 that happens is actually done by one of these. For example the **render()** function
@@ -96,6 +96,78 @@ In the **DefaultController** at the **showAction()** we have 15 lines of code th
 
  3.) If we want to unit test this code, we can't. To unit test something, it needs to live in its
  own, isolated, focused class.
+
+### Creating a Service Class
+
+Move the chunk of a code out of the controller!
+
+First, create a new PHP class, In **RecordBundle**, create a new directory called **Service**
+but that could be called anything. Inside, add a new PHP class called **MarkdownTransformer**,
+that could also be called anything. First try the service if its working with a simple example:
+Make a public function **parse()** with a **$str** argument and return a php function **strtoupper**:
+
+```
+src/RecUp/RecordBundle/Service/MarkdownTransformer.php
+
+class MarkdownTransformer
+{
+    public function parse($str)
+    {
+        return strtoupper($str);
+    }
+}
+```
+
+Next in **DefaultController**, create the new object with **$markdownParser = new MarkdownTransformer()**
+PphpStorm will add the use statement **use RecUp\RecordBundle\Service\MarkdownTransformer;**.
+Next add **$about = $markdownParser->parse()** and pass **$songs->getAbout()**.
+Finish this by passing the **$about** into the template so we can render the parsed version:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+class DefaultController extends Controller
+{
+      ...
+      public function showAction($track)
+      {
+         $markdownParser = new MarkdownTransformer();
+         $about = $markdownParser->parse($songs->getAbout());
+
+      ...
+         return $this->render('@Record/Default/show.html.twig', array(
+              'name' => $songs,
+              'recentCommentCount' => count($recentComments),
+              'about' => $about,
+          ));
+      }
+      ...
+}
+```
+Finally open the template and add the **about**
+```
+src/RecUp/RecordBundle/Resources/views/Default/show.html.twig
+
+{% block body %}
+            ...
+               <dt>About:</dt>
+               <dd>{{ about }}</dd>
+            ...
+{% endblock %}
+```
+
+Open ```localhost:8000/songs``` click one of them, and there is the about section
+ in upper case.
+
+ The most important and commonly-confusing object-oriented strategies that exist anywhere
+ in any language. And it's this: you should take chunks of code that do things and move them
+ into an outside function in an outside class. That's it.
+
+ And **MarkdownTransform** is a service, because remember, a service is just a class that does
+ work for us. And when you isolate a lot of your code into these service classes, you start
+ build what's called a "service-oriented architecture". That basically means that instead
+ of having all of your code in big controllers, you organize them into nice little services
+ that each do one job.
 
 
 
