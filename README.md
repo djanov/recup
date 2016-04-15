@@ -57,6 +57,48 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 15, 2016 (services)
+========================
+
+Symfony is just a big container of useful objects called **services**, and everything
+that happens is actually done by one of these. For example the **render()** function
+is live in Symfony's base **Controller** it doesn't do any work, just finds the **templating**
+service that renders templates. To get a big list of services run:
+
+```
+php app/console debug:container
+```
+
+We can also control these services in **app/config/config.yml**, for example the twig configuration:
+
+```
+app/config/config.yml
+
+# Twig Configuration
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+
+    number_format:
+      thousands_separator: ','
+```
+
+**New goal make service Architecture**
+
+In the **DefaultController** at the **showAction()** we have 15 lines of code that parsed **$funFact**
+ through Markdown and then cached it. We need to have these 15 lines of code **outside of our
+ controller** because of three reasons:
+
+ 1.) Can't re-use this. If we need to do parse some markdown somewhere else, we can copy and pate,
+ but that's a horrible thing to do.
+
+ 2.) It's not instantly clear what these 15 lines do, need to take time and read them to find out.
+
+ 3.) If we want to unit test this code, we can't. To unit test something, it needs to live in its
+ own, isolated, focused class.
+
+
+
 April 14, 2016
 ==============
 tricks with ArrayCollection for showing recent comments (bad way if we have many comments), Querying on a relationship, query using JOIN
