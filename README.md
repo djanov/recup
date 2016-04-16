@@ -57,6 +57,86 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+
+April 16, 2016 (Dependency Injection)
+=====================================
+
+The **MarkdownTransformer** will do two thing: parse markdown and eventually cache it.
+Let's start with the first.
+
+If we are not in the controller - we don't have access to the container, in services or anything
+so we can't get access to the **MarkdownTransformer**. To get access to the markdown parser object
+inside **MarkdownTransformer**, we need [Dependency Injection][28].
+
+Whenever we're inside of a class and we need access to an object that we don't have - like
+markdown parser - add **public function __construct()** and add the object we need as an
+argument:
+
+```
+src/RecUp/RecordBundle/Services/MarkdownTransformer.php
+
+class MarkdownTransformer
+{
+
+    public function __construct($markdownParser)
+    {
+
+    }
+
+}
+```
+Next create a private property and in the constructor, assign that to the object and use the
+property, use it in **parse()**. So get rid of the **$this->get()** and just use **$this->markdownParser**:
+
+```
+src/RecUp/RecordBundle/Services/MarkdownTransformer.php
+
+class MarkdownTransformer
+{
+    private $markdownParser;
+
+    public function __construct($markdownParser)
+    {
+        $this->markdownParser = $markdownParser;
+    }
+
+    public function parse($str)
+    {
+       return $this->markdownParser
+       ->transform($str);
+    }
+}
+```
+
+To finish this in the **DefaultController**, where we do have access to the object, pass in **$this->get('markdown.parser')**:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+class DefaultController extends Controller
+{
+    ...
+    public function showAction($track)
+    {
+        ...
+        $markdownTransformer = new MarkdownTransformer(
+            $this->get('markdown.parser')
+        );
+        ...
+    }
+    ...
+}
+```
+
+I's alive Twig is escaping the **<p>** tag so that proves hat markdown parsing is happening. This process is
+dependency injection. It basically says: if an object needs something, we should pass it to the object.
+
+Links:
+------
+* [Dependency Injection][28]
+
+
+
 April 15, 2016 (services, creating a Service class)
 ===================================================
 
@@ -3129,4 +3209,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [25]:http://docs.doctrine-project.org/en/latest/reference/unitofwork-associations.html
 [26]:https://doctrine-orm.readthedocs.org/projects/doctrine-orm/en/latest/reference/annotations-reference.html
 [27]:http://www.doctrine-project.org/api/common/2.1/class-Doctrine.Common.Collections.ArrayCollection.html
+[28]:https://symfony.com/doc/current/components/dependency_injection/introduction.html
 <!-- / end links-->
