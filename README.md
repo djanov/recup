@@ -57,8 +57,8 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
-April 17, 2016 (Type-Hint)
-==========================
+April 17, 2016 (Type-Hint, register service in the container)
+=============================================================
 
 When we need to add a type-hint to make our code clearer, and avoid errors in case we accidentally pass in
 something else. To found out what type of object is **$markdownParser** argument first run:
@@ -183,6 +183,114 @@ that implements **MarkdownParserInterface**.
 So when we need an object from inside a class, use dependency  injection. And then add the **__construct()**
 argument, type-hint it with either the class see in **debug:container** or an interface if you can find one.
 Both will work.
+
+### Register the Service in the Container
+
+The **MarkdownTransformer** class does not live in the container like **markdown.parser**, **logger** or
+anything else we see in **debug:container**. We need to instantiate it manually: we can't just say like
+**$this->get('app.markdown_transformer')** and expect the container to create it for us.
+
+Open up **app/config/services.yml** and add a new service to the container. Under the **services** key
+give the new service a nickname **app.markdown_transformer**. This can be anything we'll use tit later to
+fetch the service. Next in order to the container to instantiate this, it needs to know two things: the
+class name and what arguments to pass to the constructor. Add first the **class** then the full
+**RecUp\RecordBundle\Service\MarkdownTransformer**, for the second add **arguments:** then make a YML
+array: **[]**. These ara the constrictor arguments, it's pretty simple. If we used for example
+**[sunshine, rainbows]**, it would pass the string **sunshine** as the first argument to
+**MarkdownTransformer** and **rainbow** as the second. And that would be it. In reality, **MarkdownTransformer**
+requires one argument: the **markdown.parser** service. To tell the container to pass that add **@markdown.parser**:
+
+```
+app/config/services.yml
+
+...
+services:
+     app.markdown_transformer:
+         class: RecUp\RecordBundle\Service\MarkdownTransformer
+         arguments: ['@markdown.parser']
+```
+The **@** is a special: it says, don't pass the string **markdown.parser**, pass the service **markdown.parser**.
+
+And with 4 lines of code, a new service has been born in the container. To see if it's working:
+
+```
+php app/console debug:container markdown
+```
+
+To use it, instead of **new MarkdownTransformer()** use it like **$transformer = $this->get('app.markdown_transformer)**:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+class DefaultController extends Controller
+{
+    ...
+    public function showAction($track)
+    {
+    ...
+        $markdownTransformer = $this->get('app.markdown_transformer');
+    ...
+    }
+    ...
+}
+```
+When this line runs, the container will create the **MarkdownTransformer** object behind the scenes.
+
+**Why add a Service to the Container**
+
+When we add a service to the container, we get two great thing. First using the service is much easier:
+**$this->get('app.markdown_transformer)**. We don't need to worry about passing the constructor arguments,
+we have that set-up in the services.yml, hence it could have ten constructor arguments and this simple line
+would stay the same.
+
+Second. if we ask for the **app.markdown_transformer** service more then once during a request, the container
+only creates one of them: it returns that same one object each time. That's good for the performance. And
+the container doesn't create the **MarkdownTransformer** object until and unless somebody asks for it. That
+means that adding more services to the container does not slow things down.
+
+**The Dumped Container**
+
+Open the **cache/dev/appDevDebugProjectContainer.php**, this is the **container**: it's a class that's
+dynamically built from the configuration. Find the "MarkdownTransformer" and find the **getApp_MarkdownTransformerService()**
+method:
+
+```
+cache/dev/appDevDebugProjectContainer.php
+class appDevDebugProjectContainer extends Container
+{
+
+    public function __construct()
+    {
+
+        $this->methodMap = array(
+
+            'app.markdown_transformer' => 'getApp_MarkdownTransformerService',
+
+        );
+
+    }
+
+    /**
+     * Gets the 'app.markdown_transformer' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return \AppBundle\Service\MarkdownTransformer A AppBundle\Service\MarkdownTransformer instance.
+     */
+    protected function getApp_MarkdownTransformerService()
+    {
+        return $this->services['app.markdown_transformer'] = new \AppBundle\Service\MarkdownTransformer($this->get('markdown.parser'));
+    }
+
+}
+```
+When we ask for the **app.markdown_transformer** service, this method is called. It runs plain PHP ode that
+we had before in the controller.
+
+The configuration wrote in **services.yml** causes Symfony to write plain PHP code that creates my service
+objects. We describe how to instantiate the object, and Symfony writes the PHP code to do that, and this
+makes the container very fast.
 
 
 

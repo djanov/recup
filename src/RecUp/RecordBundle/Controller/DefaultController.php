@@ -69,10 +69,8 @@ class DefaultController extends Controller
           throw $this->createNotFoundException('song not found');
         }
 
-        $markdownParser = new MarkdownTransformer(
-            $this->get('markdown.parser')
-        );
-        $about = $markdownParser->parse($songs->getAbout());
+        $markdownTransformer =  $this->get('app.markdown_transformer');
+        $about = $markdownTransformer->parse($songs->getAbout());
     /*
     $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
     $key = md5($funFact);
