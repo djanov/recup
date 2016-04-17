@@ -57,6 +57,134 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 17, 2016 (Type-Hint)
+==========================
+
+When we need to add a type-hint to make our code clearer, and avoid errors in case we accidentally pass in
+something else. To found out what type of object is **$markdownParser** argument first run:
+
+```
+php app/console debug:container markdown
+```
+
+And select **markdown.parser** that's the service we're passing into **MarkdownTransformer. It's an
+instance of **Knp\Bundle\MarkdownBundle\Parser\Preset\Max**. We can use that as type-hint. But don't do that
+press **shift** + **shift**, type "max" and open that class:
+
+```
+ vendor/knplabs/knp-markdown-bundle/Parser/Preset/Max.php
+
+/**
+ * Full featured Markdown Parser
+ */
+class Max extends MarkdownParser
+{
+
+}
+```
+
+This extends **MarkdownParser** and that does all the work:
+
+```
+ vendor/knplabs/knp-markdown-bundle/Parser/MarkdownParser.php
+
+/**
+ * MarkdownParser
+ *
+ * This class extends the original Markdown parser.
+ * It allows to disable unwanted features to increase performances.
+ */
+class MarkdownParser extends MarkdownExtra implements MarkdownParserInterface
+{
+
+}
+
+```
+
+And MarkdownParser implements a **MarkdownParserInterface**. So now we have 3 options to type-hint with:
+**Max**, **MarkdownParser** or **MarkdownParserInterface**. They will all work, but when possible, it's
+best to find a base class or better the interface that has the methods on it you need, and use that,
+Type-hint the argument with **MarkdownParserInterface**:
+
+```
+src/RecUp/RecordBundle/Service/MarkdownTransformer.php
+
+use Knp\Bundle\MarkdownBundle\MarkdownParserInterface;
+
+class MarkdownTransformer
+{
+
+    public function __construct(MarkdownParserInterface $markdownParser)
+
+}
+```
+
+This is the best option for two reasons. First, in theory we could swap out the **$markdownParser** for
+a different object, as long as it implements this interface. Second, it's really clear what methods can
+call on the **$markdownParser** property: only those on that interface.
+But now PhpStorm is angry about calling **transform()** on **$this->markdownParser**:
+
+>Method "transform" not found in class **MarkdownParserInterface**
+
+Open that interface, it has only one method: **transformMarkdown()**
+
+```
+vendor/knplabs/knp-markdown-bundle/MarkdownParserInterface.php
+
+interface MarkdownParserInterface
+{
+    /**
+     * Converts text to html using markdown rules
+     *
+     * @param string $text plain text
+     *
+     * @return string rendered html
+     */
+    function transformMarkdown($text);
+}
+```
+Everything will work right now, refresh to see.
+The weirdness is just that we are forcing an object that implements **MarkdownParserInterface** to be
+passed in, but then we're calling a method that's not on that interface. Change our call to
+**transformMarkdown**:
+
+```
+src/RecUp/RecordBundle/Service/MarkdownTransformer.php
+
+class MarkdownTransformer
+{
+
+    public function parse($str)
+    {
+        return $this->markdownParser
+            ->transformMarkdown($str);
+    }
+}
+```
+
+Inside **MarkdownParser**, we can see that **transformMarkdown()** and **transform()** do the same thing:
+
+```
+vendor/knplabs/knp-markdown-bundle/Parser/MarkdownParser.php
+
+class MarkdownParser extends MarkdownExtra implements MarkdownParserInterface
+{
+
+    public function transformMarkdown($text)
+    {
+        return parent::transform($text);
+    }
+
+}
+```
+This did not change any behavior: it just made code more portable: the class will work with any object
+that implements **MarkdownParserInterface**.
+
+So when we need an object from inside a class, use dependency  injection. And then add the **__construct()**
+argument, type-hint it with either the class see in **debug:container** or an interface if you can find one.
+Both will work.
+
+
 
 April 16, 2016 (Dependency Injection)
 =====================================
