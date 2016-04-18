@@ -71,18 +71,7 @@ class DefaultController extends Controller
 
         $markdownTransformer =  $this->get('app.markdown_transformer');
         $about = $markdownTransformer->parse($songs->getAbout());
-    /*
-    $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
-    $key = md5($funFact);
-    if ($cache->contains($key)) {
-        $funFact = $cache->fetch($key);
-    } else {
-        sleep(1); // fake how slow this could be
-        $funFact = $this->get('markdown.parser')
-            ->transform($funFact);
-        $cache->save($key, $funFact);
-    }
-    */
+    
     $this->get('logger')
         ->info('Showing records: '.$track);
 

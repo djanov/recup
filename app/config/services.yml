@@ -6,7 +6,7 @@ parameters:
 services:
      app.markdown_transformer:
          class: RecUp\RecordBundle\Service\MarkdownTransformer
-         arguments: ['@markdown.parser']
+         arguments: ['@markdown.parser', '@doctrine_cache.providers.my_markdown_cache']
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
