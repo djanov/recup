@@ -57,8 +57,8 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
-April 19, 2016 (new branch)
-===========================
+April 19, 2016 (new branch, bower)
+==================================
 
 #### Making a new branch
 
@@ -111,9 +111,47 @@ git push origin master
 git push origin knp
 ```
 
+### Bower
+
+Installing bower to the project for managing front-end dependencies (jquery, bootstrap, font-awesome).
+Bower is built on top of Node.js. Make sure to install bower. To install power globally:
+```
+npm install -g bower
+```
+
+##### Configuring Bower in the Project
+
+Normally, Bower downloads everything into **bower_components/** directory. In Symfony, only files in
+**web/** directory are publicly accessible, so we need to configure Bower to download things there, but
+I going to use **Gulp**, so i will set the directory to **"vendor/bower_components"**. And with Gulp i will in the end
+move all assets into the **web/** directory.
+
+So make the new file in the root directory **.bowercc**
+```
+{
+  "directory": "vendor/bower_components"
+}
+```
+
+##### Installing Bootstrap, jQuery, Font-awesome
+
+To create a **bower.json** file, just run **bower init**. And now we're ready to start adding things to the project:
+
+```
+bower install --save jquery bootstrap fontawesome
+```
+
+This will install Bootstrap, jQuery, Font-awesome and its dependencies in "vendor/bower_components"
+
+>**Tip:** If we see a bower.json file we can just run "bower install" and bower will install the right
+  versions of the packages we need and their dependencies.
+
 Links:
 -----
 * [How To Use Git Branches][32]
+* [Using Bower with Symfony][33]
+* [Bower][34]
+* [Managing Fronted Dependencies][35]
 
 
 
@@ -3779,4 +3817,7 @@ The GenusController is a controller, the function that will (eventually) build t
 [30]:http://twig.sensiolabs.org/doc/advanced_legacy.html#creating-an-extension
 [31]:https://symfony.com/doc/current/cookbook/templating/twig_extension.html
 [32]:https://www.digitalocean.com/community/tutorials/how-to-use-git-branches
+[33]:https://symfony.com/doc/2.8/cookbook/frontend/bower.html
+[34]:http://bower.io/
+[35]:https://blog.engineyard.com/2014/frontend-dependencies-management-part-1
 <!-- / end links-->
