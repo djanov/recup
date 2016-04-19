@@ -89,6 +89,32 @@ If we are making changes or adding a new file to the new branch, until we merge 
 it will not exist there. Now i make the changes in the README.md file and going to commit to master branch
 so the knp branch going to be behind.
 
+#### Merging code between branches
+
+The process of moving code between branches(often from development to production) is know as __merging__.
+
+It is important to remember when merging, that we want to be on tha branch that we want to merge to.
+One of the options that we can pass to the merge command, "--no-ff", means we want to git to retain all of the
+commit messages prior to the merge. This will make tracking changes easier in the future.
+
+To merge the changes from the knp branch to the master branch, we are now in the master branch, type the
+following:
+
+```
+git merge develop --no-ff
+```
+
+The last thing to do, to make this change in the remote server is to push the changes
+
+```
+git push origin master
+git push origin knp
+```
+
+Links:
+-----
+* [How To Use Git Branches][32]
+
 
 
 April 18, 2016 (Injecting the Cache Service, adding the twig extension)
@@ -3752,4 +3778,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [29]:https://symfony.com/doc/current/reference/dic_tags.html#twig-extension
 [30]:http://twig.sensiolabs.org/doc/advanced_legacy.html#creating-an-extension
 [31]:https://symfony.com/doc/current/cookbook/templating/twig_extension.html
+[32]:https://www.digitalocean.com/community/tutorials/how-to-use-git-branches
 <!-- / end links-->
