@@ -57,6 +57,40 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 19, 2016 (new branch)
+===========================
+
+#### Making a new branch
+
+To view all existing branches type:
+
+```
+git branch -a
+```
+Adding the "-a" to the end of the command, this tells GIT that we want to see all branches that exist,
+including ones that we do not have in our local workspace.
+
+To create a new branch, named knp, type the following:
+```
+git checkout -b knp
+```
+This will automatically switch to the new branch. To switch back and forth between the two branches, use
+the git checkout command:
+
+```
+git checkout master
+```
+or
+```
+git checkout knp
+```
+
+If we are making changes or adding a new file to the new branch, until we merge it to the master branch,
+it will not exist there. Now i make the changes in the README.md file and going to commit to master branch
+so the knp branch going to be behind.
+
+
+
 April 18, 2016 (Injecting the Cache Service, adding the twig extension)
 =======================================================================
 
