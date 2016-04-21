@@ -57,6 +57,107 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 21, 2016 (gulp)
+=====================
+
+#### Installing gulp.
+
+The Node Package Manager - or npm is the composer of the Node.js world.
+```
+npm install -g gulp
+```
+
+This command will give a **gulp** executable. To test if it's works:
+
+```
+gulp -v
+```
+**-v** will show us the gul version installed.
+
+We know that Composer works by reading a **composer.json** file and downloading everything
+into a **vendor/** directory. **npm** does the same thing. It reads from a **package.json**
+and downloads everything into a **node_modules** directory. To get the **package.json** type:
+
+```
+npm init
+```
+Hit enter and go through the questions. After that open the **package.json**:
+
+```
+{
+  "name": "gulp-recup",
+  "version": "1.0.0",
+  "description": "The project RecUp\r =================",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/djanov/recup.git"
+  },
+  "author": "Daniel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/djanov/recup/issues"
+  }
+}
+```
+#### Installing Gulp into the project
+
+Now we can install NOde packages into the project. Install **gulp**:
+
+```
+npm install gulp --save-dev
+```
+The original command with the **-g** gave us the global **gulp** executable. This time we're
+actually installing gulp into our project so other libraries can use it. The **---save-dev**
+part says "download this into my project AND add an entry into **package.json** for it."
+Now open **package.json** again now it has a new **devDependencies** section and have the new
+**node_modules** directory with **gulp** in it.
+
+```
+{
+  "name": "gulp-recup",
+  "version": "1.0.0",
+   ...
+  },
+  "homepage": "https://github.com/djanov/recup#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}
+```
+In Composer terms, **devDependencies** is the **require** key in **composer.json** and
+**node_modules** is the **vendor/** directory.
+
+To test if the gulp is working create a new file **gulpfile.js** at the root of the project.
+Gulp looks for this. Now create a **default** task and use the **console.log** to test this out.
+
+```
+var gulp = require('gulp');
+
+gulp.task('default', function() {
+   console.log('gulp test');
+});
+```
+
+Now go back to the command line and type **gulp** followed by the name of the task **default**:
+
+```
+gulp default
+```
+But if we type just **gulp** we will get the sam thing. The task called **default** is the
+"default" task and runs if we don't include the name.
+
+Links:
+-----
+* [Using Gulp to Manage Components][36]
+* [Setting up Symfony2 with Gulp and Bower][37]
+* [KNP First Gulp][38]
+
+
+
 April 19, 2016 (new branch, bower)
 ==================================
 
@@ -3820,4 +3921,7 @@ The GenusController is a controller, the function that will (eventually) build t
 [33]:https://symfony.com/doc/2.8/cookbook/frontend/bower.html
 [34]:http://bower.io/
 [35]:https://blog.engineyard.com/2014/frontend-dependencies-management-part-1
+[36]:http://andy-carter.com/blog/a-beginners-guide-to-package-manager-bower-and-using-gulp-to-manage-components
+[37]:https://www.ekreative.com/blog/setting-up-symfony2-with-gulp-and-bower-instead-of-the-assetic-bundle
+[38]:https://knpuniversity.com/screencast/gulp/first-gulp
 <!-- / end links-->
