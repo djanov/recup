@@ -57,8 +57,8 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
-April 22, 2016 (GULP: sass to css)
-==================================
+April 22, 2016 (GULP: sass to css, gulp-sourcemaps)
+===================================================
 
 I made a project specific Sass file that lives in **app/Resources/assets**. This is where my
 frontend assets, but it doesn't matter. But this is not a public directory. Gulp firs job
@@ -88,6 +88,8 @@ Now **gulp.src** let's load all the Sass files that are in that **sass/** direct
 __app/Resources/assets/sass/**/*.scss__:
 
 ```
+gulpfile.js
+
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 
@@ -118,6 +120,61 @@ every time I use Gulp:
 ```
 /web/css
 ````
+
+### gulp sourcemaps
+
+When I inspect the elements on my page, the browser is looking at the final, processed file.
+And that means that debugging CSS is going to be a nightmare.
+
+Using gulp-sourcemaps plugin I can change this behavior. In the plugins page search for
+[gulp-sourcemaps][41].
+
+First is always the same install with __npm__:
+
+```
+npm install gulp-sourcemaps --save-dev
+```
+Next copy the **require** statement and put that on top:
+
+```
+gulpfile.js
+
+var gulp = require('gulp');
+var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
+...
+```
+Then activate it before piping through any filters that may change which line some code lives on.
+So before the **sass()** line, use **pipe()** with **sourcemaps.init()** inside. Then after
+the filters are done, pipe it again through **sourcemaps.write('.')**:
+
+```
+gulpfile.js
+...
+
+gulp.task('default', function() {
+   gulp.src('app/Resources/assets/sass/**/*.scss')
+       .pipe(sourcemaps.init())
+       .pipe(sass())
+       .pipe(sourcemaps.write('.'))
+       .pipe(gulp.dest('web/css'));
+});
+```
+Run **gulp** in the terminal. No errors. And now there are two generated files the **styles.css** and
+the **styles.css.map**. That's what the **.** did - it told Gulp to put the map file right
+in the same directory as **styles.css**, and the browser know to look there. Now if I
+refresh the page again. Inspect the element shows now the styling from **styles.scss**.
+Now we can do whatever processing we want and we don't have to worry about killing our
+debugging.
+
+**gulp-sourcemaps** and **gulp-sass** work together because [sourcemaps supports][42] more gulp plugins.
+
+Links:
+-----
+* [Gulp Plugins][39]
+* [sass plugin][40]
+* [gulp-sourcemaps plugin][41]
+* [sourcemaps wiki for supported gulp plugins][42]
 
 
 
@@ -3990,4 +4047,6 @@ The GenusController is a controller, the function that will (eventually) build t
 [38]:https://knpuniversity.com/screencast/gulp/first-gulp
 [39]:http://gulpjs.com/plugins/
 [40]:https://www.npmjs.com/package/gulp-sass/
+[41]:https://www.npmjs.com/package/gulp-sourcemaps
+[42]:https://github.com/floridoo/gulp-sourcemaps/wiki/Plugins-with-gulp-sourcemaps-support
 <!-- / end links-->
