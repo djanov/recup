@@ -57,6 +57,70 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 22, 2016 (GULP: sass to css)
+==================================
+
+I made a project specific Sass file that lives in **app/Resources/assets**. This is where my
+frontend assets, but it doesn't matter. But this is not a public directory. Gulp firs job
+will be to turn that Sass file into CSS and to put the finished file in the **web/css**
+directory where it can be accessed, where its public.
+
+##### Installing gulp-sass
+With Gulp, we can make tasks, but it doesn't do much else. Most things are done with a plugin.
+In Gulp's site there are more then 2345 [Plugins][39].
+
+First install the [sass plugin][40]:
+```
+npm install gulp-sass --save-dev
+```
+I added the **--save-dev** because I want this plugin to be added to the **package.json** file.
+That means that if I want to clone this project i need to run just **npm install** and it'll
+download this stuff automatically.
+
+##### The pipe Workflow
+
+In the sass docs, its shows the classic Gulp workflow. We start by saying **gulp.src()** to
+load files matching a pattern. Next pipe it through a filter - in this case **sass()**. and
+pipe it once more with **gulp.dest()** - this will write the finished files.
+
+So to do it copy the **required** line from the docs and add itt to the top of my file.
+Now **gulp.src** let's load all the Sass files that are in that **sass/** directory so
+__app/Resources/assets/sass/**/*.scss__:
+
+```
+var gulp = require('gulp');
+var sass = require('gulp-sass');
+
+gulp.task('default', function() {
+   gulp.src('app/Resources/assets/sass/**/*.scss')
+       .pipe(sass())
+       .pipe(gulp.dest('web/css'));
+});
+```
+
+The double __**__ tells Gulp to look recursively inside the **sass** directory for **.scc**
+files. That will let me create subdirectories later.
+
+Now that we loaded the files, we'll just pipe through whatever we need. Use **pipe()** then
+**sass()** inside of it. Gulp works with streams, so imagine Gulp is opening up all of the
+**.scss** files as a big stream and then passing them one-by-one through the **pipe()** function.
+At this point all that Sass has been processed. Then finally, we'll pipe that to **gulp.dest()**
+Basically saying dump the finished product to the **web/css** directory.
+
+That's all we need, goo back to the terminal and just type **gulp**.
+
+To use the CSS file that generated **styles.css** add the **link** tag to the base template.
+By using the **asset()** function from Symfony, that's not actually doing anything here.
+The path is relative to the public directory **web/** for a Symfony project.
+
+Finally ignore the directory in git that Gulp is generating, because its going to change
+every time I use Gulp:
+```
+/web/css
+````
+
+
+
 April 21, 2016 (gulp)
 =====================
 
@@ -3924,4 +3988,6 @@ The GenusController is a controller, the function that will (eventually) build t
 [36]:http://andy-carter.com/blog/a-beginners-guide-to-package-manager-bower-and-using-gulp-to-manage-components
 [37]:https://www.ekreative.com/blog/setting-up-symfony2-with-gulp-and-bower-instead-of-the-assetic-bundle
 [38]:https://knpuniversity.com/screencast/gulp/first-gulp
+[39]:http://gulpjs.com/plugins/
+[40]:https://www.npmjs.com/package/gulp-sass/
 <!-- / end links-->
