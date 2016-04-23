@@ -56,9 +56,9 @@ Important changes:
 * **March 30**:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
-  
-April 23, 2016 (GULP: watch task for changes)
-=============================================
+
+April 23, 2016 (GULP: watch task for changes, concat files)
+===========================================================
 
 Gulp comes native with **watch()** function. I going to use this function for watching the
 Sass file whenever is change.
@@ -117,6 +117,68 @@ watching for changes:
 ```
 gulp.task('default', ['sass', 'watch']);
 ```
+
+### Concat files
+
+I made a new **layout.scss** file, when i run the **gulp** the **watch** task running in the
+background, and it's looking for any **.scss** file in that directory. So when i check in the
+public css folder i see now the **layout.css** and the **layout.css.map** file, but the
+file is not accessed because, I need first add the **link** tag in the base template.
+
+But now the users download a lot of CSS files. I need to combine them all into a singel fiel.
+There's a plugin for that, the [gulp-conat][43]. install via nmp:
+
+```
+npm install gulp-concat --save-dev
+```
+Add the **require** statement:
+
+```
+gulpfile.js
+
+var gulp = require('gulp');
+var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
+var concat = require('gulp-concat');
+...
+```
+
+The **gulp.src()** function loads a many files. The **concat()** function combines those into
+just 1 file. Right after **sass()** - **pipe()**, then **concat()**. And pass the filename
+**main.css**:
+
+```
+gulpfile.js
+...
+gulp.task('sass', function() {
+   gulp.src(config.assetsDir+'/'+config.sassPattern)
+       .pipe(sourcemaps.init())
+       .pipe(sass())
+       .pipe(concat('main.css'))
+       .pipe(sourcemaps.write('.'))
+       .pipe(gulp.dest('web/css'));
+});
+...
+```
+Be careful to keep between the **sourcemaps** lines because we're smashing multiple files
+into one. and that'll change the line numbers and source files for everything. But
+sourcemaps will kepp track of all of that for us.
+
+Delete the **web/css** css directory before testing out, then run **gulp**. Now it's
+create only one **main.css** file and its map file. And it's got the CSS from both source
+files. Go back and change the base template to only link to this one css file:
+```
+app/Resources/views/base.html.twig
+    ...
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+            <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/font-awesome.min.css') }}">
+        {% endblock %}
+    ...
+```
+Refresh and now just one CSS file. other then the bootstrap and font-awesome. And if I check
+the sourcemap still works, in inspect elements is still using the **style.sccs** and the **layout.scss**.
 
 
 
@@ -4112,4 +4174,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [40]:https://www.npmjs.com/package/gulp-sass/
 [41]:https://www.npmjs.com/package/gulp-sourcemaps
 [42]:https://github.com/floridoo/gulp-sourcemaps/wiki/Plugins-with-gulp-sourcemaps-support
+[43]:https://www.npmjs.com/package/gulp-concat/
 <!-- / end links-->
