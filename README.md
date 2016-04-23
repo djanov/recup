@@ -57,8 +57,8 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
-April 23, 2016 (GULP: watch task for changes, concat files)
-===========================================================
+April 23, 2016 (GULP: watch task for changes, concat files, Minify css)
+======================================================================
 
 Gulp comes native with **watch()** function. I going to use this function for watching the
 Sass file whenever is change.
@@ -162,7 +162,7 @@ gulp.task('sass', function() {
 ```
 Be careful to keep between the **sourcemaps** lines because we're smashing multiple files
 into one. and that'll change the line numbers and source files for everything. But
-sourcemaps will kepp track of all of that for us.
+sourcemaps will kep track of all of that for us.
 
 Delete the **web/css** css directory before testing out, then run **gulp**. Now it's
 create only one **main.css** file and its map file. And it's got the CSS from both source
@@ -179,6 +179,46 @@ app/Resources/views/base.html.twig
 ```
 Refresh and now just one CSS file. other then the bootstrap and font-awesome. And if I check
 the sourcemap still works, in inspect elements is still using the **style.sccs** and the **layout.scss**.
+
+### Minify css
+
+I have multiple file into one, but the **main.css** has a lot of whitespaces. The answer is Minify.
+The plugin for Minfy CSS is [gulp-clean-css][44]. download using npm:
+
+```
+npm install gulp-clean-css --save-dev
+```
+
+Add the require line:
+
+```
+gulpfile.js
+
+var gulp = require('gulp');
+var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
+var concat = require('gulp-concat');
+var cleanCSS = require('gulp-clean-css');
+```
+
+Put the **cleanCSS()** after the concat using the **pipe()** function.
+
+```
+gulpfile.js
+...
+gulp.task('sass', function() {
+   gulp.src(config.assetsDir+'/'+config.sassPattern)
+       .pipe(sourcemaps.init())
+       .pipe(sass())
+       .pipe(concat('main.css'))
+       .pipe(cleanCSS())
+       .pipe(sourcemaps.write('.'))
+       .pipe(gulp.dest('web/css'));
+});
+...
+```
+Run gulp, and now **main.css** is a single line. But with the power of the sourcemaps, we still
+get the correct **style.sccs** line in the inspector.
 
 
 
@@ -4175,4 +4215,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [41]:https://www.npmjs.com/package/gulp-sourcemaps
 [42]:https://github.com/floridoo/gulp-sourcemaps/wiki/Plugins-with-gulp-sourcemaps-support
 [43]:https://www.npmjs.com/package/gulp-concat/
+[44]:https://www.npmjs.com/package/gulp-clean-css/
 <!-- / end links-->
