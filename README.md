@@ -56,6 +56,69 @@ Important changes:
 * **March 30**:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
+  
+April 23, 2016 (GULP: watch task for changes)
+=============================================
+
+Gulp comes native with **watch()** function. I going to use this function for watching the
+Sass file whenever is change.
+First configure the variables, create a **config** variable and store the paths in here:
+
+```
+gulpfile.js
+...
+var config = {
+    assetsDir: 'app/Resources/assets',
+    sassPattern: 'sass/**/*.scss'
+};
+...
+```
+Then create a second task, by using **gulp.task()**.
+Move the **default** task into this new one. Make the default task to run the **sass** task.
+To do this, replace the function callback with an array of task names:
+
+```
+...
+gulp.task('sass', function() {
+   gulp.src(config.assetsDir+'/'+config.sassPattern)
+       .pipe(sourcemaps.init())
+       .pipe(sass())
+       .pipe(sourcemaps.write('.'))
+       .pipe(gulp.dest('web/css'));
+});
+
+gulp.task('default', ['sass']);
+```
+We can have a third argument, Gulp will run all the "dependent tasks" first, then call my function.
+So if i run **gulp**, it runs the **sass** task first.
+
+Adding the watch task
+
+Copy from config variable the paths and pass it to **watch()**. This tells it to watch for changes
+in any of these files. The moment it sees something, we want it to re-run the **sass** task.
+So put that as the second argument:
+
+```
+gulpfile.js
+...
+gulp.task('watch', function(){
+   gulp.watch(config.assetsDir+'/'+config.sassPattern, ['sass'])
+});
+...
+```
+Now if I run **gulp watch** then its waiting for me the change something, and if i change the
+background color to black in **styles.scc** the watch function will call the **sass** task,
+so it will generate the new css file in the public directory. To make the **default** task
+useful so that whenever we start working on a project, we'll want to run the **sass** task to
+initially process things and then **watch** for watching changes. Add **watch** to the array
+to do that, and now its enough to run just **gulp** it will run the **sass** first and then starts
+watching for changes:
+
+```
+gulp.task('default', ['sass', 'watch']);
+```
+
+
 
 April 22, 2016 (GULP: sass to css, gulp-sourcemaps)
 ===================================================
