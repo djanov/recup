@@ -57,9 +57,10 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
-April 23, 2016 (GULP: watch task for changes, concat files, Minify css)
-======================================================================
-
+April 23, 2016 (gulp)
+=====================
+GULP: watch task for changes, concat files, Minify css, Minify only in production
+----------------------------------------------------------------------------------
 Gulp comes native with **watch()** function. I going to use this function for watching the
 Sass file whenever is change.
 First configure the variables, create a **config** variable and store the paths in here:
@@ -219,6 +220,67 @@ gulp.task('sass', function() {
 ```
 Run gulp, and now **main.css** is a single line. But with the power of the sourcemaps, we still
 get the correct **style.sccs** line in the inspector.
+
+### Minify only in Production
+
+Minify is make sens in deploying, but locally is better to keep the whitespaces for debugging.
+The goal is when i run **gulp**, i don't want minify, but if i run **gulp --production** I do want
+it to minify
+
+Install [gulp-util][45] plugin for that:
+
+```
+npm install gulp-util --save-dev
+```
+Next, grab the **require** line and past it in the top:
+
+```
+gulpfile.js
+
+var gulp = require('gulp');
+...
+var util = require('gulp-util');
+...
+```
+Add a config value called **production** and set that to **!!util.env.production**:
+
+```
+gulpfile.js
+
+var config = {
+    assetsDir: 'app/Resources/assets',
+    sassPattern: 'sass/**/*.scss',
+    production: !!util.env.production
+};
+```
+The two exclamations turn **undefined** into proper false.
+
+Now I need some **if** logic inside the **pipe()** that says if **config.production**, let's
+**minifyCSS**, else run this through a filter called **util.noop**.
+>this **noop** filter does nothing "Returns a stream that does nothing but pass data straight through."
+
+```
+gulp.task('sass', function() {
+   gulp.src(config.assetsDir+'/'+config.sassPattern)
+       .pipe(sourcemaps.init())
+       .pipe(sass())
+       .pipe(concat('main.css'))
+       .pipe(config.production ? cleanCSS() : util.noop())
+       .pipe(sourcemaps.write('.'))
+       .pipe(gulp.dest('web/css'));
+});
+```
+Now if I run just **gulp** the **main.css** is not minified.
+
+But if I run the **gulp --production** There are no more whitespaces so the minify is working
+in this case.
+
+
+Links:
+-----
+* [gulp-conat][43]
+* [gulp-clean-css][44]
+* [gulp-util][45]
 
 
 
@@ -4216,4 +4278,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [42]:https://github.com/floridoo/gulp-sourcemaps/wiki/Plugins-with-gulp-sourcemaps-support
 [43]:https://www.npmjs.com/package/gulp-concat/
 [44]:https://www.npmjs.com/package/gulp-clean-css/
+[45]:https://www.npmjs.com/package/gulp-util
 <!-- / end links-->
