@@ -57,9 +57,87 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 24, 2016 (gulp)
+=====================
+GULP: sourcemaps only in development.
+-------------------------------------
+
+I have now the **--production** so that everything is minified when I deploy. But when i do
+that i don't want the sourcemaps to be there anymore, for that purpose to note share my
+source files.
+
+So I need only to run sourcemaps when I'm not in production. First add another config value
+**sourceMaps** and set it to be not **production**:
+
+```
+gulpfile.js
+...
+var config = {
+       assetsDir: 'app/Resources/assets',
+       sassPattern: 'sass/**/*.scss',
+       production: !!util.env.production,
+       sourceMaps: !util.env.production
+};
+...
+```
+
+Don't use anymore **util.noop**, Use the plugin [gulp-if][46], install it:
+
+```
+npm install gulp-if --save-dev
+```
+
+Add the **require** line:
+
+```
+gulpfile.js
+
+var gulp = require('gulp');
+...
+var gulpif = require('gulp-if');
+...
+```
+
+This plugin is to help with the fact that we can't break up the pipe chain with if statements.
+With it, you can add **gulpif()** inside **pipe()**. The first argument is the condition to test
+so **config.sourceMaps**. And if that's true, we'll call **sourcemaps.init()**. Do the same
+thing down for **sourcemaps.write**, and change the **CleanCSS()** to this approach:
+
+```
+gulpfile.js
+...
+gulp.task('sass', function() {
+   gulp.src(config.assetsDir+'/'+config.sassPattern)
+       .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
+        ...
+       .pipe(gulpif(config.production, cleanCSS()))
+       .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
+       .pipe(gulp.dest('web/css'));
+});
+...
+```
+Now if I run **gulp** I see the non-minified version with sourcemaps. But if i run
+ **gulp --production** then no more sourcemaps, but minified version.
+
+**Notice**: When I run just gulp then the value of the config.sourceMaps will be true because one **!**(negation)
+turns undefined (util.env.production -> this is undefined by default) to true so the gulpif will run on the sourcemaps init and write,
+but the config.production is false because of 2 **!**(negation) so the minifying will not going to be executed.
+
+If I run gulp with --production the config.sourceMaps going to be now false because if negate true i get false,
+and the sourcemaps init and write will not going to be executed, but the minifying will be executed because
+the config.production false will became true. [More about negation and double negation][47].
+
+Links:
+------
+* [gulp-if][46]
+* [More about negation and double negation][47]
+* [gulp-cheatsheet][48]
+
+
+
 April 23, 2016 (gulp)
 =====================
-GULP: watch task for changes, concat files, Minify css, Minify only in production
+GULP: watch task for changes, concat files, Minify css, Minify only in production.
 ----------------------------------------------------------------------------------
 Gulp comes native with **watch()** function. I going to use this function for watching the
 Sass file whenever is change.
@@ -4279,4 +4357,7 @@ The GenusController is a controller, the function that will (eventually) build t
 [43]:https://www.npmjs.com/package/gulp-concat/
 [44]:https://www.npmjs.com/package/gulp-clean-css/
 [45]:https://www.npmjs.com/package/gulp-util
+[46]:https://www.npmjs.com/package/gulp-if/
+[47]:https://stackoverflow.com/questions/10467475/double-negation-in-javascript-what-is-the-purpose
+[48]:https://github.com/osscafe/gulp-cheatsheet
 <!-- / end links-->
