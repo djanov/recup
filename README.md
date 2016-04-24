@@ -59,8 +59,8 @@ Important changes:
 
 April 24, 2016 (gulp)
 =====================
-GULP: sourcemaps only in development.
--------------------------------------
+GULP: sourcemaps only in development, plumber.
+----------------------------------------------
 
 I have now the **--production** so that everything is minified when I deploy. But when i do
 that i don't want the sourcemaps to be there anymore, for that purpose to note share my
@@ -127,11 +127,52 @@ If I run gulp with --production the config.sourceMaps going to be now false beca
 and the sourcemaps init and write will not going to be executed, but the minifying will be executed because
 the config.production false will became true. [More about negation and double negation][47].
 
+
+### Plumber
+
+With **gulp** running, when I update a file, gulp-bots recompile CSS. But if I make a syntax error
+for example in **layout.scc**, then **gulp** will explode and will not run anymore. So if even if
+I fix the error **gulp** is dead.
+
+For this problem is another plugin the [gulp-plumber][49]:
+```
+npm install --save-dev gulp-plumber
+```
+Add the **require**:
+
+```
+gulpfile.js
+
+var gulp = require('gulp');
+...
+var plumber = require('gulp-plumber');
+...
+```
+
+And now I need to pipe gulp through this plugin before any logic that might cause an error. So right
+after **gulp.src**:
+
+```
+gulpfile.js
+
+    ...
+    gulp.src(config.assetsDir+'/'+config.sassPattern)
+        .pipe(gulpif(!util.env.production, plumber()))
+        ...
+        .pipe(gulp.dest('web/css'));
+    ...
+```
+**Notice**: ```.pipe(gulpif(!util.env.production, plumber()))``` Plumber prevents gulp from throwing
+a proper error exit code. When building for production I want a proper error, so use **plummber()**
+only in development And that's it, now if i mess up in **layout.scss** gulp does show the error,
+but doesn't die anymore.
+
 Links:
 ------
 * [gulp-if][46]
 * [More about negation and double negation][47]
 * [gulp-cheatsheet][48]
+* [gulp-plumber][49]
 
 
 
@@ -4360,4 +4401,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [46]:https://www.npmjs.com/package/gulp-if/
 [47]:https://stackoverflow.com/questions/10467475/double-negation-in-javascript-what-is-the-purpose
 [48]:https://github.com/osscafe/gulp-cheatsheet
+[49]:https://www.npmjs.com/package/gulp-plumber
 <!-- / end links-->

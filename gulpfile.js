@@ -5,6 +5,7 @@ var concat = require('gulp-concat');
 var cleanCSS = require('gulp-clean-css');
 var util = require('gulp-util');
 var gulpif = require('gulp-if');
+var plumber = require('gulp-plumber');
 
 var config = {
    assetsDir: 'app/Resources/assets',
@@ -16,6 +17,7 @@ var config = {
 
 gulp.task('sass', function() {
    gulp.src(config.assetsDir+'/'+config.sassPattern)
+       .pipe(gulpif(!util.env.production, plumber()))
        .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
        .pipe(sass())
        .pipe(concat('main.css'))
