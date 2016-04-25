@@ -1,4 +1,8 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/record.css') }}"/>
+{% endblock %}
 
 {% block title %}Genus {{ name.songName }}{% endblock %}
 
@@ -42,3 +46,4 @@
     </script>
 
 {% endblock %}
+

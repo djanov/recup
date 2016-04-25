@@ -14,18 +14,30 @@ var config = {
                                      // undefined into a proper false.
    sourceMaps: !util.env.production
 };
+var app = {};
 
-gulp.task('sass', function() {
-   gulp.src(config.assetsDir+'/'+config.sassPattern)
+app.addStyle = function(paths, outputFilename) {
+   gulp.src(paths)
        .pipe(gulpif(!util.env.production, plumber()))
        .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
        .pipe(sass())
-       .pipe(concat('main.css'))
+       .pipe(concat(outputFilename))
        .pipe(gulpif(config.production, cleanCSS()))
        .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
        .pipe(gulp.dest('web/css'));
-   console.log(config.sourceMaps);
-   console.log(config.production);
+};
+
+
+
+gulp.task('sass', function() {
+   app.addStyle([
+      config.assetsDir+'/sass/layout.scss',
+      config.assetsDir+'/sass/styles.scss'
+      ], 'main.css');
+
+   app.addStyle([
+      config.assetsDir+'/sass/record.scss'
+   ], 'record.css');
 });
 
 gulp.task('watch', function(){

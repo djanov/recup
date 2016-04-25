@@ -57,6 +57,108 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 25, 2016 (gulp: page specific css)
+========================================
+
+To make page specific css, make new **record.sccs** file in **app/Resources/assets/sass/**
+, after some page specific styling, configure Gulp to give two files: **main.css** made from
+**styles.scss** and **layout.scss** and **record.css** made from the **record.scss**, then include
+**record.css** only on the show page.
+
+##### Including specific Files in main.css
+
+First, make **main.css** only include two of these files. Update **gulp.src()**. Instead of a pattern,
+pass an array:
+
+```
+gulpfile.js
+
+...
+gulp.task('sass', function() {
+    gulp.src([
+        config.assetsDir+'/sass/layout.scss',
+        config.assetsDir+'/sass/styles.scss'
+    ])
+        .pipe(plugins.plumber())
+        ...
+```
+
+##### Isolating the Styles pipeline
+
+To make **record.css** seperate to the **main.css** I need to create an **app** class, and I will
+ store custom function here. Create **addStyle**, give it two arguments the **paths** to process and
+ a final **filename** to write. Next, copy the guts of the **sass** task into **addStyle**
+ and make it dynamic. fill in **paths** on top, and **filename** instead of **main.css**:
+
+ ```
+ gulpfile.js
+ ...
+ var app = {};
+
+ app.addStyle = function(paths, outputFilename) {
+    gulp.src(paths)
+        .pipe(gulpif(!util.env.production, plumber()))
+        .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
+        .pipe(sass())
+        .pipe(concat(outputFilename))
+        .pipe(gulpif(config.production, cleanCSS()))
+        .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
+        .pipe(gulp.dest('web/css'));
+ };
+ ...
+ ```
+ Now In the **sass* task, call **app.addStyle()**, keep the two paths, comma, then **main.css**:
+
+ ```
+ gulpfile.js
+    ...
+gulp.task('sass', function() {
+   app.addStyle([
+      config.assetsDir+'/sass/layout.scss',
+      config.assetsDir+'/sass/styles.scss'
+      ], 'main.css');
+    });
+    ...
+ ```
+
+##### Processing a Second CSS File
+
+To do that, just call **addStyle()** again. and make it oad only **record.scss**. And give a different
+output name **record.css** but this can be anything.
+
+```
+gulpfile.js
+...
+gulp.task('sass', function() {
+   ...
+   app.addStyle([
+      config.assetsDir+'/sass/record.scss'
+   ], 'record.css');
+});
+   ...
+```
+
+##### Updating the Template
+
+The last step is to add a **link** tag to this one page. In twig override the **stylesheets**, call
+the **parent()** function to keep what's in the layout, then create a normal **link** tag that
+points to **css/record.css**:
+
+```
+src/RecUp/RecordBundle/Resources/views/Default/show.html.twig
+...
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/record.css') }}"/>
+{% endblock %}
+...
+```
+Run gulp, and refresh the page, now I have a page-specific CSS. So when if I need to add some new CSS
+don't need to throw in the one gigantic main CSS file, if I need something page-specific, I can
+now compile a new CSS file just for that.
+
+
+
 April 24, 2016 (gulp)
 =====================
 GULP: sourcemaps only in development, plumber.
