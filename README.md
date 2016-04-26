@@ -57,8 +57,8 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
-April 26, 2016 (gulp: bower bootstrap file in main.css)
-=======================================================
+April 26, 2016 (gulp: bower bootstrap file in main.css, minify and combine js)
+=============================================================================
 
 First add a new config variable set it to **vendor/bower_components**:
 
@@ -93,6 +93,162 @@ boring Sass file ever.
 
 Run gulp, and now in the browser **main.css** starts with a Bootstrap code. And if i run
 gulp with **--production** flag it would be minified.
+
+### Minify and Combine JavaScript
+
+First create a **js** directory inside **app/Resources/assets** and a new file, call **main.js**.
+
+Make some dummy jquery, to add something visual to the footer:
+
+```
+app/Resources/assets/js/main.js
+
+$(document).ready(function() {
+    console.log('It\'s a Unix system, I know this');
+    $('.footer').prepend('<span>Life finds a way -> </span>');
+});
+```
+The **main.js** isn't in a public directory so Gulp for help.
+Create a new Task called **scripts**, inside here its going to do the exact same stuff I have
+for the CSS. Copy the inside of **addStyle** and paste it in this task. Delete **sass** filter
+and **cleanCSS**. In **src()**, start with **config.assetsDir** then **/js/main.js**. For jQuery,
+above **main.js** add **config.bowerDir** then **/jquery/dist/jquery.js**. And put in **dest()**
+to **web/js** and give **concat()** a filename **site.js**:
+
+```
+gulpfile.js
+...
+gulp.task('scripts', function() {
+    gulp.src([
+        config.bowerDir+'/jquery/dist/jquery.js',
+        config.assetsDir+'/js/main.js'
+      ])
+       .pipe(gulpif(!util.env.production, plumber()))
+       .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
+       .pipe(concat('site.js'))
+       .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
+       .pipe(gulp.dest('web/js'));
+});
+...
+```
+Run **gulp scripts**, now in **web/**, we have a new **site.js** file and its map.
+
+##### Updating watch and default
+
+Update the **watch** task, Copy the existing line, for path look for anything in the **js**
+directory recursively  ```**js/**/*.js```, and when that happens, run **scripts**:
+
+```
+gulpfile.js
+...
+gulp.task('watch', function(){
+   gulp.watch(config.assetsDir+'/'+config.sassPattern, ['styles']);
+   gulp.watch(config.assetsDir+'/js/**/*.js', ['scripts']);
+});
+gulp.task('default', ['styles', 'scripts', 'watch']);
+```
+Add this to the **default** task too. Run **gulp**, it runs **scripts** and then watch waits.
+
+After all that, I have the real **site.js** file in a public directory. Using the **asset()**
+function from Symfony add the path:
+
+```
+src/RecUp/Resources/views/Default/show.html.twig
+        ...
+        {% block javascripts %}
+        ...
+            <script src="{{ asset('js/site.js') }}"></script>
+        {% endblock %}
+        ...
+```
+Refresh and the quote is now in the footer ``Life finds a way ->``.
+This is a generated file, so add it to the **.gitignore**:
+```
+.gitignore
+
+...
+/web/js
+```
+
+##### Minify with gulp-uglify
+
+To minify JS-files, I use the [gulp-uglify][50] plugin. First download using npm:
+
+```
+npm install --save-dev gulp-uglify
+```
+Add the **require** line to the **gulpfile.js**
+
+```
+gulpfile.js
+
+var gulp = require('gulp');
+...
+var uglify = require('gulp-uglify');
+...
+```
+
+Copy the **CleanCSS()** line from the **addStyle**, so I have the **--production** flag behavior.
+Paste it and change to **uglify()**:
+
+```
+gulpfile.js
+    ...
+gulp.task('scripts', function() {
+    gulp.src([
+        config.bowerDir+'/jquery/dist/jquery.js',
+        config.assetsDir+'/js/main.js'
+      ])
+       .pipe(gulpif(!util.env.production, plumber()))
+       .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
+       .pipe(concat('site.js'))
+       .pipe(gulpif(config.production, uglify()))
+       .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
+       .pipe(gulp.dest('web/js'));
+});
+    ...
+```
+Now with **gulp** it use the non-minified version, but with **gulp --production** now I have the
+file uglified.
+
+##### Multiple JavaScript Files
+
+I need not just one js file, I need page-specific js files, so to do that add a new **app.addScript**
+function with **paths** and **filename** arguments to be dynamic:
+
+```
+gulpfile.js
+
+    ...
+app.addScript = function(paths, outputFilename) {
+   gulp.src(paths)
+       .pipe(gulpif(!util.env.production, plumber()))
+       .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
+       .pipe(concat(outputFilename))
+       .pipe(gulpif(config.production, uglify()))
+       .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
+       .pipe(gulp.dest('web/js'));
+};
+    ...
+```
+Back in the **scripts** task, just call the function and pass those paths, then pass filename **site.js**:
+
+```
+gulp.task('scripts', function() {
+   app.addScript([
+          config.bowerDir+'/jquery/dist/jquery.js',
+          config.assetsDir+'/js/main.js'
+       ], 'site.js');
+});
+```
+
+Delete the previously generated **site.js** in the public directory **web/js/site.js**. And run gulp.
+
+Now if i need a page-specific JavaScript file, I'll just add another **addScript** call here.
+
+Links:
+------
+* [gulp-uglify for JS to minify][50]
 
 
 
@@ -4543,4 +4699,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [47]:https://stackoverflow.com/questions/10467475/double-negation-in-javascript-what-is-the-purpose
 [48]:https://github.com/osscafe/gulp-cheatsheet
 [49]:https://www.npmjs.com/package/gulp-plumber
+[50]:https://www.npmjs.com/package/gulp-uglify/
 <!-- / end links-->
