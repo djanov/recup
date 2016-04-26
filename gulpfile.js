@@ -12,7 +12,8 @@ var config = {
    sassPattern: 'sass/**/*.scss',
    production: !!util.env.production, // Those two exclamations turn
                                      // undefined into a proper false.
-   sourceMaps: !util.env.production
+   sourceMaps: !util.env.production,
+   bowerDir: 'vendor/bower_components'
 };
 var app = {};
 
@@ -29,8 +30,9 @@ app.addStyle = function(paths, outputFilename) {
 
 
 
-gulp.task('sass', function() {
+gulp.task('styles', function() {
    app.addStyle([
+      config.bowerDir+'/bootstrap/dist/css/bootstrap.css',
       config.assetsDir+'/sass/layout.scss',
       config.assetsDir+'/sass/styles.scss'
       ], 'main.css');
@@ -41,7 +43,7 @@ gulp.task('sass', function() {
 });
 
 gulp.task('watch', function(){
-   gulp.watch(config.assetsDir+'/'+config.sassPattern, ['sass'])
+   gulp.watch(config.assetsDir+'/'+config.sassPattern, ['styles'])
 });
 
-gulp.task('default', ['sass', 'watch']);
+gulp.task('default', ['styles', 'watch']);

@@ -57,6 +57,45 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 26, 2016 (gulp: bower bootstrap file in main.css)
+=======================================================
+
+First add a new config variable set it to **vendor/bower_components**:
+
+```
+gulpfile.js
+...
+var config = {
+    ...
+    bowerDir: 'vendor/bower_components'
+};
+...
+```
+
+add this to the **addStyle** function:
+
+```
+gulpfile.js
+...
+gulp.task('styles', function() {
+    app.addStyle([
+        config.bowerDir+'/bootstrap/dist/css/bootstrap.css',
+        config.assetsDir+'/sass/layout.scss',
+        config.assetsDir+'/sass/styles.scss'
+    ], 'main.css');
+...
+});
+...
+```
+And I don't need to worry about getting the min file, because I already taking care of that.
+This file will go through the **sass** filter, but that's ok. It'll just look like the most
+boring Sass file ever.
+
+Run gulp, and now in the browser **main.css** starts with a Bootstrap code. And if i run
+gulp with **--production** flag it would be minified.
+
+
+
 April 25, 2016 (gulp: page specific css)
 ========================================
 
