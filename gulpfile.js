@@ -40,10 +40,15 @@ app.addScript = function(paths, outputFilename) {
        .pipe(gulp.dest('web/js'));
 };
 
+app.copy = function(srcFiles, outputDir){
+   gulp.src(srcFiles)
+       .pipe(gulp.dest(outputDir));
+};
 
    gulp.task('styles', function() {
    app.addStyle([
       config.bowerDir+'/bootstrap/dist/css/bootstrap.css',
+      config.bowerDir+'/font-awesome/css/font-awesome.css',
       config.assetsDir+'/sass/layout.scss',
       config.assetsDir+'/sass/styles.scss'
       ], 'main.css');
@@ -60,10 +65,17 @@ gulp.task('scripts', function() {
        ], 'site.js');
 });
 
+gulp.task('fonts', function() {
+   app.copy(
+       config.bowerDir+'/font-awesome/fonts/*',
+       'web/fonts'
+   );
+});
+
 
 gulp.task('watch', function(){
    gulp.watch(config.assetsDir+'/'+config.sassPattern, ['styles']);
    gulp.watch(config.assetsDir+'/js/**/*.js', ['scripts']);
 });
 
-gulp.task('default', ['styles', 'scripts', 'watch']);
+gulp.task('default', ['styles', 'scripts', 'fonts', 'watch']);

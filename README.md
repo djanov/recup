@@ -57,6 +57,90 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 27, 2016 (gulp: font awesome)
+===================================
+
+To use font-awesome it's not enough, to add the file to the **main.css**:
+```
+gulpfile.js
+    ...
+   app.addStyle([
+      config.bowerDir+'/bootstrap/dist/css/bootstrap.css',
+      config.bowerDir+'/font-awesome/css/font-awesome.css',
+      config.assetsDir+'/sass/layout.scss',
+      config.assetsDir+'/sass/styles.scss'
+      ], 'main.css');
+   ...
+```
+When I refresh, I got 404 errors for the FontAwesome font files. Font Awesome goes up one level
+from its CSS and looks for a **fonts/** directory. Since its code lives in **main.css**, it goes up
+one level and looks for **fonts/** right at the root of **web/**. I can control this with
+Font Awesome Sass package, to control where it's looking, but even then I have the problem.
+The FontAwesome **fonts/** directory is deep inside **vendor/bower_components**. I need to copy this stuff
+into **web/**.
+
+##### The copy function
+
+Copying function is easy to do, so go straight to making a new function **app.copy** with two
+arguments **srcFiles** and **outputDir**. It will read some source files and copy them to the new
+spot. To copy files in Gulp, just create the normal pipe chain, but without any filters in the
+middle: **gulp.src(srcFiles)**, then pipe that directly to **gulp.dest(outputDir)**
+
+```
+gulpfile.js
+    ...
+app.copy = function(srcFiles, outputDir) {
+    gulp.src(srcFiles)
+        .pipe(gulp.dest(outputDir));
+};
+    ...
+```
+
+##### Make the Fonts public
+
+Add a new task called **fonts**. The job of this task will be to "publish" any fonts that I have into
+**web/**. Right now, it's just the FontAwesome. Use the **app.copy()** and for the path start with
+**config.bowerDir** then the __font-awesome/fonts/*__ path, to grab everything. For the target, just
+**web/fonts**:
+
+```
+gulpfile.js
+
+    ...
+gulp.task('fonts', function() {
+   app.copy(
+       config.bowerDir+'/font-awesome/fonts/*',
+       'web/fonts'
+   );
+});
+    ...
+```
+
+Add this to run with the default task:
+
+```
+gulpfile.js
+
+    ...
+gulp.task('default', ['styles', 'scripts', 'fonts', 'watch']);
+```
+
+But don't add to watch, its not going to be actively changing.
+
+Restart gulp, and its running the **fonts** task, inside **web/**, I have a new **fonts/** directory.
+And since FontAwesome is looking right here for them, the 404 error is gone.
+
+Don't commit the fonts, the **web/fonts** directory is generated file so don't commit like the **css/**
+and **js/** folders:
+
+```
+.gitignore
+...
+/web/fonts
+```
+
+
+
 April 26, 2016 (gulp: bower bootstrap file in main.css, minify and combine js)
 =============================================================================
 
