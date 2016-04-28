@@ -12,6 +12,11 @@ services:
          tags:
             - { name: twig.extension }
          autowire: true
+     twig_asset_version_extension:
+        class: RecUp\RecordBundle\Twig\AssetVersionExtension
+        arguments: ["%kernel.root_dir%"]
+        tags:
+          - { name: twig.extension }
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

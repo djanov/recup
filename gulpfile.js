@@ -7,6 +7,7 @@ var util = require('gulp-util');
 var gulpif = require('gulp-if');
 var plumber = require('gulp-plumber');
 var uglify = require('gulp-uglify');
+var rev = require('gulp-rev');
 
 
 var config = {
@@ -24,10 +25,15 @@ app.addStyle = function(paths, outputFilename) {
        .pipe(gulpif(!util.env.production, plumber()))
        .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
        .pipe(sass())
-       .pipe(concat(outputFilename))
+       .pipe(concat('css/'+outputFilename))
        .pipe(gulpif(config.production, cleanCSS()))
+       .pipe(rev())
        .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
-       .pipe(gulp.dest('web/css'));
+       .pipe(gulp.dest('web'))
+       .pipe(rev.manifest('app/Resources/assets/rev-manifest.json', {
+          merge: true
+       }))
+       .pipe(gulp.dest('.'));
 };
 
 app.addScript = function(paths, outputFilename) {

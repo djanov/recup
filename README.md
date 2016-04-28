@@ -57,6 +57,300 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 28, 2016 (gulp: cache busting)
+====================================
+
+If I deploy an update to **main.css**, the visitors will need to clear cache to see the new stuff.
+So i need a plugin that will do that for me the cache busting.
+
+The plugin for this is called [gulp-rev][51], rev means "revision". In the docs, the plugin
+does one thing: I point it at a file - like **main.css** and it changes the name, adding a hash
+on the end. The hash is based on the contents, sp it'll change whenever the file is changes.
+
+The task is here to make somehow the template automatically point to whatever the latest hashed
+filename is, then I have cache-busting.
+
+First download the plugin:
+
+```
+npm install --save-dev gulp-rev
+```
+Then insert the require line:
+
+```
+gulpfile.js
+var gulp = require('gulp');
+...
+var rev = require('gulp-rev');
+```
+
+Next in **addStyle**, add the new **pipe()** right before the sourcemaps are dumped so that
+both the CSS and its map are renamed. Inside, use **rev()**, then remove the public CSS folder
+in **web**, and run **gulp**. Now the two css filename has changed to: **main-9d28056084.css** and
+**record-8d66f128c9.css** and the maps also got renamed. The site now is broken, because
+I have including the old **main.css** file in the layout.
+
+##### Dumping the rev-manifest.json File
+
+I can't just update **base.html.twig** to use the new hashed name because it would re-break
+every time the file is changed. I need a map to say **main.css** is called **main-9d28056084.css**.
+If i had that i can use it inside with PHP code to rewrite the **main.css** in the base template
+to hashed version automatically. When the hashed name updates, the map would update, and so my code.
+
+And the **gulp-rev** plugin have this. The map is called a "manifest". To get **gulp-rev** to
+create that, I need to add another **pipe()** in the end to **rev.manifest()** and tell where I
+want the manifest file:
+
+```
+gulpfile.js
+
+...
+app.addStyle = function(paths, outputFilename) {
+   gulp.src(paths)
+       .pipe(gulpif(!util.env.production, plumber()))
+    ...
+       .pipe(rev.manifest('app/Resources/assets/rev-manifest.json'))
+       .pipe(gulp.dest('.'));
+};
+```
+The file doesn't need to be publicly accessible, the PHP code just needs to be able to read.
+There's now multiple **gulp.dest()**, So fore I've always had one **gulp.src()** at the top
+and one **gulp.dest()** at the bottom but I can have more. In the **addStyle** the first
+**gulp.dest()** writes the CSS file, but once I pipe to **rev.manifest()**, the gulp stream
+changes, instead of being the CSS file, the manifest is now being passed through the pipes. So
+the last **gulp.dest()** just writes that file relative to the root directory.
+
+Run **gulp** and there is the **rev-manifest.json** file. It holds the map from **main.css**,
+but it missing **record.css** to fix that add a **merge: true** to the **rev.manifest**
+
+```
+gulpfile.js
+    gulp.src(paths)
+        ...
+        // write the rev-manifest.json file for gulp-rev
+        .pipe(rev.manifest('app/Resources/assets/rev-manifest.json', {
+            merge: true
+        }))
+    ...
+```
+
+There is one more problem, to make this in **css/main.css**. To fix that inside **concat()**,
+update it to **css/** then the filename. That changes the filename that's inside the Gulp stream.
+To keep the file in the sam spot, just take the **css/** out of the **gulp.dest()** call:
+
+```
+gulpfile.js
+..
+app.addStyle = function(paths, outputFilename) {
+   gulp.src(paths)
+        ...
+       .pipe(concat('css/'+outputFilename))
+        ...
+       .pipe(rev())
+       .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
+       .pipe(gulp.dest('web'))
+       .pipe(rev.manifest('app/Resources/assets/rev-manifest.json', {
+          merge: true
+       }))
+       .pipe(gulp.dest('.'));
+};
+        ...
+```
+
+Now the **rev-manifest.json** has the **css/** prefix:
+
+```
+app/Resources/assets/rev-manifest.json
+
+{
+  "css/main.css": "css/main-0710b93ea3.css",
+  "css/record.css": "css/record-8d66f128c9.css"
+}
+```
+
+##### Making the link href Dynamic
+
+For that I need to create an Twig extension file(this is an empty twig extension file to get started):
+
+```
+<?php
+src/RecUp/RecordBundle/Twig/AssetVersionExtension.php
+
+
+namespace RecUp\RecordBundle\Twig;
+
+class AssetVersionExtension extends \Twig_Extension
+{
+    private $appDir;
+
+    public function __construct($appDir)
+    {
+        $this->appDir = $appDir;
+    }
+
+    public function getFilters()
+    {
+        return array(
+
+        );
+    }
+
+    public function getName()
+    {
+        return 'asset_version';
+    }
+}
+
+```
+And to Twig to know about this add in services the extension:
+
+```
+app/config/srvices.yml
+...
+services:
+    twig_asset_version_extension:
+        class: AppBundle\Twig\AssetVersionExtension
+        arguments: ["%kernel.root_dir%"]
+        tags:
+            - { name: twig.extension }
+
+```
+This Twig extension is now ready to go, all I need to do is register the **asset_version** filter
+this name can be anything I just chose this unique name for the filter to use later in the Twig
+template. This filter is will go inside **getFilter()** with **new \Twig_SimpleFilter('asset_version', ...)**
+and it will call a method in this class called **getAssertVersion**:
+
+```
+src/RecUp/RecordBundle/Twig/AssetVersionExtension.php
+    ...
+    public function getFilters()
+    {
+        return array(
+            new \Twig_SimpleFilter('asset_version', array($this, 'getAssetVersion')),
+        );
+    }
+    ...
+```
+
+Below, add that function. It'll be passed the **$filename** that I try to version. So for me,
+**css/main.css**.
+
+The task is: open up **rev-manifest.json**, find the path, then return its versioned filename value.
+The path to that file is **$this->appDir** this property is already set up to point to the **app/**
+directory then **Resources/assets/rev-manifest.json**:
+
+```
+<?php
+src/RecUp/RecordBundle/Twig/AssetVersionExtension.php
+
+
+namespace RecUp\RecordBundle\Twig;
+
+class AssetVersionExtension extends \Twig_Extension
+{
+    private $appDir;
+
+    public function __construct($appDir)
+    {
+        $this->appDir = $appDir;
+    }
+
+    public function getFilters()
+    {
+        return array(
+            new \Twig_SimpleFilter('asset_version', array($this, 'getAssetVersion')),
+        );
+    }
+
+    public function getAssetVersion($filename)
+    {
+        $manifestPath = $this->appDir.'/Resources/assets/rev-manifest.json';
+
+    }
+    ...
+```
+
+Now make some clear exceptions. If the file is missing, open it up, decode the JSON, and set the map
+ to an **$assets** variable. Since the manifest file has the original filename as the key. let's
+ throw one more exception if the file isn't in the map. And finally, return the mapped value:
+
+
+ ```
+ <?php
+ src/RecUp/RecordBundle/Twig/AssetVersionExtension.php
+
+
+namespace RecUp\RecordBundle\Twig;
+
+ class AssetVersionExtension extends \Twig_Extension
+ {
+     private $appDir;
+
+     public function __construct($appDir)
+     {
+         $this->appDir = $appDir;
+     }
+
+     public function getFilters()
+     {
+         return array(
+             new \Twig_SimpleFilter('asset_version', array($this, 'getAssetVersion')),
+         );
+     }
+
+     public function getAssetVersion($filename)
+     {
+         $manifestPath = $this->appDir.'/Resources/assets/rev-manifest.json';
+         if (!file_exists($manifestPath)) {
+             throw new \Exception(sprintf('Cannot find manifest file: "%s"', $manifestPath));
+         }
+
+         $paths = json_decode(file_get_contents($manifestPath), true);
+         if (!isset($paths[$filename])) {
+             throw new \Exception(sprintf('There is no file "%s" in the version manifest!', $filename));
+         }
+
+         return $paths[$filename];
+     }
+ ```
+So I give it **css/main.css** and it gives us the hashed filename.
+
+Now add the filter to the **base.html.twig** and the **show.html.twig**:
+
+```
+app/Resources/views/base.html.twig
+    ...
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('css/main.css'|asset_version) }}">
+        {% endblock %}
+    ...
+```
+```
+src/RecUp/RecordBundle/Resources/views/Default/show.html.twig
+
+ {% block stylesheets %}
+     {{ parent() }}
+     <link rel="stylesheet" href="{{ asset('css/record.css'|asset_version) }}"/>
+ {% endblock %}
+```
+
+Refresh, the site is back, the hashed filename shows up in the source.
+
+If I change anything for example in the **layout.scss** the gulp watch robots are working, so
+I immediately see a brand new hashed **main.css** file in **web/css**. And the if i refresh the page
+I can see that the layout automatically updated the new filename, the new CSS filename pops up
+and the changes are working.
+
+**Don't commit the manifest**, it's generated automatically by Gulp. So add it to the **.gitignore** file.
+
+```
+.gitignore
+...
+/app/Resources/assets/rev-manifest.json
+```
+
+
+
 April 27, 2016 (gulp: font awesome)
 ===================================
 
@@ -4784,4 +5078,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [48]:https://github.com/osscafe/gulp-cheatsheet
 [49]:https://www.npmjs.com/package/gulp-plumber
 [50]:https://www.npmjs.com/package/gulp-uglify/
+[51]:https://www.npmjs.com/package/gulp-rev/
 <!-- / end links-->
