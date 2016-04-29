@@ -9,6 +9,8 @@ var plumber = require('gulp-plumber');
 var uglify = require('gulp-uglify');
 var rev = require('gulp-rev');
 
+var del = require('del'); // This is not a gulp plugin.
+
 
 var config = {
    assetsDir: 'app/Resources/assets',
@@ -16,7 +18,8 @@ var config = {
    production: !!util.env.production, // Those two exclamations turn
                                      // undefined into a proper false.
    sourceMaps: !util.env.production,
-   bowerDir: 'vendor/bower_components'
+   bowerDir: 'vendor/bower_components',
+   revManifestPath: 'app/Resources/assets/rev-manifest.json'
 };
 var app = {};
 
@@ -30,7 +33,7 @@ app.addStyle = function(paths, outputFilename) {
        .pipe(rev())
        .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
        .pipe(gulp.dest('web'))
-       .pipe(rev.manifest('app/Resources/assets/rev-manifest.json', {
+       .pipe(rev.manifest(config.revManifestPath, {
           merge: true
        }))
        .pipe(gulp.dest('.'));
@@ -40,10 +43,15 @@ app.addScript = function(paths, outputFilename) {
    gulp.src(paths)
        .pipe(gulpif(!util.env.production, plumber()))
        .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
-       .pipe(concat(outputFilename))
+       .pipe(concat('js/'+outputFilename))
        .pipe(gulpif(config.production, uglify()))
+       .pipe(rev())
        .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
-       .pipe(gulp.dest('web/js'));
+       .pipe(gulp.dest('web'))
+       .pipe(rev.manifest(config.revManifestPath, {
+            merge: true
+        }))
+       .pipe(gulp.dest('.'));
 };
 
 app.copy = function(srcFiles, outputDir){
@@ -78,10 +86,17 @@ gulp.task('fonts', function() {
    );
 });
 
+gulp.task('clean', function() {
+    del.sync(config.revManifestPath);
+    del.sync('web/css/*');
+    del.sync('web/js/*');
+    del.sync('web/fonts/*');
+});
+
 
 gulp.task('watch', function(){
    gulp.watch(config.assetsDir+'/'+config.sassPattern, ['styles']);
    gulp.watch(config.assetsDir+'/js/**/*.js', ['scripts']);
 });
 
-gulp.task('default', ['styles', 'scripts', 'fonts', 'watch']);
+gulp.task('default', ['clean','styles', 'scripts', 'fonts', 'watch']);
