@@ -89,7 +89,7 @@ gulp.task('fonts', function() {
 gulp.task('clean', function() {
     del.sync(config.revManifestPath);
     del.sync('web/css/*');
-    del.sync('web/js/*');
+    // del.sync('web/js/*');
     del.sync('web/fonts/*');
 });
 

@@ -57,6 +57,124 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+April 29, 2016 (gulp: del, javascript versioning)
+=================================================
+
+After a while, the versioning is going to clutter up the **web/css** directory. To prevent that
+use the library called [del][52]:
+```
+npm install del --save-dev
+```
+This is not a gulp plugin, add at the top the **require**:
+
+```
+gulpfile.js
+
+var gulp = require('gulp');
+...
+var del = require('del');
+
+This library helps delete files. I need a way to clean up the generated files. Add a new task,
+and call it **clean**:
+
+```
+```
+gulpfile.js
+...
+gulp.task('clean', function() {
+
+});
+...
+```
+Inside here, remove everything that gulp generates. The first thing is the **rev-manifest.json** file.
+I don't need to clear this, but if I delete a CSS file, its last map value will still live here.
+So keep only the real files in this list.
+
+To do that use **dell.sync()**. This means that our code will wait at this line until the file is
+actually deleted. The path to the manifest file is used by the full path so make it a new config
+option **revManifestPath**:
+
+```
+gulpfile.js
+...
+var config = {
+    ...
+    revManifestPath: 'app/Resources/assets/rev-manifest.json'
+};
+    ...
+    gulp.src(paths)
+     ...
+        .pipe(rev.manifest(config.revManifestPath, {
+            merge: true
+        }))
+    ...
+```
+Now just feed that to **del.sync()**. The other things is need to clean up are __web/css/*__,
+__web/js/*__ and __web/fonts/*__:
+
+```
+gulpfile.js
+...
+gulp.task('clean', function() {
+    del.sync(config.revManifestPath);
+    del.sync('web/css/*');
+    del.sync('web/js/*');
+    del.sync('web/fonts/*');
+});
+...
+```
+Now add this to the beginning of the **default** task. So when the gul starts its going to clean
+up things.
+```
+gulpfile.js
+
+gulp.task('default', ['clean', 'styles', 'scripts', 'fonts', 'watch']);
+```
+
+### Versioning JavaScript
+
+The **site.js** file need versioning too. To make that steal the **rev()** line from **addStyle()**
+land put that right before the sourcemaps of **addScript**, and the 2 lines that dump the manifest file.
+Finnish with correcting the paths to the manifest has the **js/** directory part in the filename.
+So, to **concat()**, add **js/**, then just push **web** from the first **dest()** call:
+```
+gulpfile.js
+...
+app.addScript = function(paths, outputFilename) {
+   gulp.src(paths)
+       .pipe(gulpif(!util.env.production, plumber()))
+       .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
+       .pipe(concat('js/'+outputFilename))
+       .pipe(gulpif(config.production, uglify()))
+       .pipe(rev())
+       .pipe(gulpif(config.sourceMaps, sourcemaps.write('.')))
+       .pipe(gulp.dest('web'))
+       .pipe(rev.manifest(config.revManifestPath, {
+            merge: true
+        }))
+       .pipe(gulp.dest('.'));
+};
+       ...
+```
+And before restarting gulp add the **asset_version** to the **site.js** in the **show.html.twig**
+
+```
+src/RecUp/RecordBundle/Resources/views/Default/show.html.twig
+
+{%  block javascripts %}
+{{ parent() }}
+    ...
+    <script src="{{ asset('js/site.js'|asset_version) }}"></script>
+    ...
+{% endblock %}
+```
+
+Links:
+-----
+* [del library][52]
+
+
+
 April 28, 2016 (gulp: cache busting)
 ====================================
 
@@ -348,6 +466,10 @@ and the changes are working.
 ...
 /app/Resources/assets/rev-manifest.json
 ```
+
+Links:
+-----
+* [gulp-rev][51]
 
 
 
@@ -5079,4 +5201,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [49]:https://www.npmjs.com/package/gulp-plumber
 [50]:https://www.npmjs.com/package/gulp-uglify/
 [51]:https://www.npmjs.com/package/gulp-rev/
+[52]:https://www.npmjs.com/package/del
 <!-- / end links-->
