@@ -10,7 +10,7 @@ var uglify = require('gulp-uglify');
 var rev = require('gulp-rev');
 
 var del = require('del'); // This is not a gulp plugin.
-
+var Q = require('q');
 
 var config = {
    assetsDir: 'app/Resources/assets',
@@ -24,7 +24,7 @@ var config = {
 var app = {};
 
 app.addStyle = function(paths, outputFilename) {
-   gulp.src(paths)
+  return gulp.src(paths).on('end', function() { console.log('start '+outputFilename)})
        .pipe(gulpif(!util.env.production, plumber()))
        .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
        .pipe(sass())
@@ -36,11 +36,11 @@ app.addStyle = function(paths, outputFilename) {
        .pipe(rev.manifest(config.revManifestPath, {
           merge: true
        }))
-       .pipe(gulp.dest('.'));
+       .pipe(gulp.dest('.')).on('end', function() {console.log('end '+outputFilename)});
 };
 
 app.addScript = function(paths, outputFilename) {
-   gulp.src(paths)
+    return gulp.src(paths).on('end', function() { console.log('start '+outputFilename)})
        .pipe(gulpif(!util.env.production, plumber()))
        .pipe(gulpif(config.sourceMaps, sourcemaps.init()))
        .pipe(concat('js/'+outputFilename))
@@ -51,7 +51,7 @@ app.addScript = function(paths, outputFilename) {
        .pipe(rev.manifest(config.revManifestPath, {
             merge: true
         }))
-       .pipe(gulp.dest('.'));
+       .pipe(gulp.dest('.')).on('end', function() {console.log('end '+outputFilename)});
 };
 
 app.copy = function(srcFiles, outputDir){
@@ -59,24 +59,57 @@ app.copy = function(srcFiles, outputDir){
        .pipe(gulp.dest(outputDir));
 };
 
+var Pipeline = function() {
+    this.entries = [];
+};
+Pipeline.prototype.add = function() {
+    this.entries.push(arguments);
+};
+Pipeline.prototype.run = function(callable) {
+    var deferred = Q.defer();
+    var i = 0;
+    var entries = this.entries;
+    var runNextEntry = function() {
+        // see if we're all done looping
+        if (typeof entries[i] === 'undefined') {
+            deferred.resolve();
+            return;
+        }
+        // pass app as this, though we should avoid using "this"
+        // in those functions anyways
+        callable.apply(app, entries[i]).on('end', function() {
+            i++;
+            runNextEntry();
+        });
+    };
+    runNextEntry();
+    return deferred.promise;
+};
+
    gulp.task('styles', function() {
-   app.addStyle([
+       var pipeline = new Pipeline();
+
+   pipeline.add([
       config.bowerDir+'/bootstrap/dist/css/bootstrap.css',
       config.bowerDir+'/font-awesome/css/font-awesome.css',
       config.assetsDir+'/sass/layout.scss',
       config.assetsDir+'/sass/styles.scss'
       ], 'main.css');
 
-   app.addStyle([
-      config.assetsDir+'/sass/record.scss'
-   ], 'record.css');
+       pipeline.add([
+           config.assetsDir+'/sass/record.scss'
+       ], 'record.css');
+    pipeline.run(app.addStyle);
 });
 
 gulp.task('scripts', function() {
-   app.addScript([
+    var pipeline = new Pipeline();
+   pipeline.add([
           config.bowerDir+'/jquery/dist/jquery.js',
           config.assetsDir+'/js/main.js'
        ], 'site.js');
+
+    pipeline.run(app.addScript);
 });
 
 gulp.task('fonts', function() {

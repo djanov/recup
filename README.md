@@ -57,6 +57,182 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+Maybe add later:
+================
+* **April 30**:
+  - For [GULP][54] to have [autoprefixer][55](PostCSS plugin to parse CSS and add vendor
+  prefixes to CSS rules).
+
+
+April 30, 2016 (gulp: fixing the css orders)
+============================================
+
+If i run **gulp**, gulp shows that everything is in order: clean start, clean finish. But
+that's wrong. The truth is that everything happening all at once, asynchronously. Gulp has no idea
+when each task actually finishes, so I need to fix that.
+
+Gulp streams ar like a promise each line in a gulp stream is asynchronous - like an AJAX call.
+This means that before **gulp.src()** finishes, the next **pipe()** is already being called.
+But I need each line to run in order, so when I call **pipe()**, it doesn't run what's inside
+immediately: it schedules it to be called once the previous line finishes. The effect is like
+making an AJAX call, adding a success listener, then making another AJAX call from inside it.
+
+So does the **main.css** file finish compiling before **record.css** starts? Does the scripts
+wait for the styles task for finish? To find out add the **on('end')** listeners.
+Like with AJAX, each line returns something that acts like a Promise. That means, for any line, I
+can write **on** to add a listener for when this specific line actually finishes. When that
+happens, add **console.log('start '+filename)**. And add another listener to the last line,
+but change the text to "end":
+
+```
+gulpfile.js
+    ...
+app.addStyle = function(paths, outputFilename) {
+    gulp.src(paths).on('end', function() { console.log('start '+outputFilename)})
+    ...
+        .pipe(gulp.dest('.')).on('end', function() { console.log('end '+outputFilename)})
+};
+    ...
+```
+Run **gulp**, it said it finished "styles", but it really means it was done executing the
+**styles** task. But things finish way later. In fact they don't start the process until later.
+And interestingly the **record.css** starts before **main.css**, even though main is the
+first style I add.
+
+##### Using the Pipeline
+
+To make things work in order, and if I have 10 css files, to don't use 10 levels of nested
+listeners, use object that was created by knpuniversity called Pipeline, it has a dependency
+on an object called [q][53], so let's go install that:
+
+```
+npm install q --save-dev
+```
+On top, add the **require**:
+
+```
+gulpfile.js
+
+var gulp = require('gulp');
+...
+var Q = require('q');
+...
+```
+
+The Pipeline object:
+
+```
+gulpfile.js
+
+...
+var Pipeline = function() {
+    this.entries = [];
+};
+Pipeline.prototype.add = function() {
+    this.entries.push(arguments);
+};
+
+Pipeline.prototype.run = function(callable) {
+    var deferred = Q.defer();
+    var i = 0;
+    var entries = this.entries;
+
+    var runNextEntry = function() {
+        // see if we're all done looping
+        if (typeof entries[i] === 'undefined') {
+            deferred.resolve();
+            return;
+        }
+
+        // pass app as this, though we should avoid using "this"
+        // in those functions anyways
+        callable.apply(app, entries[i]).on('end', function() {
+            i++;
+            runNextEntry();
+        });
+    };
+    runNextEntry();
+
+    return deferred.promise;
+};
+...
+```
+
+To use it, create a **pipeline** variable and set it to **new Pipeline()**. Now instead of
+calling **app.addStyle()** directly, call **pipeline.add()** with the same arguments.
+**pipeline.add()** is basically queuing those to be run. So at the end, call **pipeline.run()**
+and pass it the actual function it should call:
+
+```
+   gulp.task('styles', function() {
+       var pipeline = new Pipeline();
+
+   pipeline.add([
+      config.bowerDir+'/bootstrap/dist/css/bootstrap.css',
+      config.bowerDir+'/font-awesome/css/font-awesome.css',
+      config.assetsDir+'/sass/layout.scss',
+      config.assetsDir+'/sass/styles.scss'
+      ], 'main.css');
+
+       pipeline.add([
+           config.assetsDir+'/sass/record.scss'
+       ], 'record.css');
+    pipeline.run(app.addStyle);
+});
+```
+To work this peace of the code I need to return the the stream from **addStyle**:
+
+```
+gulpfile.js
+...
+app.addStyle = function(paths, outputFilename) {
+   return gulp.src(paths).on('end', function() { console.log('start '+outputFilename)})
+   ...
+```
+The console.log is for debugging purpose for the command prompt. Now if I run **gulp**
+Behind the scenes, the Pipeline is call **addStyle**, waiting until it finishes, then calling
+**addStyle** again.
+
+##### Pipelining scripts
+
+Now do the same for the scripts task so for the JS files. First make sure tu actually return from
+**addScript** - we need that stream so the **Pipeline** can add an **end** listener:
+
+```
+gulpfile.js
+...
+app.addScript = function(paths, outputFilename) {
+    return gulp.src(paths).on('end', function() { console.log('start '+outputFilename)})
+    ...
+```
+Then, in the **scripts** create the **pipeline** variable, then **pipeline.add()**. And
+**pipeline.run()** in the bottom to finish:
+
+```
+gulpfile.js
+
+
+gulp.task('scripts', function() {
+    var pipeline = new Pipeline();
+   pipeline.add([
+          config.bowerDir+'/jquery/dist/jquery.js',
+          config.assetsDir+'/js/main.js'
+       ], 'site.js');
+
+    pipeline.run(app.addScript);
+});
+```
+And run **gulp**.
+
+Remember that Gulp returns everything all at once, but it is possible to make one entire task
+wait for another to finish, more that later.
+
+Links:
+------
+* [q][53]
+
+
+
 April 29, 2016 (gulp: del, javascript versioning)
 =================================================
 
@@ -5202,4 +5378,7 @@ The GenusController is a controller, the function that will (eventually) build t
 [50]:https://www.npmjs.com/package/gulp-uglify/
 [51]:https://www.npmjs.com/package/gulp-rev/
 [52]:https://www.npmjs.com/package/del
+[53]:https://www.npmjs.com/package/q
+[54]:https://www.npmjs.com/package/gulp-autoprefixer
+[55]:https://github.com/postcss/autoprefixer
 <!-- / end links-->
