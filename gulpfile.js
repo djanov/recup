@@ -55,8 +55,8 @@ app.addScript = function(paths, outputFilename) {
 };
 
 app.copy = function(srcFiles, outputDir){
-   gulp.src(srcFiles)
-       .pipe(gulp.dest(outputDir));
+   return  gulp.src(srcFiles)
+           .pipe(gulp.dest(outputDir));
 };
 
 var Pipeline = function() {
@@ -99,7 +99,7 @@ Pipeline.prototype.run = function(callable) {
        pipeline.add([
            config.assetsDir+'/sass/record.scss'
        ], 'record.css');
-    pipeline.run(app.addStyle);
+    return pipeline.run(app.addStyle);
 });
 
 gulp.task('scripts', function() {
@@ -109,14 +109,14 @@ gulp.task('scripts', function() {
           config.assetsDir+'/js/main.js'
        ], 'site.js');
 
-    pipeline.run(app.addScript);
+    return pipeline.run(app.addScript);
 });
 
 gulp.task('fonts', function() {
-   app.copy(
-       config.bowerDir+'/font-awesome/fonts/*',
-       'web/fonts'
-   );
+  return  app.copy(
+          config.bowerDir+'/font-awesome/fonts/*',
+          'web/fonts'
+        ).on('end', function() {console.log('finished fonts!')});
 });
 
 gulp.task('clean', function() {
@@ -128,6 +128,7 @@ gulp.task('clean', function() {
 
 
 gulp.task('watch', function(){
+    console.log('starting watch');
    gulp.watch(config.assetsDir+'/'+config.sassPattern, ['styles']);
    gulp.watch(config.assetsDir+'/js/**/*.js', ['scripts']);
 });

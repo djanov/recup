@@ -63,6 +63,56 @@ Maybe add later:
   - For [GULP][54] to have [autoprefixer][55](PostCSS plugin to parse CSS and add vendor
   prefixes to CSS rules).
 
+Maj 1, 2016 (gulp: fixing the task order)
+=========================================
+
+##### There is no order to Dependent tasks
+
+If you're dependent on a task like **fonts*, that task must return a Promise or a Gulp stream.
+If it doesn't, Gulp actually has no idea when **fonts** finishes.
+
+So it just runs **watch** right awy. So, **return app.copy** from the **font** task, since
+**app.copy** returns Gulp stream.
+
+```
+gulp.task('fonts', function() {
+  return  app.copy(
+          config.bowerDir+'/font-awesome/fonts/*',
+          'web/fonts'
+        ).on('end', function() {console.log('finished fonts!')});
+});
+```
+
+Now, Gulp can know when **fonts** truly finishes it work. Now its there **fonts** finishes, and
+then **watch** starts. And there's one more thing: Gulp finally prints "Finished 'fonts'" in the
+right place, after **fonts** does it work.
+
+Its because Gulp can't report when a task finishes unless that task returns a Promise or a Gulp
+stream. This means it should return one of these from every task.
+
+Lastly we should always return a stream or promise, in the **styles** it doesn't have a single
+stream - it has two that are combined into the pipeline. So we need to wait until both of them
+are finished. And its just **return pipeline.run()**:
+```
+gulpfile.js
+
+
+gulp.task('styles', function() {
+    var pipeline = new Pipeline();
+
+    return pipeline.run(app.addStyle);
+});
+
+gulp.task('scripts', function() {
+    var pipeline = new Pipeline();
+
+    return pipeline.run(app.addScript);
+});
+```
+This isn't magic, knpuniversity wrote the Pipeline code, and the **run()** method return a
+ Promise that resolves once everything is done.
+
+
 
 April 30, 2016 (gulp: fixing the css orders)
 ============================================
