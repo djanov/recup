@@ -63,6 +63,95 @@ Maybe add later:
   - For [GULP][54] to have [autoprefixer][55](PostCSS plugin to parse CSS and add vendor
   prefixes to CSS rules).
 
+
+Maj 2, 2016 (DI)
+================
+
+Understanding dependency injection.
+
+```
+app/config/services/yml
+
+twig_asset_version_extension:
+        class: RecUp\RecordBundle\Twig\AssetVersionExtension
+        arguments: ["%kernel.root_dir%"]
+        tags:
+          - { name: twig.extension }
+```
+
+This twig extension is going pass an arguments for the **["%kernel.root_dir%"]**, and that
+means this will have the root of the project(the path) for the class in **RecUp\RecordBundle\Twig\AssetVersionExtension**.
+And in the twig extension (AssetVersionExtension):
+
+```
+src/RecUp/RecordBundle/Twig/AssetVersionExtension.php
+
+...
+class AssetVersionExtension extends \Twig_Extension
+{
+    private $appDir;
+
+    public function __construct($appDir)
+    {
+        $this->appDir = $appDir;
+    }
+...
+```
+The __construct method have an argument **$appDir** and this will find the root of the project
+that I added in the services, because its going to see the root path.
+
+If i have two or more arguments in the services, then in the __construct method the argument name can
+can be anything but need to be called in the order it was in the services for example:
+
+```
+app/config/services/yml
+...
+services:
+     app.markdown_transformer:
+         class: RecUp\RecordBundle\Service\MarkdownTransformer
+         arguments: ['@markdown.parser', '@doctrine_cache.providers.my_markdown_cache']
+...
+```
+This have two arguments, the **@** means that those are services. And in the **MarkdownTransformer.php**
+service:
+
+```
+src/RecUp/RecordBundle/Service/MarkdownTransformer.php
+
+...
+class MarkdownTransformer
+{
+    private $markdownParser;
+
+    private $cache;
+
+    public function __construct(MarkdownParserInterface $markdownParser,Cache $cache)
+    {
+        $this->markdownParser = $markdownParser;
+        $this->cache = $cache;
+    }
+...
+```
+
+There is the first argument called by **$markdownParser** and the second one **$cache**, so that in the
+services.yml the arguments are in the order.
+
+Documentation about [Types of Injection][56]
+
+The most common is the Constructor Injection, I can use Type hinting like in the
+```public function __construct(MarkdownParserInterface $markdownParser,Cache $cache)``` example
+this means that I can be sure that a suitable dependency has been injected. By type-hinting,
+I will get a clear error immediately if an unsuitable dependency is injected. By type hinting
+using an interface rather than a class I can make the choice of dependency more flexible.
+And if I use only methods defined in the interface, I can gain the flexibility and still safely
+use the object.
+
+Links:
+------
+* Types of Injection][56]
+
+
+
 Maj 1, 2016 (gulp: fixing the task order)
 =========================================
 
@@ -5431,4 +5520,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [53]:https://www.npmjs.com/package/q
 [54]:https://www.npmjs.com/package/gulp-autoprefixer
 [55]:https://github.com/postcss/autoprefixer
+[56]:https://symfony.com/doc/2.8/components/dependency_injection/types.html
 <!-- / end links-->
