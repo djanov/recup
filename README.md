@@ -64,8 +64,8 @@ Maybe add later:
   prefixes to CSS rules).
 
 
-Maj 3, 2016 (frontend: genre)
-=============================
+Maj 3, 2016 (frontend: genre(Alice), index page)
+================================================
 
 Making a custom function to generate random genres for the songs.
 
@@ -109,6 +109,40 @@ After that make the new fixtures:
 ```
 php app/console doctrine:fixtures:load
 ```
+
+### Making the index page
+
+First need to create a new file in **RecUp/Resources/Views/Default/index.html.twig**
+And extend the base twig template:
+
+```
+RecUp/Resources/Views/Default/index.html.twig
+
+{% extends 'base.html.twig' %}
+```
+
+Next open the **DefaultController.php** and add a new action return the **index.html.twig**
+template and add the route in the annotation:
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+...
+class DefaultController extends Controller
+{
+    /**
+     * @Route("/")
+     */
+    public function indexAction()
+    {
+        return $this->render('@Record/Default/index.html.twig');
+    }
+
+    ...
+```
+This will render the twig template file.
+
+The **"/"** means that this will match the homepage (/).
 
 
 

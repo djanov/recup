@@ -14,6 +14,14 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends Controller
 {
     /**
+     * @Route("/")
+     */
+    public function indexAction()
+    {
+        return $this->render('@Record/Default/index.html.twig');
+    }
+    
+    /**
      * @Route("/record/new")
      */
     public function newAction()
