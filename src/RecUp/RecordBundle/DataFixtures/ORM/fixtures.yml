@@ -2,7 +2,7 @@ RecUp\RecordBundle\Entity\Record:
   record_{1..10}:
     songName: <songs()>
     artist: <text(15)>
-    genre: <text(5)>
+    genre: <genres()>
     about: <sentence()>
     isPublished: <boolean(75)>
 

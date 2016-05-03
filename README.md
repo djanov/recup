@@ -64,6 +64,54 @@ Maybe add later:
   prefixes to CSS rules).
 
 
+Maj 3, 2016 (frontend: genre)
+=============================
+
+Making a custom function to generate random genres for the songs.
+
+First in the **LoadFixtures.php** make a new public function called **genres()** and make a list
+of the genres you want, after that make it to return a random one every time:
+
+```
+src/RecUp/RecordBundle/DataFixtures/ORM/LoadFixtures.php
+
+ ...
+ public function genres()
+    {
+        $genre = [
+            'Classical',
+            'Experimental',
+            'Flamenco',
+            ...
+        ];
+
+        $key = array_rand($genre);
+
+        return $genre[$key];
+    }
+```
+Then after that use the new function in the Alice **fixtures.yml**:
+
+```
+src/RecUp/RecordBundle/DataFixtures/ORM/fixtures.yml
+
+RecUp\RecordBundle\Entity\Record:
+  record_{1..10}:
+    songName: <songs()>
+    artist: <text(15)>
+    genre: <genres()>
+    about: <sentence()>
+    isPublished: <boolean(75)>
+    ...
+```
+After that make the new fixtures:
+
+```
+php app/console doctrine:fixtures:load
+```
+
+
+
 Maj 2, 2016 (DI)
 ================
 
@@ -148,7 +196,7 @@ use the object.
 
 Links:
 ------
-* Types of Injection][56]
+* [Types of Injection][56]
 
 
 

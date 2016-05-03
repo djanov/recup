@@ -56,4 +56,22 @@ class LoadFixtures implements FixtureInterface
 
         return $names[$key];
     }
+
+    public function genres()
+    {
+        $genre = [
+            'Classical',
+            'Experimental',
+            'Flamenco',
+            'Fingerstyle',
+            'Folk',
+            'Jazz',
+            'Metal',
+            'Rock'
+        ];
+
+        $key = array_rand($genre);
+
+        return $genre[$key];
+    }
 }
