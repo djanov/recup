@@ -64,6 +64,18 @@ Maybe add later:
   prefixes to CSS rules).
 
 
+Maj 4, 2016
+===========
+
+Making the plan for the page structure and the page layout on paper.
+
+The pages done:
+   * home index(1)
+   * register(3)
+   * user profile (4)
+
+   
+
 Maj 3, 2016 (frontend: genre(Alice), index page)
 ================================================
 
