@@ -77,3 +77,8 @@ doctrine_cache:
       type: %cache_type%
       file_system:
         directory: %kernel.cache_dir%/markdown_cache
+
+fos_user:
+    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    firewall_name: main
+    user_class: RecUp\UserBundle\Entity\User

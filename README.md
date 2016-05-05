@@ -63,10 +63,56 @@ Maybe add later:
   - For [GULP][54] to have [autoprefixer][55](PostCSS plugin to parse CSS and add vendor
   prefixes to CSS rules).
 
-Maj 5, 2016 (user branch)
-=========================
+Maj 5, 2016 (user branch, installing FOSUserBundle)
+===================================================
 
 Making new branch for the [FOSUserBundle][57] and [EWZRecaptchaBundle][58].
+
+Making new UserBundle for the user registration.
+
+In RecUp make a new folder **UserBundle** and create in the root of the folder a **UserBundle.php**
+file:
+
+```
+src/RecUp/UserBundle/UserBundle.php
+
+
+<?php
+
+namespace RecUp\UserBundle;
+
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+
+class UserBundle extends Bundle
+{
+}
+```
+Then in the UserBundle folder make a new folder **Entity** and a new php class **User.php**
+In this file is going the Doctrine ORM User class configuration from the **FOSUserBundle**.
+
+To make the bundle work add in the **AppKernel.php**:
+
+```
+app/AppKerlnel.php
+
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+        $bundles = array(
+            ...
+            new RecUp\UserBundle\UserBundle(),
+        );
+    ...
+...
+```
+The Step by step [installation FOSUserBundle][59]
+
+Links:
+------
+* [FOSUserBundle][57]
+* [Step by step installation FOSUserBundle][59]
+* [EWZRecaptchaBundle][58]
 
 
 
@@ -5622,4 +5668,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [56]:https://symfony.com/doc/2.8/components/dependency_injection/types.html
 [57]:https://github.com/FriendsOfSymfony/FOSUserBundle
 [58]:https://github.com/excelwebzone/EWZRecaptchaBundle
+[59]:https://symfony.com/doc/master/bundles/FOSUserBundle/index.html
 <!-- / end links-->

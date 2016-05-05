@@ -20,6 +20,8 @@ class AppKernel extends Kernel
             new RecUp\RecordBundle\RecordBundle(),
             new Knp\Bundle\MarkdownBundle\KnpMarkdownBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
+            new RecUp\UserBundle\UserBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {
