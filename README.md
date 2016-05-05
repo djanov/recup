@@ -63,6 +63,12 @@ Maybe add later:
   - For [GULP][54] to have [autoprefixer][55](PostCSS plugin to parse CSS and add vendor
   prefixes to CSS rules).
 
+Maj 5, 2016 (user branch)
+=========================
+
+Making new branch for the [FOSUserBundle][57] and [EWZRecaptchaBundle][58].
+
+
 
 Maj 4, 2016
 ===========
@@ -74,7 +80,6 @@ The pages done:
    * register(3)
    * user profile (4)
 
-   
 
 Maj 3, 2016 (frontend: genre(Alice), index page)
 ================================================
@@ -5615,4 +5620,6 @@ The GenusController is a controller, the function that will (eventually) build t
 [54]:https://www.npmjs.com/package/gulp-autoprefixer
 [55]:https://github.com/postcss/autoprefixer
 [56]:https://symfony.com/doc/2.8/components/dependency_injection/types.html
+[57]:https://github.com/FriendsOfSymfony/FOSUserBundle
+[58]:https://github.com/excelwebzone/EWZRecaptchaBundle
 <!-- / end links-->
