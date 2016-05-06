@@ -63,6 +63,68 @@ Maybe add later:
   - For [GULP][54] to have [autoprefixer][55](PostCSS plugin to parse CSS and add vendor
   prefixes to CSS rules).
 
+Maj 6, 2016 (FOSUserBundle)
+===========================
+
+1.)Make new user and promote the role in console using **FOSUSerBundle** task.
+
+2.)Overriding the **FOSUserBundle** views.
+
+### 1. In console type:
+```
+php app/console fos:user:create
+```
+fill the username, email and password.
+
+To promote the user for example to **ROLE_ADMIN**:
+
+```
+php app/console fos:user:promote
+```
+then choose the username and choose the role in this case **ROLE_ADMIN**.
+
+
+###2.To override the **layout.html.twig**
+First I need to set the parent bundle, in UserBundle class add a new method called **getParent**,
+and set it to **FOSUserBundle** as the parent:
+```
+<?php
+src/RecUp/UserBundle/UserBundle.php
+
+
+namespace RecUp\UserBundle;
+
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+
+class UserBundle extends Bundle
+{
+    public function getParent()
+    {
+        return 'FOSUserBundle';
+    }
+}
+```
+Now I am able to override certain things inside that bundle, so I need to create the
+**layout.html.twig** in the exact same directory as **FOSUserBundle**, and my template
+will override the original one. The structure is **UserBundle/Resources/views/layout.html.twig**
+
+```
+UserBundle/Resources/views/layout.html.twig
+
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    {{ block('fos_user_content') }}
+{% endblock %}
+```
+by extending the **base.html.twig** I have the override the layout, and to get the
+content from the **FOSUserBundle** I added the __'fos_user_content'__ in the body block.
+
+Now I can see the overridden **FOSUserBundle** **layout.html.twig** that has extended **default.html.twig**
+and the **FOSUserBundle** content.
+
+
+
 Maj 5, 2016 (user branch, installing FOSUserBundle)
 ===================================================
 
