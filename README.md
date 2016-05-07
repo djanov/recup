@@ -63,6 +63,76 @@ Maybe add later:
   - For [GULP][54] to have [autoprefixer][55](PostCSS plugin to parse CSS and add vendor
   prefixes to CSS rules).
 
+
+Maj 7, 2016 (FOSUserBundle)
+===========================
+
+1. Overwrite the **login.html.twig**
+2. Make te labels readable.
+3. Making changes in the labels.
+
+###1.) To override the **login.html.twig**
+I need to make the file in the same place, so make a new
+folder and file in Resources **views/Security/login.html.twig**
+
+```
+src/RecUp/UserBundle/Resources/views/Security/login.html.twig
+
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block fos_user_content %}
+{% if error %}
+    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+{% endif %}
+
+<form action="{{ path("fos_user_security_check") }}" method="post">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+
+    <div>
+    <label for="username">{{ 'security.login.username'|trans }}</label>
+    <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" />
+    </div>
+
+    <div>
+    <label for="password">{{ 'security.login.password'|trans }}</label>
+    <input type="password" id="password" name="_password" required="required" />
+    </div>
+
+    <div>
+    <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
+    <label for="remember_me">{{ 'security.login.remember_me'|trans }}</label>
+    </div>
+
+    <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" />
+</form>
+{% endblock fos_user_content %}
+```
+Add some markup around the input and the label.
+
+### 2.) Go to config.yml:
+
+```
+app/config/config.yml
+
+...
+framework:
+    #esi:             ~
+    translator:      { fallbacks: ["%locale%"] }
+...
+```
+
+And uncomment the **translator**
+
+### 3.) Copy from the **FOSUserBundle**
+the **FOSUserBundle.en.yml** from translations and make a new folder in the **UserBundle**
+in the same place **UserBundle/Resources/translations/FOSUserBundle.en.yml**. Here if I
+make a change, if the change is not happening automatically then I need to clear the cache
+because symfony doesn't see the new translation file until i don't clear the cache.
+
+
+
 Maj 6, 2016 (FOSUserBundle)
 ===========================
 
