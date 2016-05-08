@@ -18,6 +18,12 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
+//        To see what what fields have the daniel user (FOSUserBundle)
+
+//        $user = $this->container->get('fos_user.user_manager')->findUserByUsername('daniel');
+//
+//        dump($user);die;
+
         return $this->render('@Record/Default/index.html.twig');
     }
     

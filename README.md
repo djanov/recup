@@ -63,6 +63,41 @@ Maybe add later:
   - For [GULP][54] to have [autoprefixer][55](PostCSS plugin to parse CSS and add vendor
   prefixes to CSS rules).
 
+* **Maj 8**:
+  - Add registration confirmation email forget password using [FOSUserBundle Emails][60]
+
+Maj 8, 2016 (FOSUserBundle)
+===========================
+
+1. finding the **daniel** user and dump out all of its fields
+
+### 1.) To fetch the user, grab a service called fos_user.user_manager.
+And call **findUserByUsername** on it.
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+...
+
+class DefaultController extends Controller
+{
+    ...
+    public function indexAction()
+    {
+        $user = $this->container->get('fos_user.user_manager')
+        ->findUserByUsername('daniel');
+
+        dump($user);die;
+
+        return $this->render('@Record/Default/index.html.twig');
+    }
+```
+This object is called a **UserManager** and it's
+the command center for doing anything related to the users. To see how the bundle works
+go to **vendor/friendsofsymfony/user-bundle/Model/UserManager.php**. Now in the browser
+homepage the user manager finds the user and dumps out all of its fields.
+
+
 
 Maj 7, 2016 (FOSUserBundle)
 ===========================
@@ -5801,4 +5836,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [57]:https://github.com/FriendsOfSymfony/FOSUserBundle
 [58]:https://github.com/excelwebzone/EWZRecaptchaBundle
 [59]:https://symfony.com/doc/master/bundles/FOSUserBundle/index.html
+[60]:https://symfony.com/doc/current/bundles/FOSUserBundle/emails.html
 <!-- / end links-->
