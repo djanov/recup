@@ -57,7 +57,7 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
-Maybe add later:
+Add later:
 ================
 * **April 30**:
   - For [GULP][54] to have [autoprefixer][55](PostCSS plugin to parse CSS and add vendor
@@ -65,6 +65,40 @@ Maybe add later:
 
 * **Maj 8**:
   - Add registration confirmation email forget password using [FOSUserBundle Emails][60]
+
+* **Maj 9**:
+  - Add ability to upload recorded music in video format
+
+
+Maj 9, 2016 (Background video)
+==============================
+
+Making the log-in to have a background video. To make a video always in center and to be
+resizable I used this sass code:
+
+```
+app/Resources/assets/sass
+
+
+ video#bgvid {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -100;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+  background: url("/images/aquanote-logo.png") no-repeat;
+  background-size: cover;
+}
+```
+
+
 
 Maj 8, 2016 (FOSUserBundle)
 ===========================
