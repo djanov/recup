@@ -69,6 +69,13 @@ Add later:
 * **Maj 9**:
   - Add ability to upload recorded music in video format
 
+Maj 10, 2016 (Background video, login)
+=====================================
+
+Making the finale video downloaded from [videvo]][61] and converting to the smaller size.
+Login page improvements.
+
+
 
 Maj 9, 2016 (Background video)
 ==============================
@@ -5871,4 +5878,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [58]:https://github.com/excelwebzone/EWZRecaptchaBundle
 [59]:https://symfony.com/doc/master/bundles/FOSUserBundle/index.html
 [60]:https://symfony.com/doc/current/bundles/FOSUserBundle/emails.html
+[61]:http://www.videvo.net/
 <!-- / end links-->

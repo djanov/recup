@@ -10,11 +10,15 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        <div class="search-bar">
+      <div class="container">
+          <div class="row">
+        <div class="col-md-12 search-bar">
             <form method="GET" action="" class="js-sea-search sea-search">
                 <input type="search" name="q" placeholder="Search Sea Creatures" autocomplete="off" class="search-input">
             </form>
         </div>
+          </div>
+          <div class="row">
         <header class="header">
             <img class="logo-icon" src="{{ asset('images/aquanote-logo.png') }}">
             <h1 class="logo">RecUp</h1>
@@ -23,15 +27,16 @@
                 <li><a href="#">Login</a></li>
             </ul>
         </header>
-
+        </div>
         <div class="main-content">
             {% block body %}{% endblock %}
         </div>
-
-        <div class="footer">
-            <p class="footer-text">&copy; 2016 <a href="https://github.com/djanov" target="_blank">Djanov</a></p>
+        <div class="row">
+             <div class="footer">
+                 <p class="footer-text">&copy; 2016 <a href="https://github.com/djanov" target="_blank">Djanov</a></p>
+             </div>
         </div>
-
+    </div>
         {% block javascripts %}
             <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
             <script src="{{ asset('js/main.js') }}"></script>
