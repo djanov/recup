@@ -1,7 +1,7 @@
 /******************************
 Flexbox Layout
 *******************************/
-$font-font: 'Shadows Into Light', cursive;
+$font-font: 'Roboto', sans-serif;
 
 .header, .navi, .sea-creature-container, .genus-details, .notes-container, .footer {
   display: -webkit-flex;
@@ -669,3 +669,4 @@ FOOTER Styling
 .heart {
   color: red;
 }
+

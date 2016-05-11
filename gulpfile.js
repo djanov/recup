@@ -99,6 +99,10 @@ Pipeline.prototype.run = function(callable) {
        pipeline.add([
            config.assetsDir+'/sass/record.scss'
        ], 'record.css');
+
+       pipeline.add([
+           config.assetsDir+'/sass/login.scss'
+       ], 'login.css');
     return pipeline.run(app.addStyle);
 });
 

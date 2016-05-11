@@ -1,5 +1,10 @@
 {% extends "FOSUserBundle::layout.html.twig" %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/login.css'|asset_version) }}"/>
+{% endblock %}
+
 {% trans_default_domain 'FOSUserBundle' %}
     {% block body %}
     <div class="row">
@@ -9,31 +14,76 @@
                 <source src="{{ asset('video/gitar.mp4') }}" type="video/mp4">
             </video>
         </div>
+     </div>
 {% block fos_user_content %}
 {% if error %}
     <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 {% endif %}
-         <div class="col-sm-6 col-sm-offset-3 login">
-             <div class="form-bottom">
-                <form role="form" action="{{ path("fos_user_security_check") }}" method="post">
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
-                    <div class="form-group">
-                        <label for="username">{{ 'security.login.username'|trans }}</label>
-                        <input type="text" placeholder="Username" class="form-control" id="username" name="_username" value="{{ last_username }}" required="required" />
+        <div class="top-content">
+            <div class="inner-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2 text">
+                            <h1><strong>RecUp</strong>Login</h1>
+                            <div class="description">
+                                <p>
+                                    This is a social network website for musicians
+                                    <p>
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="password">{{ 'security.login.password'|trans }}</label>
-                        <input type="password" placeholder="password" class="form-control" id="password" name="_password" required="required" />
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3 from-box">
+                            <div class="form-top">
+                                <div class="form-top-left">
+                                    <h3>Login to our site</h3>
+                                    <p>Enter your username and pasword to log on:</p>
+                                </div>
+                                <div class="form-top-right">
+                                    <i class="fa fa-lock"></i>
+                                </div>
+                            </div>
+                            <div class="form-bottom">
+                                <form role="form" action="{{ path("fos_user_security_check") }}" method="post">
+                                    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+                                    <div class="form-group">
+                                        <label for="username">{{ 'security.login.username'|trans }}</label>
+                                        <input type="text" placeholder="Username..." class="form-control" id="username" name="_username" value="{{ last_username }}" required="required" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">{{ 'security.login.password'|trans }}</label>
+                                        <input type="password" placeholder="Password..." class="form-control" id="password" name="_password" required="required" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
+                                        <label for="remember_me">{{ 'security.login.remember_me'|trans }}</label>
+                                    </div>
+                                    <input type="submit" class="btn-login" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" />
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
-                        <label for="remember_me">{{ 'security.login.remember_me'|trans }}</label>
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3 social-login">
+                            <h3>..or login with:</h3>
+                            <div class="social-login-buttons">
+                                <a class="btn-login btn-link-2" href="#">
+                                    <i class="fa fa-soundcloud"></i> Soundcloud
+                                </a>
+                                <a class="btn-login btn-link-2" href="#">
+                                    <i class="fa fa-twitter"></i> Twitter
+                                </a>
+                                <a class="btn-login btn-link-2" href="#">
+                                    <i class="fa fa-facebook"></i> Facebook
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    <input type="submit" class="btn btn-default" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" />
-                </form>
-             </div>
+                </div>
             </div>
         </div>
+
 
 {% endblock fos_user_content %}
 {% endblock body %}

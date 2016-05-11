@@ -69,6 +69,16 @@ Add later:
 * **Maj 9**:
   - Add ability to upload recorded music in video format
 
+* **Maj 11**:
+  - Making available to login using (soundcloud, twitter or facebook) with [KnpUOAuth2ClientBundle][62]
+
+Maj 11, 2016 (login)
+====================
+
+Making separat sass page for login, adding social icons to login.
+
+
+
 Maj 10, 2016 (Background video, login)
 =====================================
 
@@ -5879,4 +5889,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [59]:https://symfony.com/doc/master/bundles/FOSUserBundle/index.html
 [60]:https://symfony.com/doc/current/bundles/FOSUserBundle/emails.html
 [61]:http://www.videvo.net/
+[62]:https://knpuniversity.com/blog/KnpUOAuth2ClientBundle
 <!-- / end links-->
