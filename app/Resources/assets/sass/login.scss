@@ -1,3 +1,55 @@
+// buttons
+.btn-login {
+  height: 50px;
+  margin:0;
+  padding: 0 20px;
+  vertical-align: middle;
+  background: #de615e;
+  border:0;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  font-weight:300;
+  line-height: 50px;
+  color: #fff;
+  -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+  text-shadow: none;
+  -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none;
+  -o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
+}
+
+.btn-login:hover { opacity: 0.6; color: #fff; }
+
+.btn-login:active { outline: 0; opacity: 0.6; color: #fff; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
+
+.btn-login:focus { outline: 0; opacity: 0.6; background: #de615e; color: #fff; }
+
+.btn-login:active:focus, button.btn.active:focus { outline: 0; opacity: 0.6; background: #de615e; color: #fff; }
+// end buttons
+
+// social buttons
+.btn-social i {
+  padding-right: 5px;
+  vertical-align: middle;
+  font-size:20px;
+  line-height:20px;
+}
+
+.btn-social {
+  display: inline-block;
+  height: 50px;
+  margin: 5px;
+  padding: 15px 20px 0 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #fff;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 16px;
+  color: #fff;
+  -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+}
+// end social buttons
+
+
 // video
 video#bgvid {
   position: fixed;
