@@ -69,7 +69,7 @@ strong {
 }
 
 a, a:hover, a:focus {
-  color: #de615e;
+  color: #fff;
   text-decoration: none;
   -o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
 }
@@ -682,20 +682,17 @@ FOOTER Styling
 *******************************/
 
 .footer {
-  padding: 20px;
-  background: #E9D4B7;
+  padding: 2px;
+  background: rgba(0, 0, 0, 0.60);
   font-size: 1.3em;
 }
 
 .footer-text {
-  color: #3a3a3a;
+  color: #fff;
 }
 
 .footer-text > a {
   color: #3a3a3a;
 }
 
-.heart {
-  color: red;
-}
 

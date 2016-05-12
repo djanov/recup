@@ -72,6 +72,15 @@ Add later:
 * **Maj 11**:
   - Making available to login using (soundcloud, twitter or facebook) with [KnpUOAuth2ClientBundle][62]
 
+Maj 12, 2016 (login)
+====================
+
+Login page finished
+
+> later change "forgot password" to be more responsive, and the footer
+
+
+
 Maj 11, 2016 (login)
 ====================
 
