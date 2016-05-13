@@ -72,6 +72,22 @@ Add later:
 * **Maj 11**:
   - Making available to login using (soundcloud, twitter or facebook) with [KnpUOAuth2ClientBundle][62]
 
+* **Maj 13**:
+  - Make the register and the login in the same page
+
+Maj 13, 2016 (register)
+=======================
+
+Making the register page first steps.
+
+> need to add a LINK for the about/contact page
+
+> styling
+
+> navbar?
+
+
+
 Maj 12, 2016 (login)
 ====================
 

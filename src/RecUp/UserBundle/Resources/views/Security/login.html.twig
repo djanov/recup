@@ -10,7 +10,7 @@
     <div class="row">
         <div>
             <video autoplay loop poster="{{ asset('images/guitar.PNG') }}" id="bgvid">
-                <source src="polina.webm" type="video/webm">
+                {#<source src="polina.webm" type="video/webm">#}
                 <source src="{{ asset('video/gitar.mp4') }}" type="video/mp4">
             </video>
         </div>
@@ -59,7 +59,7 @@
                                         <a  class="pass" href="#"> Forgot password?</a>
                                     </div>
                                     <button type="submit" class="btn btn-danger btn-login" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}">Sign in!</button>
-                                    <button class="btn btn-login btn-singup" href="#">Create account</button>
+                                    <a class="btn btn-login btn-singup" href="{{ path('fos_user_registration_register') }}">Create account</a>
                                 </form>
                             </div>
                         </div>
