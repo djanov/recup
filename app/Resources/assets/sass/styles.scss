@@ -1,7 +1,10 @@
+@import "var/colors";
+@import "var/mixins";
+
 /******************************
 Flexbox Layout
 *******************************/
-$font-font: 'Roboto', sans-serif;
+
 
 .header, .navi, .sea-creature-container, .genus-details, .notes-container, .footer {
   display: -webkit-flex;
@@ -62,6 +65,7 @@ body {
   color: #888;
   line-height:30px;
   text-align: center;
+  background: $background;
 }
 
 strong {
@@ -69,7 +73,7 @@ strong {
 }
 
 a, a:hover, a:focus {
-  color: #fff;
+  color: $primary-color;
   text-decoration: none;
   -o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
 }
@@ -108,7 +112,7 @@ h3 {
 .header {
   padding: 10px 0;
   margin: 0 auto;
-  background-color: #81B9BA;
+  background-color: $nav;
 }
 
 .logo-icon {
@@ -197,7 +201,7 @@ BODY Styling
 }
 
 .plus-btn {
-  color: #fff;
+  color: $primary-color;
   border: 1px solid #7A942E;
   border-radius: 50%;
   padding: 5px 7px;
@@ -683,12 +687,14 @@ FOOTER Styling
 
 .footer {
   padding: 2px;
+  //background: $nav;
   background: rgba(0, 0, 0, 0.60);
   font-size: 1.3em;
+
 }
 
 .footer-text {
-  color: #fff;
+  color: $primary-color;
 }
 
 .footer-text > a {
