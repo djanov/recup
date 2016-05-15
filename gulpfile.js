@@ -92,9 +92,12 @@ Pipeline.prototype.run = function(callable) {
    pipeline.add([
       config.bowerDir+'/bootstrap/dist/css/bootstrap.css',
       config.bowerDir+'/font-awesome/css/font-awesome.css',
-      config.assetsDir+'/sass/layout.scss',
-      config.assetsDir+'/sass/styles.scss'
+       config.assetsDir+'/sass/styles.scss'
       ], 'main.css');
+
+       pipeline.add([
+           config.assetsDir+'/sass/layout.scss'
+       ], 'layout.css');
 
        pipeline.add([
            config.assetsDir+'/sass/record.scss'

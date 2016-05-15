@@ -1,15 +1,16 @@
 {% trans_default_domain 'FOSUserBundle' %}
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/login.css'|asset_version) }}" xmlns="http://www.w3.org/1999/html"/>
+    <link rel="stylesheet" href="{{ asset('css/layout.css'|asset_version) }}"/>
 {% endblock %}
 <div class="top-content">
     <div class="inner-bg">
         <div class="container">
 <div class="row">
     <div class="col-sm-8 col-sm-offset-2 text">
-        <h1><strong>RecUp</strong>Register</h1>
+        <h1>Register</h1>
         <div class="description">
-            <h3>Join RecUp: A Social Network Website for Musicians</h3>
+            <h3>Join RecUp aka 'Record & Upload': A Social Network Website for Musicians</h3>
             <p>
                Welcome to RecUp, we are an online social network community for musicians with tools to help you promote your music;
                give and receive feedback on songs, videos, gear and more! For full details... <a class="btn btn-info" href="#">LINK</a>  {# later add about page #}
@@ -21,35 +22,36 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-6 col-sm-offset-3 form-box">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3 form-box">
 {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
-        <div class="form-bottom" id="fos_user_registration_form">
-            <div class="form-group">
-            {{ form_widget(form.email, { 'attr': {'class': 'form-control', 'placeholder': 'form.email'|trans } }) }}
-            {{ form_errors(form.email) }}
-            </div>
-            <div class="form-group">
-            {{ form_widget(form.username, { 'attr': {'class': 'form-control', 'placeholder': 'form.username'|trans } }) }}
-            {{ form_errors(form.username) }}
-            </div>
-            <div class="form-group">
-            {{ form_widget(form.plainPassword.first, { 'attr': {'class': 'form-control', 'placeholder': 'form.password'|trans } }) }}
-            {{ form_errors(form.plainPassword.first) }}
-            </div>
-            <div class="form-group">
-            {{ form_widget(form.plainPassword.second, { 'attr': {'class': 'form-control', 'placeholder': 'form.password_confirmation'|trans } }) }}
-            {{ form_errors(form.plainPassword.second) }}
-            </div>
+          <div class="form-bottom" id="fos_user_registration_form">
+              <div class="form-group">
+                  {{ form_widget(form.email, { 'attr': {'class': 'form-control', 'placeholder': 'form.email'|trans } }) }}
+                  {{ form_errors(form.email) }}
+              </div>
+              <div class="form-group">
+                  {{ form_widget(form.username, { 'attr': {'class': 'form-control', 'placeholder': 'form.username'|trans } }) }}
+                  {{ form_errors(form.username) }}
+              </div>
+              <div class="form-group">
+                  {{ form_widget(form.plainPassword.first, { 'attr': {'class': 'form-control', 'placeholder': 'form.password'|trans } }) }}
+                  {{ form_errors(form.plainPassword.first) }}
+              </div>
+              <div class="form-group">
+                  {{ form_widget(form.plainPassword.second, { 'attr': {'class': 'form-control', 'placeholder': 'form.password_confirmation'|trans } }) }}
+                  {{ form_errors(form.plainPassword.second) }}
+              </div>
 
              {{ form_rest(form) }}
+              <div>
+                  <button type="submit" class="btn btn-danger btn-login btn-block" value="{{ 'registration.submit'|trans }}">Join!</button>
+              </div>
         </div>
-       <div>
-        <button type="submit" class="btn btn-danger btn-login btn-block" value="{{ 'registration.submit'|trans }}">Join </button>
-       </div>
-{{ form_end(form) }}
+
+{{  form_end(form) }}
     </div>
-</div>
-            </div>
-            </div>
-    </div>
+   </div>
+  </div>
+ </div>
+ </div>

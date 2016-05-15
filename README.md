@@ -75,6 +75,23 @@ Add later:
 * **Maj 13**:
   - Make the register and the login in the same page
 
+* **Maj 14**:
+   - Make a professional logo
+
+Maj 14, 2016 (register)
+=======================
+
+Register finished for now
+
+
+
+Maj 14, 2016 (navbar)
+====================
+
+First steps for navbar sketching on paper is done and the first lines are added.
+
+
+
 Maj 13, 2016 (register)
 =======================
 

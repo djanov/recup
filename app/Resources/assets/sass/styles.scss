@@ -113,9 +113,11 @@ h3 {
   padding: 10px 0;
   margin: 0 auto;
   background-color: $nav;
+  border-bottom: 2px solid rgba(0,0,0,0.15);
 }
 
-.logo-icon {
+.logo {
+  padding-left: 50%;
   height: 50px;
   width: auto;
   margin-top: 12px;
