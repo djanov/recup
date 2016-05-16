@@ -92,27 +92,16 @@ h3 {
   color: #555;
 }
 
-.search-bar {
-  height: 50px;
-  width: 100%;
-  display: none;
-}
-
-.sea-search > input {
-  width: 100%;
-  padding: 10px 20px;
-  font-size: 22px;
-}
 
 .search-input {
-  border: none;
-  margin: 0;
+  padding-left: 1px;
 }
 
 .header {
-  padding: 10px 0;
-  margin: 0 auto;
-  background-color: $nav;
+  //padding: 10px 0;
+  //margin: 0 auto;
+  //background-color: $nav;
+  background: rgba(0, 0, 0, 0.60);
   border-bottom: 2px solid rgba(0,0,0,0.15);
 }
 
@@ -123,41 +112,6 @@ h3 {
   margin-top: 12px;
 }
 
-.navi {
-  list-style: none;
-}
-
-.navi {
-  padding-top: 25px;
-}
-
-.navi li a {
-  text-decoration: none;
-  color: #3a3a3a;
-  font-size: 12px;
-  text-transform: uppercase;
-  margin-right: 10px;
-}
-
-.navi li a:hover {
-  color: #000;
-}
-
-.navi > li > a:focus, .nav > li > a:hover {
-  background-color: transparent;
-}
-
-.navi li:last-child a {
-  background: #eee;
-  border-radius: 2px;
-  transition: 200ms ease-in-out;
-  padding: 8px 16px 7px;
-}
-
-.navi li:last-child a:hover {
-  background: rgba(200, 200, 200, .5);
-  color: #000;
-}
 
 .genus-name {
   margin-top: 30px;

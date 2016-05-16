@@ -126,6 +126,20 @@ gulp.task('fonts', function() {
         ).on('end', function() {console.log('finished fonts!')});
 });
 
+gulp.task('fonts-bt', function(){
+   return app.copy(
+        config.bowerDir+'/bootstrap/fonts/*',
+            'web/fonts'
+   ).on('end', function () {console.log('finished fonts-bt')});
+});
+
+gulp.task('js-bt', function(){
+    return app.copy(
+        config.bowerDir+'/bootstrap/js/*',
+        'web/js'
+    ).on('end', function () {console.log('finished js-bt')});
+});
+
 gulp.task('clean', function() {
     del.sync(config.revManifestPath);
     del.sync('web/css/*');
@@ -140,4 +154,4 @@ gulp.task('watch', function(){
    gulp.watch(config.assetsDir+'/js/**/*.js', ['scripts']);
 });
 
-gulp.task('default', ['clean','styles', 'scripts', 'fonts', 'watch']);
+gulp.task('default', ['clean','styles', 'scripts', 'fonts', 'fonts-bt', 'js-bt', 'watch']);

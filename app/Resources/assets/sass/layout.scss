@@ -9,3 +9,29 @@
 .top-content .text h1 {
   color: black;
 }
+
+h1 {
+  color: $primary-color;
+}
+
+.brand {
+  color: #777;
+}
+
+.brand:hover {
+  color: #000;
+}
+//.brand {
+//  position: absolute;
+//  left: 50%;
+//  margin-left: -50px !important;  /* 50% of your logo width */
+//  display: block;
+//}
+
+//.brand {
+//  position: absolute;
+//  width: 100%;
+//  left: 0;
+//  text-align: center;
+//  margin: auto;
+//}

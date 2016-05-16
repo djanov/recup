@@ -78,7 +78,14 @@ Add later:
 * **Maj 14**:
    - Make a professional logo
 
-Maj 14, 2016 (register)
+Maj 16, 2016 (navbar)
+=======================
+
+The navigation bar style almost finished.
+
+
+
+Maj 15, 2016 (register)
 =======================
 
 Register finished for now
