@@ -78,6 +78,13 @@ Add later:
 * **Maj 14**:
    - Make a professional logo
 
+Maj 17, 2016 (navbar)
+=======================
+
+Making enable navbar functionality.
+
+
+
 Maj 16, 2016 (navbar)
 =======================
 

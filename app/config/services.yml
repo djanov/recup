@@ -17,6 +17,11 @@ services:
         arguments: ["%kernel.root_dir%"]
         tags:
           - { name: twig.extension }
+     recup_menu_voter_request:
+        class: RecUp\UserBundle\Menu\RequestVoter
+        arguments: ["@request_stack"]
+        tags:
+          - { name: knp_menu.voter }
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

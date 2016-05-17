@@ -21,13 +21,36 @@ h1 {
 .brand:hover {
   color: #000;
 }
+
+.navbar-default{ /* assigning the bottom bar to the entire navbar div element */
+  text-align: center;
+  box-shadow: inset 0px -6px 0px #777; /* initial gray color to the bot bar */
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: white;
+  background-color: #AAA;
+  box-shadow: inset 0px -6px 0px #000; /* switch to a darker color on hover */
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+  color: white;
+  background-color: gray;
+  box-shadow: inset 0px -6px 0px #AAA; /* switch to a lighter color for active element */
+  border-radius: 40px;
+}
+/////////////////////////////////////
+// Add brand to the middle ?! ///////
+/////////////////////////////////////
+
 //.brand {
 //  position: absolute;
 //  left: 50%;
 //  margin-left: -50px !important;  /* 50% of your logo width */
 //  display: block;
 //}
-
+//
 //.brand {
 //  position: absolute;
 //  width: 100%;
@@ -35,3 +58,4 @@ h1 {
 //  text-align: center;
 //  margin: auto;
 //}
+//////////////////////////////////////

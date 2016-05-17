@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/")
+     * @Route("/", name="index")
      */
     public function indexAction()
     {
@@ -53,7 +53,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/songs")
+     * @Route("/songs", name="record_songs")
      */
     public function listAction()
     {
