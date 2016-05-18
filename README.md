@@ -78,10 +78,57 @@ Add later:
 * **Maj 14**:
    - Make a professional logo
 
+Maj 18, 2016 (navbar)
+=====================
+
+Fixing the navbar, and making the active tab to be active.
+
+**security.context** is deprecating in symfony so chang this line to work in symfony3
+
+```
+src/RecUp/UserBundle/Menu/MenuBuilder.php
+
+...
+ $username = $this->container->get('security.context')->getToken()->getUser()->getUsername();
+...
+
+```
+
+To make **KnpMenuBundle** to use my [own template][69] **knp_menu_html.twig**:
+
+```
+app/config/config.yml
+
+...
+knp_menu:
+    twig:
+        template: UserBundle::knp_menu.html.twig
+```
+
+Links:
+-----
+* [How to create a menu of tree items dropdown with knpmenubundle and bootstrap][71]
+* [own template][69]
+
+
+
 Maj 17, 2016 (navbar)
 =======================
 
 Making enable navbar functionality.
+
+Links:
+------
+
+* [KnpMenuBundle with Bootstrap 3 and Font Awesome][67]
+* [Using KnpMenuBundle symfony documentation][68]
+
+* [KnpMenuBundle custom html css][63]
+* [KnpMenuBundle how to add the custom format][64]
+* [More methodes][65]
+
+* [navigation hover active etc 1st variation][66]
+* [2nd variation (current)][70]
 
 
 
@@ -5946,4 +5993,13 @@ The GenusController is a controller, the function that will (eventually) build t
 [60]:https://symfony.com/doc/current/bundles/FOSUserBundle/emails.html
 [61]:http://www.videvo.net/
 [62]:https://knpuniversity.com/blog/KnpUOAuth2ClientBundle
+[63]:https://stackoverflow.com/questions/26148799/knpmenubundle-need-to-add-custom-css-and-html-to-the-link
+[64]:https://stackoverflow.com/questions/16152396/how-to-disable-html-escaping-of-labels-in-knpmenubundle/26132111#26132111
+[65]:https://stackoverflow.com/questions/11226963/customize-the-knpmenubundle
+[66]:https://stackoverflow.com/questions/25151392/bootstrap-navbar-top-border-different-colors
+[67]:https://gist.github.com/nateevans/9958390#file-index-html-twig-L4
+[68]:https://symfony.com/doc/current/bundles/KnpMenuBundle/index.html
+[69]:https://github.com/KnpLabs/KnpMenuBundle/issues/210
+[70]:http://jsbin.com/fosulida/1/edit?html,css,output
+[71]:https://stackoverflow.com/questions/11337604/how-to-create-a-menu-of-tree-items-by-knpmenu-in-symfony2
 <!-- / end links-->

@@ -22,24 +22,91 @@ h1 {
   color: #000;
 }
 
-.navbar-default{ /* assigning the bottom bar to the entire navbar div element */
-  text-align: center;
-  box-shadow: inset 0px -6px 0px #777; /* initial gray color to the bot bar */
+.navbar {
+  margin-bottom: 0;
+  background: #fff;
+  border: none;
+  border-radius: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -o-border-radius: 0;
 }
-.navbar-default .navbar-nav > li > a:hover,
-.navbar-default .navbar-nav > li > a:focus {
-  color: white;
-  background-color: #AAA;
-  box-shadow: inset 0px -6px 0px #000; /* switch to a darker color on hover */
+
+.navbar-default .navbar-nav {
+  margin-right: 0px!important;
+  position: relative;
+  transition: all 0.4s ease-in-out;
+  -moz-transition: all 0.4s ease-in-out;
+  -webkit-transition: all 0.4s ease-in-out;
+  -o-transition: all 0.4s ease-in-out;
 }
+
+.navbar-default .navbar-nav > li {
+  margin-left: 5px;
+}
+
+.navbar-default .navbar-nav > li:first-child {
+  margin-left: 0px;
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: #1c1c1c;
+  display: block;
+  font-size: 14px;
+  font-weight: 300;
+  padding: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+}
+
+.navbar-default .navbar-nav > li > a {
+  border-bottom: 3px solid #fff;
+}
+
+//.navbar-default .navbar-nav > li > a.active
 .navbar-default .navbar-nav > .active > a,
-.navbar-default .navbar-nav > .active > a:hover,
-.navbar-default .navbar-nav > .active > a:focus {
-  color: white;
-  background-color: gray;
-  box-shadow: inset 0px -6px 0px #AAA; /* switch to a lighter color for active element */
-  border-radius: 40px;
+.navbar-default .navbar-nav > li:hover > a,
+.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+  border-bottom: 3px solid #1c1c1c;
 }
+
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:focus {
+  color: #333;
+  background-color: #fff;  // background not needed in alt menus
+}
+
+.dropdown-menu > .active > a:hover {
+  color: #333;
+  background-color: #E9EBEE;
+}
+
+/////////////////////////////
+// Another style for nav ////
+/////////////////////////////
+
+//.navbar-default{ /* assigning the bottom bar to the entire navbar div element */
+//  text-align: center;
+//  box-shadow: inset 0px -6px 0px #777; /* initial gray color to the bot bar */
+//}
+//.navbar-default .navbar-nav > li > a:hover,
+//.navbar-default .navbar-nav > li > a:focus {
+//  color: white;
+//  background-color: #AAA;
+//  box-shadow: inset 0px -6px 0px #000; /* switch to a darker color on hover */
+//}
+//.navbar-default .navbar-nav > .active > a,
+//.navbar-default .navbar-nav > .active > a:hover,
+//.navbar-default .navbar-nav > .active > a:focus {
+//  color: white;
+//  background-color: gray;
+//  box-shadow: inset 0px -6px 0px #AAA; /* switch to a lighter color for active element */
+//}
+///////////////// END style /////////////////
+
+
 /////////////////////////////////////
 // Add brand to the middle ?! ///////
 /////////////////////////////////////

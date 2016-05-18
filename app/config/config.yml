@@ -83,6 +83,10 @@ fos_user:
     firewall_name: main
     user_class: RecUp\UserBundle\Entity\User
 
+knp_menu:
+    twig:
+        template: UserBundle::knp_menu.html.twig
+
 #    For eamil confirmation later: https://symfony.com/doc/current/bundles/FOSUserBundle/emails.html
 #
 #    registration:

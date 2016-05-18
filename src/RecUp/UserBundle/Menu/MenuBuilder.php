@@ -14,17 +14,15 @@ class MenuBuilder implements ContainerAwareInterface
     {
         $menu = $factory->createItem('root');
         $menu->setChildrenAttribute('class', 'nav navbar-nav');
-        $menu->addChild("<span class='glyphicon glyphicon-cd'> Notification</span>",
-            array(
-                'route' => 'index',
-                'extras' => array(
-                    'safe_label' => true
-                )
-            ));
-//        $menu->addChild('Home', array('route' => 'index'))
-//            ->setAttribute('class', 'fa fa-home');
-//        $menu->addChild('Notification', array('route' => 'record_songs'))
-//            ->setAttribute('class', 'fa fa-group');
+
+        $menu->addChild('Home', array('route' => 'index'))
+            ->setAttribute('icon', 'fa fa-home');
+
+        $menu->addChild('Notifications', array('route' => 'record_songs'))
+              ->setAttribute('icon', 'glyphicon glyphicon-cd');
+//            ->setAttribute('class', 'badge')
+//            ->setLabel('2');
+
         return $menu;
     }
     public function userMenu(FactoryInterface $factory, array $options)
@@ -36,12 +34,23 @@ class MenuBuilder implements ContainerAwareInterface
         if($this->container->get('security.context')->isGranted(array('ROLE_ADMIN', 'ROLE_USER'))) {} // Check if the visitor has any authenticated roles
         $username = $this->container->get('security.context')->getToken()->getUser()->getUsername(); // Get username of the current logged in user
         */
+        $menu->addChild('New Track', array('route' => 'index'))
+            ->setAttribute('icon', 'fa fa-plus');
 
-        $menu->addChild('User', array('label' => 'Hi visitor'))
+        $username = $this->container->get('security.context')->getToken()->getUser()->getUsername(); // need to change in symfony3
+        $username = strtoupper($username); // need to make if user not loged in
+
+
+        $menu->addChild('User', array('label' => $username))
             ->setAttribute('dropdown', true)
             ->setAttribute('icon', 'fa fa-user');
-        $menu['User']->addChild('Edit profile', array('route' => 'fos_user_registration_register'))
+        $menu['User']->addChild('Profile', array('route' => 'index'))
+            ->setAttribute('icon', 'glyphicon glyphicon-user')
+            ->setAttribute('divider_append', true);
+        $menu['User']->addChild('Settings', array('route' => 'fos_user_registration_register'))
             ->setAttribute('icon', 'fa fa-edit');
+        $menu['User']->addChild('Logout', array('uri' => '/logout'))
+        ->setAttribute('icon', 'glyphicon glyphicon-log-out');
         return $menu;
     }
 }
