@@ -78,6 +78,14 @@ Add later:
 * **Maj 14**:
    - Make a professional logo
 
+
+Maj 19, 2016 (userProfile)
+==========================
+
+Making userProfile with some dumb values.
+
+
+
 Maj 18, 2016 (navbar)
 =====================
 

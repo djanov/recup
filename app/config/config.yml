@@ -83,6 +83,17 @@ fos_user:
     firewall_name: main
     user_class: RecUp\UserBundle\Entity\User
 
+#  EMAIL: need to make smtp to work in parameters.yml
+#  https://www.sitepoint.com/basic-user-management-in-symfony2-with-fosuserbundle/
+#
+#    from_email:
+#        address: admin@recup.com
+#        sender_name: djanov
+#    registration:
+#      confirmation:
+#        enabled: true
+#        template: FOSUserBundle:Registration:email.txt.twig
+
 knp_menu:
     twig:
         template: UserBundle::knp_menu.html.twig
