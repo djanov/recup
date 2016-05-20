@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{#<div class="row">#}
+   {#<div class="col-lg-offset-2"> {{ form_start(form) }}#}
+    {#{{ form_widget(form) }}#}
+    {#<button class="btn btn-lg btn-primary" type="submit">Upload</button>#}
+    {#{{ form_end(form) }}#}
+       {#</div>#}
+{#</div>#}
+
+    <article>
+        <h1>Upload</h1>
+
+        <form action="{{path('profile')}}" method="post">
+            {{ form_errors(form)}}
+
+            {{ form_row(form.name, {
+                'attr': { 'class': 'a-clever-class'},
+                'help': 'Chose something unique and clever'
+            }) }}
+            {{ form_row(form.file, {
+                'attr': {'class': 'btn btn-info btn-block'}
+            }) }}
+
+
+            {{ form_rest(form) }}
+            <input type="submit" value="Register!" class="btn btn-primary pull-right" />
+        </form>
+    </article>
+{% endblock %}

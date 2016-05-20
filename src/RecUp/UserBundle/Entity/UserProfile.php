@@ -8,11 +8,14 @@
 
 namespace RecUp\UserBundle\Entity;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="recup_user_profile")
+ * @ORM\HasLifecycleCallbacks
  */
 class UserProfile
 {
@@ -24,124 +27,165 @@ class UserProfile
     private $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
-    private $songName;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $artist;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $genre;
+    private $country;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
+    private $genre;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $birth;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
     private $about;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
-    private $userAvatarFilename;
+    private $website;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $path;
+
+    /**
+     * @Assert\File(maxSize="6000000")
+     */
+    private $file;
+
+    private $temp;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     */
+    public $name;
+
+
+    public function getWebPath()
+    {
+        return null === $this->path
+            ? null
+            : $this->getUploadDir().'/'.$this->path;
+    }
+
+    protected function getUploadRootDir()
+    {
+        // If you use the getUploadRootDir() method, be aware that this will save the file inside the document root,
+        // which can be accessed by everyone. Consider placing it out of the document root and adding custom viewing
+        // logic when you need to secure the files.
+
+        // the absolute directory path where uploaded
+        // documents should be saved
+        return __DIR__.'/../../../../web/'.$this->getUploadDir();
+    }
+
+    protected function getUploadDir()
+    {
+        // get rid of the __DIR__ so it doesn't screw up
+        // when displaying uploaded doc/image in the view.
+        return 'uploads/documents';
+    }
 
 
     /**
-     * @return mixed
+     * Sets file.
+     *
+     * @param UploadedFile $file
      */
-    public function getId()
+    public function setFile(UploadedFile $file = null)
     {
-        return $this->id;
+        $this->file = $file;
+        // check if we have an old image path
+        if (is_file($this->getAbsolutePath())) {
+            // store the old name to delete after the update
+            $this->temp = $this->getAbsolutePath();
+            $this->path = null;
+        } else {
+            $this->path = 'initial';
+        }
     }
 
     /**
-     * @param mixed $id
+     * Get file.
+     *
+     * @return UploadedFile
      */
-    public function setId($id)
+    public function getFile()
     {
-        $this->id = $id;
+        return $this->file;
     }
 
     /**
-     * @return mixed
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
      */
-    public function getSongName()
+    public function preUpload()
     {
-        return $this->songName;
+        if (null !== $this->getFile()) {
+            $this->path = $this->getFile()->guessExtension();
+        }
     }
 
     /**
-     * @param mixed $songName
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
      */
-    public function setSongName($songName)
+    public function upload()
     {
-        $this->songName = $songName;
+        if (null === $this->getFile()) {
+            return;
+        }
+
+        // check if we have an old image
+        if (isset($this->temp)) {
+            // delete the old image
+            unlink($this->temp);
+            // clear the temp image path
+            $this->temp = null;
+        }
+
+        // you must throw an exception here if the file cannot be moved
+        // so that the entity is not persisted to the database
+        // which the UploadedFile move() method does
+        $this->getFile()->move(
+            $this->getUploadRootDir(),
+            $this->id.'.'.$this->getFile()->guessExtension()
+        );
+
+        $this->setFile(null);
     }
 
     /**
-     * @return mixed
+     * @ORM\PreRemove()
      */
-    public function getArtist()
+    public function storeFilenameForRemove()
     {
-        return $this->artist;
+        $this->temp = $this->getAbsolutePath();
     }
 
     /**
-     * @param mixed $artist
+     * @ORM\PostRemove()
      */
-    public function setArtist($artist)
+    public function removeUpload()
     {
-        $this->artist = $artist;
+        if (isset($this->temp)) {
+            unlink($this->temp);
+        }
     }
 
-    /**
-     * @return mixed
-     */
-    public function getGenre()
+    public function getAbsolutePath()
     {
-        return $this->genre;
-    }
-
-    /**
-     * @param mixed $genre
-     */
-    public function setGenre($genre)
-    {
-        $this->genre = $genre;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAbout()
-    {
-        return $this->about;
-    }
-
-    /**
-     * @param mixed $about
-     */
-    public function setAbout($about)
-    {
-        $this->about = $about;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUserAvatarFilename()
-    {
-        return $this->userAvatarFilename;
-    }
-
-    /**
-     * @param mixed $userAvatarFilename
-     */
-    public function setUserAvatarFilename($userAvatarFilename)
-    {
-        $this->userAvatarFilename = $userAvatarFilename;
+        return null === $this->path
+            ? null
+            : $this->getUploadRootDir().'/'.$this->id.'.'.$this->path;
     }
 }

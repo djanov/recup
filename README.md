@@ -78,6 +78,18 @@ Add later:
 * **Maj 14**:
    - Make a professional logo
 
+Maj 20, 2016 (userProfile)
+==========================
+
+Making update file functionality for the profile images.
+
+Links:
+-----
+
+* [How to Handle File Uploads with Doctrine][72]
+* [How to Customize Form Rendering][73]
+
+
 
 Maj 19, 2016 (userProfile)
 ==========================
@@ -6010,4 +6022,6 @@ The GenusController is a controller, the function that will (eventually) build t
 [69]:https://github.com/KnpLabs/KnpMenuBundle/issues/210
 [70]:http://jsbin.com/fosulida/1/edit?html,css,output
 [71]:https://stackoverflow.com/questions/11337604/how-to-create-a-menu-of-tree-items-by-knpmenu-in-symfony2
+[72]:https://symfony.com/doc/2.8/cookbook/doctrine/file_uploads.html
+[73]:https://symfony.com/doc/current/cookbook/form/form_customization.html
 <!-- / end links-->

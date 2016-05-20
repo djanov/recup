@@ -12,3 +12,7 @@ songs:
 
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+users:
+        resource: "@UserBundle/Controller/"
+        type:     annotation
