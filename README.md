@@ -78,6 +78,18 @@ Add later:
 * **Maj 14**:
    - Make a professional logo
 
+Maj 21, 2016 (userProfile - checkbox)
+=====================================
+
+Working with checkbox to have options to select multiple and to store in the databse
+
+Links:
+-----
+
+* [Symfony2 - array to string conversion error][74]
+
+
+
 Maj 20, 2016 (userProfile)
 ==========================
 
@@ -6024,4 +6036,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [71]:https://stackoverflow.com/questions/11337604/how-to-create-a-menu-of-tree-items-by-knpmenu-in-symfony2
 [72]:https://symfony.com/doc/2.8/cookbook/doctrine/file_uploads.html
 [73]:https://symfony.com/doc/current/cookbook/form/form_customization.html
+[74]:https://stackoverflow.com/questions/17314996/symfony2-array-to-string-conversion-error
 <!-- / end links-->

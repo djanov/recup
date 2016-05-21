@@ -13,6 +13,8 @@ use RecUp\UserBundle\Entity\UserProfile;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends Controller
@@ -28,9 +30,23 @@ class UserController extends Controller
         $form = $this->createFormBuilder($document)
             ->add('name')
             ->add('file')
+            ->add('genre', ChoiceType::class, array(
+
+                'choices' => array(
+                     'chck1' =>   'Classical',
+                     'chck2' =>   'Experimental',
+                     'chck3' =>   'Flamenco',
+                     'chck4' =>  'Fingerstyle',
+                     'chck5' =>  'Folk',
+                     'chck6' =>  'Jazz',
+                     'chck7' =>  'Metal',
+                     'chck8' =>  'Rock'
+                    ) ,
+                'expanded' => true,
+                'multiple' => true,
+            ))
             ->getForm();
-
-
+        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
