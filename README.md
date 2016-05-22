@@ -78,6 +78,19 @@ Add later:
 * **Maj 14**:
    - Make a professional logo
 
+
+Maj 22, 2016 (userProfile)
+==========================
+
+Making the OneToOne Relation between the User and the UserProfile Entity. New repository created for making
+custom queries for the user.
+
+Links:
+------
+* [Use-Case 2: Simple Derived Identity][75]
+
+
+
 Maj 21, 2016 (userProfile - checkbox)
 =====================================
 
@@ -6037,4 +6050,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [72]:https://symfony.com/doc/2.8/cookbook/doctrine/file_uploads.html
 [73]:https://symfony.com/doc/current/cookbook/form/form_customization.html
 [74]:https://stackoverflow.com/questions/17314996/symfony2-array-to-string-conversion-error
+[75]:http://docs.doctrine-project.org/en/latest/tutorials/composite-primary-keys.html#use-case-2-simple-derived-identity
 <!-- / end links-->

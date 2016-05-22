@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="RecUp\UserBundle\Repository\UserRepository")
  * @ORM\Table(name="recup_user_profile")
  * @ORM\HasLifecycleCallbacks
  */
@@ -37,7 +37,7 @@ class UserProfile
     private $genre;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="date", nullable=true)
      */
     private $birth;
 
@@ -51,6 +51,12 @@ class UserProfile
      */
     private $website;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $gender;
+    
+    
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -69,6 +75,13 @@ class UserProfile
      */
     public $name;
 
+    /**
+     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="username", referencedColumnName="id")
+     */
+    private $username;
+    
+    
     /**
      * @return mixed
      */
@@ -116,7 +129,22 @@ class UserProfile
     {
         $this->genre = $genre;
     }
+    
+    /**
+     * @return mixed
+     */
+    public function getGender()
+    {
+        return $this->gender;
+    }
 
+    /**
+     * @param mixed $gender
+     */
+    public function setGender($gender)
+    {
+        $this->gender = $gender;
+    }
     /**
      * @return mixed
      */
@@ -284,4 +312,22 @@ class UserProfile
             ? null
             : $this->getUploadRootDir().'/'.$this->id.'.'.$this->path;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * @param mixed $username
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+    
+    
 }

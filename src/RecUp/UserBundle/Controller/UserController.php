@@ -15,6 +15,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends Controller
@@ -28,23 +31,36 @@ class UserController extends Controller
         $document = new UserProfile();
 
         $form = $this->createFormBuilder($document)
-            ->add('name')
             ->add('file')
+            ->add('username')
+            ->add('name', TextType::class)
+            ->add('country', TextType::class)
+            ->add('gender', ChoiceType::class, array(
+                'choices' => array('0' => 'not known', '1' => 'Male', '2' => 'Female', '9' => 'not applicable'),
+            ))
+            ->add('birth', 'birthday', array(
+                'placeholder' => array(
+                    'year' => 'Year', 'month' => 'Month', 'day' => 'Day',
+                )
+            ) )
             ->add('genre', ChoiceType::class, array(
 
                 'choices' => array(
-                     'chck1' =>   'Classical',
-                     'chck2' =>   'Experimental',
-                     'chck3' =>   'Flamenco',
-                     'chck4' =>  'Fingerstyle',
-                     'chck5' =>  'Folk',
-                     'chck6' =>  'Jazz',
-                     'chck7' =>  'Metal',
-                     'chck8' =>  'Rock'
+                     'Classical' =>   'Classical',
+                     'Experimental' =>   'Experimental',
+                     'Flamenco' =>   'Flamenco',
+                     'Fingerstyle' =>  'Fingerstyle',
+                     'Folk' =>  'Folk',
+                     'Jazz' =>  'Jazz',
+                     'Metal' =>  'Metal',
+                     'Rock' =>  'Rock'
                     ) ,
                 'expanded' => true,
                 'multiple' => true,
             ))
+            ->add('website', TextType::class)
+            ->add('about', TextareaType::class)
+            ->add('save', SubmitType::class, array('label' => 'Save'))
             ->getForm();
         
         $form->handleRequest($request);
@@ -63,6 +79,23 @@ class UserController extends Controller
             'form' => $form->createView(),
         ));
 //        return array('form' => $form->createView());
+    }
+
+
+//    NOT WORKING
+    /**
+     * @Route("/test", name="user")
+     */
+    public function userAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+//        dump($em->getRepository('UserBundle:UserProfile'));die;
+
+        $em->getRepository('UserBundle:UserProfile')
+            ->findUserById();
+
+        return $this->render('@Record/Default/index.html.twig');
     }
     
 
