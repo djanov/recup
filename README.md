@@ -79,6 +79,17 @@ Add later:
    - Make a professional logo
 
 
+Maj 23, 2016 (userProfile)
+==========================
+
+Connecting the data to the users in the index page, and first steps to make them editable by user.
+
+Links:
+-----
+* [Making own service to find the current logged user by id][76]
+
+
+
 Maj 22, 2016 (userProfile)
 ==========================
 
@@ -6051,4 +6062,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [73]:https://symfony.com/doc/current/cookbook/form/form_customization.html
 [74]:https://stackoverflow.com/questions/17314996/symfony2-array-to-string-conversion-error
 [75]:http://docs.doctrine-project.org/en/latest/tutorials/composite-primary-keys.html#use-case-2-simple-derived-identity
+[76]:https://stackoverflow.com/questions/30634395/how-to-get-current-user-inside-repository-symfony-2-7
 <!-- / end links-->

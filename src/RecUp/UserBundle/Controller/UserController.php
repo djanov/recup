@@ -9,12 +9,15 @@
 namespace RecUp\UserBundle\Controller;
 
 
+use FOS\UserBundle\Form\Type\ProfileFormType;
 use RecUp\UserBundle\Entity\UserProfile;
+use RecUp\UserBundle\Service\FindCurrentUser;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -30,10 +33,21 @@ class UserController extends Controller
     {
         $document = new UserProfile();
 
+        $dataByUser =  $this->get('recup_current_user')->getUserProfileDataByUser();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $em->getRepository('UserBundle:UserProfile')
+            ->findOneBy(['id' => $dataByUser]);
+
+        $username = $user->getUsername();
+
         $form = $this->createFormBuilder($document)
             ->add('file')
             ->add('username')
-            ->add('name', TextType::class)
+            ->add('name', TextType::class, array(
+                'data' => $username
+            ))
             ->add('country', TextType::class)
             ->add('gender', ChoiceType::class, array(
                 'choices' => array('0' => 'not known', '1' => 'Male', '2' => 'Female', '9' => 'not applicable'),
@@ -62,7 +76,7 @@ class UserController extends Controller
             ->add('about', TextareaType::class)
             ->add('save', SubmitType::class, array('label' => 'Save'))
             ->getForm();
-        
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -81,22 +95,46 @@ class UserController extends Controller
 //        return array('form' => $form->createView());
     }
 
-
-//    NOT WORKING
+    
     /**
      * @Route("/test", name="user")
      */
     public function userAction()
     {
+
+        $dataByUser =  $this->get('recup_current_user')->getUserProfileDataByUser();
+
         $em = $this->getDoctrine()->getManager();
 
-//        dump($em->getRepository('UserBundle:UserProfile'));die;
+        $user = $em->getRepository('UserBundle:UserProfile')
+            ->findOneBy(['id' => $dataByUser]);
 
-        $em->getRepository('UserBundle:UserProfile')
-            ->findUserById();
+//        dump($user);die;
+        if(!$user) {
+            throw $this->createNotFoundException('user not found');
+        }
 
-        return $this->render('@Record/Default/index.html.twig');
+//        $markdownTransformer =  $this->get('app.markdown_transformer');
+        $country = $user->getCountry();
+        $username = $user->getUsername();
+        $birth = $user->getBirth();
+        $about = $user->getAbout();
+        $genres = $user->getGenre();
+        $gender = $user->getGender();
+
+        //dump($dataByUser);die;
+
+
+        return $this->render('@Record/Default/index.html.twig', array(
+        'name' => $dataByUser,
+        'country' => $country,
+        'username' => $username,
+            'birth' => $birth,
+            'about' => $about,
+            'genres' => $genres,
+            'gender' => $gender,
+    ));
     }
-    
+
 
 }
