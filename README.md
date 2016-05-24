@@ -78,6 +78,12 @@ Add later:
 * **Maj 14**:
    - Make a professional logo
 
+Maj 24, 2016 (userProfile)
+==========================
+
+Creating the confirmation page after registering, and adding the button to complete the profile
+
+
 
 Maj 23, 2016 (userProfile)
 ==========================

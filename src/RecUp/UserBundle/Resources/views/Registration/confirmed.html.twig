@@ -1,0 +1,16 @@
+{% extends "base_login.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block body %}
+    <div class="row">
+    <p>{{ 'registration.confirmed'|trans({'%username%': user.username}) }}</p>
+   <p>We recommend that you complete your profile</p><a class="btn btn-success" href="{{ path('profile') }}">Complete my profile</a>
+    <p>Or, if you'd like you can serach to se who else is here</p>
+    <div class="col-md-offset-4 col-md-4">
+        <div class="form-group">
+        <input type="text" class="search-input form-control" placeholder="&#xF002; Search for musicians" style="font-family:Arial, FontAwesome" />
+            </div>
+    </div>
+    </div>
+{% endblock body %}

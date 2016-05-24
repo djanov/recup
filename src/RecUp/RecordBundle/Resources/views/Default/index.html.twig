@@ -3,41 +3,7 @@
 {% block body %}
 
 
-      <div class="row">
-        <div class="col-md-12">
-            <h1 class="text-center text-uppercase text-success">index Page</h1>
-            <div class="sea-creature-container">
-                <div class="genus-photo"></div>
-                <div class="genus-details">
-                    <dl class="genus-details-list">
-                        <dt>Country</dt>
-                        <dd>{{ country }}</dd>
-                        <dt>Username:</dt>
-                        <dd>{{ username }}</dd>
-                        <dt>Birth</dt>
-                        <dd>{{ birth|date('Y-m-d') }}</dd>
-                        <dt>About</dt>
-                        <dd>{{ about }}</dd>
-                        <dt>Genres</dt>
-                        {% for genre in genres %}
-                          <dd>{{ genre }} </dd>
-                        {% endfor %}
-                        <dt>Gender</dt>
-                        {% if gender == 0 %}
-                        <dd>not known</dd>
-                        {% elseif gender == 1 %}
-                        <dd>Male</dd>
-                        {% elseif gender == 2 %}
-                        <dd>Female</dd>
-                        {% else %}
-                        <dd>not applicable</dd>
-                        {% endif %}
-                    </dl>
-                </div>
-            </div>
-            <div id="js-notes-wrapper"></div>
-         </div>
-      </div>
+    <h1 class="text-uppercase text-center">INDEX PAGE</h1>
 
 {% endblock %}
 

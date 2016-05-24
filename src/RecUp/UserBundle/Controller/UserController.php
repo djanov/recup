@@ -9,11 +9,13 @@
 namespace RecUp\UserBundle\Controller;
 
 
+use Faker\Provider\Text;
 use FOS\UserBundle\Form\Type\ProfileFormType;
 use RecUp\UserBundle\Entity\UserProfile;
 use RecUp\UserBundle\Service\FindCurrentUser;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -35,19 +37,28 @@ class UserController extends Controller
 
         $dataByUser =  $this->get('recup_current_user')->getUserProfileDataByUser();
 
+
         $em = $this->getDoctrine()->getManager();
 
         $user = $em->getRepository('UserBundle:UserProfile')
             ->findOneBy(['id' => $dataByUser]);
 
-        $username = $user->getUsername();
+        if(!$user){
+            $usr = $this->get('security.token_storage')->getToken()->getUser();
+            $username = $usr->getUsername();
+
+        } else {
+            $username = $user->getUsername();
+        }
 
         $form = $this->createFormBuilder($document)
             ->add('file')
             ->add('username')
-            ->add('name', TextType::class, array(
-                'data' => $username
-            ))
+//            ->add('username', TextType::class, array(
+//                'data' => $username,
+//                'mapped' => false,
+//            ))
+            ->add('name')
             ->add('country', TextType::class)
             ->add('gender', ChoiceType::class, array(
                 'choices' => array('0' => 'not known', '1' => 'Male', '2' => 'Female', '9' => 'not applicable'),
@@ -97,7 +108,7 @@ class UserController extends Controller
 
     
     /**
-     * @Route("/test", name="user")
+     * @Route("/user", name="user") // add {dataByUser} later
      */
     public function userAction()
     {
@@ -125,7 +136,7 @@ class UserController extends Controller
         //dump($dataByUser);die;
 
 
-        return $this->render('@Record/Default/index.html.twig', array(
+        return $this->render('@User/User/user_profile.html.twig', array(
         'name' => $dataByUser,
         'country' => $country,
         'username' => $username,
