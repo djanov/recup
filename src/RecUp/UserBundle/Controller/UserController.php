@@ -9,6 +9,7 @@
 namespace RecUp\UserBundle\Controller;
 
 
+use Doctrine\ORM\EntityRepository;
 use Faker\Provider\Text;
 use FOS\UserBundle\Form\Type\ProfileFormType;
 use RecUp\UserBundle\Entity\UserProfile;
@@ -20,6 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -35,29 +37,18 @@ class UserController extends Controller
     {
         $document = new UserProfile();
 
-        $dataByUser =  $this->get('recup_current_user')->getUserProfileDataByUser();
-
-
-        $em = $this->getDoctrine()->getManager();
-
-        $user = $em->getRepository('UserBundle:UserProfile')
-            ->findOneBy(['id' => $dataByUser]);
-
-        if(!$user){
-            $usr = $this->get('security.token_storage')->getToken()->getUser();
-            $username = $usr->getUsername();
-
-        } else {
-            $username = $user->getUsername();
-        }
-
         $form = $this->createFormBuilder($document)
             ->add('file')
-            ->add('username')
-//            ->add('username', TextType::class, array(
-//                'data' => $username,
-//                'mapped' => false,
-//            ))
+            ->add('username', EntityType::class, array(
+                'class' => 'RecUp\UserBundle\Entity\User',
+                'query_builder' => function (EntityRepository $er){
+                    return $er->createQueryBuilder('u')
+                        ->where('u.id LIKE :user')
+                        ->setParameter('user', $this->get('security.token_storage')->getToken()->getUser()->getId());
+                },
+                'attr'=> array('style'=>'display:none'),
+                'label_attr'=> array('style'=>'display:none')
+            ))
             ->add('name')
             ->add('country', TextType::class)
             ->add('gender', ChoiceType::class, array(
@@ -132,18 +123,23 @@ class UserController extends Controller
         $about = $user->getAbout();
         $genres = $user->getGenre();
         $gender = $user->getGender();
+        $file = $user->getWebPath();
+        $name = $user->getName();
 
-        //dump($dataByUser);die;
+//        dump($file);die;
+//        dump($dataByUser);die;
 
 
         return $this->render('@User/User/user_profile.html.twig', array(
-        'name' => $dataByUser,
+//        'name' => $dataByUser,
         'country' => $country,
         'username' => $username,
             'birth' => $birth,
             'about' => $about,
             'genres' => $genres,
             'gender' => $gender,
+            'file' => $file,
+            'name' => $name,
     ));
     }
 

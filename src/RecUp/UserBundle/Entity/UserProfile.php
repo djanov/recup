@@ -198,7 +198,7 @@ class UserProfile
     {
         return null === $this->path
             ? null
-            : $this->getUploadDir().'/'.$this->path;
+            : $this->getUploadDir().'/'.$this->id.'.'.$this->path;
     }
 
     protected function getUploadRootDir()
@@ -327,6 +327,22 @@ class UserProfile
     public function setUsername($username)
     {
         $this->username = $username;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     }
     
     

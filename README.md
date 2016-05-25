@@ -78,6 +78,37 @@ Add later:
 * **Maj 14**:
    - Make a professional logo
 
+Maj 25, 2016 (userProfile)
+==========================
+
+The after register page the more in depth register page is done but only for one time use, and the user
+profile is done the pictures now can be implemented.
+
+The routs are done for:
+   - Profile
+   - Settings
+
+To make the username hidden from the form and to have a default value set to the user ID:
+
+```
+src/RecUp/UserBundle/Controller/UserController.php
+
+ ...
+->add('username', EntityType::class, array(
+                'class' => 'RecUp\UserBundle\Entity\User',
+                'query_builder' => function (EntityRepository $er){
+                    return $er->createQueryBuilder('u')
+                        ->where('u.id LIKE :user')
+                        ->setParameter('user', $this->get('security.token_storage')->getToken()->getUser()->getId());
+                },
+                'attr'=> array('style'=>'display:none'),
+                'label_attr'=> array('style'=>'display:none')
+            ))
+ ...
+```
+
+
+
 Maj 24, 2016 (userProfile)
 ==========================
 

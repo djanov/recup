@@ -126,3 +126,18 @@ h1 {
 //  margin: auto;
 //}
 //////////////////////////////////////
+
+
+////////////////////////////////////
+////////// PROFILE ////////////////
+//////////////////////////////////
+
+.user-img {
+  //position: absolute;
+  //top: 0;
+  //left: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px white, inset 0 2px 0 rgba(0, 0, 0, 0.08), 0 3px 0 4px rgba(0, 0, 0, 0.05);
+}

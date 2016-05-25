@@ -1,6 +1,6 @@
-{% extends "UserBundle::layout.html.twig" %}
+{% extends "base_login.html.twig" %}
 
-
-{% block fos_user_content %}
-{% include "UserBundle:Registration:register_content.html.twig" %}
-{% endblock fos_user_content %}
+{% block body %}
+    {{ block('fos_user_content') }}
+    {% include "UserBundle:Registration:register_content.html.twig" %}
+{% endblock %}
