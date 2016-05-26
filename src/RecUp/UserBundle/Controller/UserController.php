@@ -86,6 +86,10 @@ class UserController extends Controller
             $em = $this->getDoctrine()->getManager();
 
             $em->persist($document);
+//            $this->addFlash(
+//                'success',
+//                'User details have been updated'
+//            );
             $em->flush();
 
             return $this->redirectToRoute('index');
@@ -113,7 +117,11 @@ class UserController extends Controller
 
 //        dump($user);die;
         if(!$user) {
-            throw $this->createNotFoundException('user not found');
+            // need to add first a flash message for the user that he is not set the profile
+            // yet and then redirect or go to the edit_profile page and then
+            // have the flash message
+            return $this->redirectToRoute('profile');
+//            throw $this->createNotFoundException('user not found');
         }
 
 //        $markdownTransformer =  $this->get('app.markdown_transformer');

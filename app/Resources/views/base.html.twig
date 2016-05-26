@@ -24,7 +24,13 @@
                               </div>
                      <div class="collapse navbar-collapse" id="nav-collapse-1">
                          {{ knp_menu_render('UserBundle:MenuBuilder:mainMenu', {'currentClass': 'active', 'template': 'UserBundle::knp_menu.html.twig', 'allow_safe_labels': true})|raw }}
+
+                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                          {{ knp_menu_render('UserBundle:MenuBuilder:userMenu', {'currentClass': 'active', 'template': 'UserBundle::knp_menu.html.twig', 'allow_safe_labels': true})|raw }}
+                         {% else %}
+                            {# need to redirect#}
+                         {% endif %}
+
                          <form class="navbar-form navbar-right">
                              <div class="form-group">
                                  <input type="text" class="search-input form-control" placeholder="&#xF002; Search for musicians" style="font-family:Arial, FontAwesome" />

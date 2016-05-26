@@ -78,6 +78,12 @@ Add later:
 * **Maj 14**:
    - Make a professional logo
 
+Maj 26, 2016(user)
+==================
+
+Fixing the user login log out
+
+
 Maj 25, 2016 (userProfile)
 ==========================
 

@@ -39,7 +39,7 @@ class MenuBuilder implements ContainerAwareInterface
 
         $username = $this->container->get('security.token_storage')->getToken()->getUser()->getUsername();
         $username = strtoupper($username); // need to make if user not loged in
-
+        
        
 
         $menu->addChild('User', array('label' => $username))
