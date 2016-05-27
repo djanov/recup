@@ -25,7 +25,11 @@ services:
      recup_current_user:
         class: RecUp\UserBundle\Service\FindCurrentUser
         arguments: ['@security.token_storage', '@doctrine.orm.entity_manager']
-
+     app.user_voter:
+        class: RecUp\UserBundle\Security\UserVoter
+        tags:
+          - { name: security.voter }
+#        public: false
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
