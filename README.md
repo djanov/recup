@@ -78,6 +78,16 @@ Add later:
 * **Maj 14**:
    - Make a professional logo
 
+Maj 29, 2016(user)
+=================
+
+The voeters are not working, acces denied
+
+Maj 28, 2016 (user)
+=================
+
+Making the user voters service to make the user enable to view or edit the profile
+
 Maj 26, 2016(user)
 ==================
 
