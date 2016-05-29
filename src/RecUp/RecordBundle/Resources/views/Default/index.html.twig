@@ -5,5 +5,13 @@
 
     <h1 class="text-uppercase text-center">INDEX PAGE</h1>
 
+    {#{{ users[0].name }}#}
+
+    {% for key,val in users %}
+        <tr>
+            <li>{{ val.name }}</li>
+        </tr>
+    {% endfor %}
+
 {% endblock %}
 

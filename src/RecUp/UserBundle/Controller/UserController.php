@@ -80,13 +80,14 @@ class UserController extends Controller
             ->getForm();
 
         $form->handleRequest($request);
-        $this->denyAccessUnlessGranted('view', $form);
+        $this->isGranted('edit', $form);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // ... perform some action, such as saving the task to the database
             $em = $this->getDoctrine()->getManager();
 
             $em->persist($document);
+//            $em->refresh($document);
 //            $this->addFlash(
 //                'success',
 //                'User details have been updated'

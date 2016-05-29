@@ -78,12 +78,24 @@ Add later:
 * **Maj 14**:
    - Make a professional logo
 
-Maj 29, 2016(user)
+Maj 29, 2016 (index,user profile)
+=================================
+
+User profile edit page can't update if the user is have the profile dunno why voters are work,
+probably Doctrine problem with the OneToOne relations.
+
+In the index page showing all the users that are registered(because this name is must for the user and
+if he/she not finished the profile then he/she don't have the proper name so I need to add the username).
+Add latest post maybe later.
+
+
+
+Maj 28, 2016(user)
 =================
 
 The voeters are not working, acces denied
 
-Maj 28, 2016 (user)
+Maj 27, 2016 (user)
 =================
 
 Making the user voters service to make the user enable to view or edit the profile

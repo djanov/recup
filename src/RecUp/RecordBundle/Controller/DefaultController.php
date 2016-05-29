@@ -24,7 +24,18 @@ class DefaultController extends Controller
 //
 //        dump($user);die;
 
-        return $this->render('@Record/Default/index.html.twig');
+        $em = $this->getDoctrine()->getManager();
+
+        $users = $em->getRepository('UserBundle:UserProfile')
+            ->findAll();
+
+//        dump($user);die;
+        ;
+
+
+        return $this->render('@Record/Default/index.html.twig', array(
+            'users' => $users,
+        ));
     }
     
     /**

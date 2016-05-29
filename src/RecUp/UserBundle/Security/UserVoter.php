@@ -36,8 +36,9 @@ class UserVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        $user = $token->getUsername();
+        $user = $token->getUser();
 //       getUser
+//        getUsername
 
         if (!$user instanceof User) {
             // the user must be logged in; if not, deny access
@@ -74,6 +75,6 @@ class UserVoter extends Voter
     {
         // this assumes that the data object has a getOwner() method
         // to get the entity of the user who owns this data object
-        return $user === $userProfile->getUsername();
+        return $user === $userProfile->getId();
     }
 }
