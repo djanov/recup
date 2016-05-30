@@ -16,3 +16,9 @@ fos_user:
 users:
         resource: "@UserBundle/Controller/"
         type:     annotation
+
+fos_comment_api:
+    type: rest
+    resource: "@FOSCommentBundle/Resources/config/routing.yml"
+    prefix: /api
+    defaults: { _format: html }

@@ -78,6 +78,19 @@ Add later:
 * **Maj 14**:
    - Make a professional logo
 
+Maj 30, 2016 (index,FOSCommentBundle)
+=====================================
+
+Adding profile picture for the users in the index page and make some styling.
+
+Installing FOSCommentBundle, not working.
+
+Links:
+-----
+* [Getting Started With FOSCommentBundle][78]
+
+
+
 Maj 29, 2016 (index,user profile)
 =================================
 
@@ -6128,4 +6141,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [74]:https://stackoverflow.com/questions/17314996/symfony2-array-to-string-conversion-error
 [75]:http://docs.doctrine-project.org/en/latest/tutorials/composite-primary-keys.html#use-case-2-simple-derived-identity
 [76]:https://stackoverflow.com/questions/30634395/how-to-get-current-user-inside-repository-symfony-2-7
+[78]:https://github.com/FriendsOfSymfony/FOSCommentBundle/blob/master/Resources/doc/index.md
 <!-- / end links-->
