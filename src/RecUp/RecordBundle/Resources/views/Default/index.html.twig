@@ -6,10 +6,10 @@
     <h1 class="text-uppercase text-center">INDEX PAGE</h1>
 
     {#{{ users[0].name }}#}
-
     {% for key,val in users %}
         <tr>
-            <li class="user-profile"> {{ val.name }} {% if val.webPath %}<img class="img-circle user-img" src="{{ val.webPath }}">{% endif %} </li>
+            <li class="user-profile"> <a href="{{ path('user', {'userFind': val.username}) }}">
+                    {{ val.name }} </a> {% if val.webPath %}<img class="img-circle user-img" src="{{ val.webPath }}">{% endif %} </li>
             {#<a href="{{ path('profile') }}">{{ val.name }}</a>#}
         </tr>
     {% endfor %}

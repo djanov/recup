@@ -105,19 +105,26 @@ class UserController extends Controller
 
     
     /**
-     * @Route("/user", name="user") // add {dataByUser} later
+     * @Route("/user/{userFind}", defaults={"userFind" =  2}, name="user") // add {dataByUser} later
      */
-    public function userAction()
+    public function userAction($userFind)
     {
+//        $dataByUser =  $this->get('recup_current_user')->getUserProfileDataByUser();
+        $userManager = $this->get('fos_user.user_manager');
 
-        $dataByUser =  $this->get('recup_current_user')->getUserProfileDataByUser();
+        $userByName = $userManager->findUserByUsername($userFind);
+
+        if(!$userByName) {
+            throw $this->createNotFoundException('user not found');
+        }
 
         $em = $this->getDoctrine()->getManager();
 
         $user = $em->getRepository('UserBundle:UserProfile')
-            ->findOneBy(['id' => $dataByUser]);
+            ->findOneBy(['username' => $userByName]);
 
 //        dump($user);die;
+
         if(!$user) {
             // need to add first a flash message for the user that he is not set the profile
             // yet and then redirect or go to the edit_profile page and then
@@ -127,6 +134,7 @@ class UserController extends Controller
         }
 
 //        $markdownTransformer =  $this->get('app.markdown_transformer');
+
         $country = $user->getCountry();
         $username = $user->getUsername();
         $birth = $user->getBirth();

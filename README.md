@@ -78,6 +78,35 @@ Add later:
 * **Maj 14**:
    - Make a professional logo
 
+* **Maj 31**:
+   **!!!The 404 error page need to be customise!!!**
+
+
+Maj 31, 2016 (FOSCommentBundle,index,edit_profile)
+==================================================
+
+The key was that starting from Symfony 2.8, Assetic is no longer included by default. Si i need to
+install assetic-bundle and enable in the AppKernel.php. [Installing assetic-bundle][79]
+
+[Customize style in FOSCommentBundle][80]. After that I included the layout.css and customize there
+the comment styles.
+
+In the index if I click on a user it will now go to the user profile.
+> Need to fix here if the user is not set up his profile make error handling
+
+In the edit profile making the route now to the current user when it click on the nav-bar user->profile.
+And if we use by hand we can find users but, if we enter user that not exist then we have an error page
+
+> The 404 error page need to be customise
+
+Links:
+------
+
+* [Installing assetic-bundle][79]
+* [Customize style in FOSCommentBundle][80]
+
+
+
 Maj 30, 2016 (index,FOSCommentBundle)
 =====================================
 
@@ -6142,4 +6171,6 @@ The GenusController is a controller, the function that will (eventually) build t
 [75]:http://docs.doctrine-project.org/en/latest/tutorials/composite-primary-keys.html#use-case-2-simple-derived-identity
 [76]:https://stackoverflow.com/questions/30634395/how-to-get-current-user-inside-repository-symfony-2-7
 [78]:https://github.com/FriendsOfSymfony/FOSCommentBundle/blob/master/Resources/doc/index.md
+[79]:https://symfony.com/doc/2.8/cookbook/assetic/asset_management.html
+[80]:https://github.com/FriendsOfSymfony/FOSCommentBundle/blob/master/Resources/doc/5-style_it.md
 <!-- / end links-->

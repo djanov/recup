@@ -38,14 +38,17 @@ class MenuBuilder implements ContainerAwareInterface
             ->setAttribute('icon', 'fa fa-plus');
 
         $username = $this->container->get('security.token_storage')->getToken()->getUser()->getUsername();
-        $username = strtoupper($username); // need to make if user not logged in
-        
-       
 
-        $menu->addChild('User', array('label' => $username))
+
+        $usernameUpper = strtoupper($username); // need to make if user not logged in
+        
+
+
+        $menu->addChild('User', array('label' => $usernameUpper))
             ->setAttribute('dropdown', true)
             ->setAttribute('icon', 'fa fa-user');
-        $menu['User']->addChild('Profile', array('route' => 'user'))
+//              need to change 'uri' later for dynamic.
+        $menu['User']->addChild('Profile', array('uri' => '/user/'.$username))
             ->setAttribute('icon', 'glyphicon glyphicon-user')
             ->setAttribute('divider_append', true);
         $menu['User']->addChild('Settings', array('route' => 'profile'))

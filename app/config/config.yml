@@ -104,9 +104,10 @@ knp_menu:
 #    registration:
 #            confirmation:
 #                enabled: true
-
+#
 assetic:
-    bundles:        ["FOSCommentBundle"]
+    debug: "%kernel.debug%"
+    bundles: ["FOSCommentBundle"]
 
 fos_comment:
     db_driver: orm
