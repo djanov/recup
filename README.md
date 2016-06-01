@@ -57,6 +57,9 @@ Important changes:
   - Changing indexAction (index.html.twig) to showAction (show.html.twig)
   - Changing {wat} to {track}
 
+* **Jun 1**:
+   - edit_profile route change to /user/{userFind}
+
 Add later:
 ================
 * **April 30**:
@@ -80,6 +83,27 @@ Add later:
 
 * **Maj 31**:
    **!!!The 404 error page need to be customise!!!**
+
+Jun 1, 2016 (user edit page, error handling)
+============================================
+
+edit_profile route change to /user/{userFind}.
+
+Making the page editable for the user, the error handling is done.
+
+I was able to do the edit page by [$this][81] website.
+
+> DON'T FORGET TO ADD IMAGE PREVIEW FROM THE CURRENT PICTURE WHEN CHANGE IN THE EDIT PAGE
+
+> Need to refactor the uploadAction and editAction, the formbuilder...
+
+> NEED TO MAKE SURE THE FORM INPUT IS SECURED NOT THE HTML5 REQUIRED SHIT! BECAUSE OF SQL INJECTION
+
+Links:
+------
+
+* [edit page help site][81]
+
 
 
 Maj 31, 2016 (FOSCommentBundle,index,edit_profile)
@@ -6173,4 +6197,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [78]:https://github.com/FriendsOfSymfony/FOSCommentBundle/blob/master/Resources/doc/index.md
 [79]:https://symfony.com/doc/2.8/cookbook/assetic/asset_management.html
 [80]:https://github.com/FriendsOfSymfony/FOSCommentBundle/blob/master/Resources/doc/5-style_it.md
+[81]:http://www.leccionespracticas.com/informatica-web/symfony-create-and-update-an-entity-using-doctrine-full-example
 <!-- / end links-->

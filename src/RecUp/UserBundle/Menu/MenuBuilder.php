@@ -51,7 +51,7 @@ class MenuBuilder implements ContainerAwareInterface
         $menu['User']->addChild('Profile', array('uri' => '/user/'.$username))
             ->setAttribute('icon', 'glyphicon glyphicon-user')
             ->setAttribute('divider_append', true);
-        $menu['User']->addChild('Settings', array('route' => 'profile'))
+        $menu['User']->addChild('Settings', array('uri' => '/../'.$username.'/edit'))
             ->setAttribute('icon', 'fa fa-edit');
         $menu['User']->addChild('Logout', array('uri' => '/logout'))
         ->setAttribute('icon', 'glyphicon glyphicon-log-out');

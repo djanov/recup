@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="form-div" style="width: 800px; margin:auto; padding:10px;">
+        {#{{ dump(id) }}#}
+        <form action="{{ path('editProfile', { 'id' : id } ) }}" method="post" {{ form_enctype(form) }}>
+
+            <div id="errores_form" class="error">
+                <!-- errores generales del formulario -->
+                {{ form_errors(form) }}
+            </div>
+
+            <div id="formcontent">
+                <table style="border-collapse:separate; border-spacing:1em;">
+                    {#<tr>#}
+                        {#<td>{{ form_label(form.name) }}</td>#}
+                        {#<td>{{ form_widget(form.name) }}</td>#}
+                        {#<td class="error">{{ form_errors(form.name) }}</td>#}
+                    {#</tr>#}
+                    {#<tr>#}
+                        {#<td>{{ form_label(form.gender) }}</td>#}
+                        {#<td>{{ form_widget(form.gender) }}</td>#}
+                        {#<td class="error">{{ form_errors(form.gender) }}</td>#}
+                    {#</tr>#}
+                    <tr></tr>
+                    {# ADD THE PICTURE FOR THE Preview if the user has one#}
+                    <tr>{{ form_rest(form) }}</tr>
+
+                </table>
+            </div>
+
+            <br />
+        </form>
+    </div>
+{% endblock %}
