@@ -26,4 +26,14 @@ class UserRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function findByLetters($string)
+    {
+        return $this->getEntityManager()->createQuery('SELECT u 
+                                                        FROM UserBundle:UserProfile u 
+                                                        WHERE u.name LIKE :string 
+                                                        OR u.genre LIKE :string')
+                                         ->setParameter('string','%'.$string.'%')
+                                         ->getResult();
+    }
 }

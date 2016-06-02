@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityRepository;
 use Faker\Provider\Text;
 use FOS\UserBundle\Form\Type\ProfileFormType;
 use RecUp\UserBundle\Entity\UserProfile;
+use RecUp\UserBundle\Form\UserFormType;
 use RecUp\UserBundle\Service\FindCurrentUser;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -180,7 +181,12 @@ class UserController extends Controller
             ->getForm();
 
         if ($request->getMethod() == 'POST') {
-            $form->submit($request);
+            $form->handleRequest($request);
+//            $form->submit($request);
+//
+//            handleRequest vs submit
+//https://symfony.com/doc/current/cookbook/form/direct_submit.html
+
 //            $form->bind($request); // bind is deprecated
 
             if ($form->isValid()){

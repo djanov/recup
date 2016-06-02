@@ -57,8 +57,6 @@ Top Nav General Styling
 *******************************/
 
 body {
-  margin: 0;
-  color: #3a3a3a;
   font-family: $font-font;
   font-size: 16px;
   font-weight:300;
@@ -66,6 +64,13 @@ body {
   line-height:30px;
   text-align: center;
   background: $background;
+
+  margin: 0 0 50px; /* bottom = footer height */
+}
+
+html {
+  position: relative;
+  min-height: 100%;
 }
 
 strong {
@@ -642,7 +647,11 @@ FOOTER Styling
   //background: $nav;
   background: rgba(0, 0, 0, 0.60);
   font-size: 1.3em;
-
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 50px;
+  width: 100%;
 }
 
 .footer-text {

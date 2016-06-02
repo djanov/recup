@@ -84,6 +84,18 @@ Add later:
 * **Maj 31**:
    **!!!The 404 error page need to be customise!!!**
 
+Jun 2, 2016 (footer, search)
+============================
+
+- Making the footer to stay in the bottom of every page by [$this][82]
+
+- Making the search dynamical, I have the json but dunno how to render.
+
+Links:
+------
+
+* [Footer on the bottom][82]
+
 Jun 1, 2016 (user edit page, error handling)
 ============================================
 
@@ -6198,4 +6210,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [79]:https://symfony.com/doc/2.8/cookbook/assetic/asset_management.html
 [80]:https://github.com/FriendsOfSymfony/FOSCommentBundle/blob/master/Resources/doc/5-style_it.md
 [81]:http://www.leccionespracticas.com/informatica-web/symfony-create-and-update-an-entity-using-doctrine-full-example
+[82]:http://mystrd.at/modern-clean-css-sticky-footer/
 <!-- / end links-->

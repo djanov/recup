@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
     <head>
         <meta charset="utf-8">
         <title>{% block title %}RecUp{% endblock %}</title>
@@ -31,12 +31,12 @@
                          {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                          {{ knp_menu_render('UserBundle:MenuBuilder:userMenu', {'currentClass': 'active', 'template': 'UserBundle::knp_menu.html.twig', 'allow_safe_labels': true})|raw }}
                          {% else %}
-                             need to redirect
+                             {#need to redirect#}
                          {% endif %}
 
                          <form class="navbar-form navbar-right">
                              <div class="form-group">
-                                 <input type="text" class="search-input form-control" placeholder="&#xF002; Search for musicians" style="font-family:Arial, FontAwesome" />
+                                 <input type="text" class="search-input form-control" id="search" placeholder="&#xF002; Search for musicians" style="font-family:Arial, FontAwesome" />
                              </div>
                              <button type="submit" class="btn btn-default">Submit</button>
                          </form>
@@ -45,6 +45,8 @@
                           </div>
                   </nav>
         <div class="main-content">
+            <p id="test">here</p>
+            {#{{ data|json_encode() }}#}
             {% block body %}{% endblock %}
         </div>
         <div class="row">
@@ -52,12 +54,12 @@
                  <p class="footer-text">&copy; 2016 <a href="https://github.com/djanov" target="_blank">Djanov</a></p>
              </div>
         </div>
-    </div>
         {% block javascripts %}
             {#<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>#}
             <script src="{{ asset('js/site.js'|asset_version) }}"></script>
             <script src="{{ asset('js/dropdown.js') }}"></script>
             <script src="{{ asset('js/collapse.js') }}"></script>
         {% endblock %}
+
     </body>
 </html>
