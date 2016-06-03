@@ -38,6 +38,8 @@
                              <div class="form-group">
                                  <input type="text" class="search-input form-control" id="search" placeholder="&#xF002; Search for musicians" style="font-family:Arial, FontAwesome" />
                              </div>
+                             <p id="test">here</p>
+                             {#{{ response|json_encode() }}#}
                              <button type="submit" class="btn btn-default">Submit</button>
                          </form>
 
@@ -45,8 +47,6 @@
                           </div>
                   </nav>
         <div class="main-content">
-            <p id="test">here</p>
-            {#{{ data|json_encode() }}#}
             {% block body %}{% endblock %}
         </div>
         <div class="row">

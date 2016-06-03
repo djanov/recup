@@ -84,6 +84,22 @@ Add later:
 * **Maj 31**:
    **!!!The 404 error page need to be customise!!!**
 
+Jun 3, 2016 (search)
+====================
+
+- The search is now functioning by [$this][83]
+
+> Need to change the key-up to have some delay, so don't send request on every key, and to
+design it to work with hundreds of users because their not going to have much space left on the site
+its going to be ugly and if FIX when I search on other then INDEX.html.twig the images path.
+
+Links:
+------
+
+* [Search on stackoverflow][83]
+
+
+
 Jun 2, 2016 (footer, search)
 ============================
 
@@ -6211,4 +6227,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [80]:https://github.com/FriendsOfSymfony/FOSCommentBundle/blob/master/Resources/doc/5-style_it.md
 [81]:http://www.leccionespracticas.com/informatica-web/symfony-create-and-update-an-entity-using-doctrine-full-example
 [82]:http://mystrd.at/modern-clean-css-sticky-footer/
+[83]:https://stackoverflow.com/questions/24922133/symfony2-ajax-search
 <!-- / end links-->

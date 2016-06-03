@@ -10,6 +10,7 @@ namespace RecUp\UserBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -46,5 +47,4 @@ class SearchController extends Controller
         $response = new Response($jsonContent);
         return $response;
     }
-
 }
