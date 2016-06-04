@@ -84,6 +84,19 @@ Add later:
 * **Maj 31**:
    **!!!The 404 error page need to be customise!!!**
 
+Jun 4, 2016 (VichUploaderBundle)
+================================
+
+- installing [VichUploaderBundle][84] and Propel.
+
+> Propel need to finnish installing, install composer
+
+Links:
+------
+
+* [VichUploaderBundle][84]
+
+
 Jun 3, 2016 (search)
 ====================
 
@@ -6228,4 +6241,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [81]:http://www.leccionespracticas.com/informatica-web/symfony-create-and-update-an-entity-using-doctrine-full-example
 [82]:http://mystrd.at/modern-clean-css-sticky-footer/
 [83]:https://stackoverflow.com/questions/24922133/symfony2-ajax-search
+[84]:https://github.com/dustin10/VichUploaderBundle
 <!-- / end links-->

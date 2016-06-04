@@ -23,7 +23,10 @@
         "friendsofsymfony/user-bundle": "~2.0@dev",
         "knplabs/knp-menu-bundle": "^2.0",
         "friendsofsymfony/comment-bundle": "^2.0",
-        "symfony/assetic-bundle": "^2.8"
+        "symfony/assetic-bundle": "^2.8",
+        "willdurand/propel-eventdispatcher-behavior": ">=1.2",
+        "willdurand/propel-eventdispatcher-bundle": ">=1.0",
+        "vich/uploader-bundle": "^1.1"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0",

@@ -116,3 +116,6 @@ fos_comment:
             comment: RecUp\UserBundle\Entity\Comment
             thread: RecUp\UserBundle\Entity\Thread
 
+vich_uploader:
+    db_driver: orm
+
