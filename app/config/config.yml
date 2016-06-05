@@ -118,4 +118,8 @@ fos_comment:
 
 vich_uploader:
     db_driver: orm
+    mappings:
+         record_song:
+              uri_prefix:         /record/songs
+              upload_destination: %kernel.root_dir%/../web/record/songs
 

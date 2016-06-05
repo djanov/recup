@@ -8,8 +8,12 @@ use RecUp\RecordBundle\Service\MarkdownTransformer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+//use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
@@ -41,26 +45,64 @@ class DefaultController extends Controller
     /**
      * @Route("/record/new")
      */
-    public function newAction()
+    public function newAction(Request $request)
     {
-        $record = new Record();
-        $record->setSongName('the best of '.rand(1,100));
-        $record->setArtist('Lenny');
-        $record->setGenre('rock');
+//        $record = new Record();
+//        $record->setSongName('the best of '.rand(1,100));
+//        $record->setArtist('Lenny');
+//        $record->setGenre('rock');
+//
+//        $comment = new RecordComment();
+//        $comment->setUsername('Daniel');
+//        $comment->setUserAvatarFilename('ryan.jpeg');
+//        $comment->setComment('I think ths song is amazing');
+//        $comment->setCreatedAt(new \DateTime('-1 month'));
+//        $comment->setRecord($record);
+//
+//        $em = $this->getDoctrine()->getManager();
+//        $em->persist($record);
+//        $em->persist($comment);
+//        $em->flush();
+//
+//        return new Response('<html><body>song created!</body></html>');
+        
+        $document = new Record();
 
-        $comment = new RecordComment();
-        $comment->setUsername('Daniel');
-        $comment->setUserAvatarFilename('ryan.jpeg');
-        $comment->setComment('I think ths song is amazing');
-        $comment->setCreatedAt(new \DateTime('-1 month'));
-        $comment->setRecord($record);
+        $form = $this->createFormBuilder($document)
+            ->add('songName')
+            ->add('artist')
+            ->add('about')
+            ->add('genre')
+            ->add('songFile', 'vich_file', array(
+                'required'      => false,
+                'allow_delete'  => false, // not mandatory, default is true
+                'download_link' => false, // not mandatory, default is true
+            ))
+            ->add('save', SubmitType::class, array('label' => 'Save'))
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($record);
-        $em->persist($comment);
-        $em->flush();
+            ->getForm();
 
-        return new Response('<html><body>song created!</body></html>');
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // ... perform some action, such as saving the task to the database
+            $em = $this->getDoctrine()->getManager();
+
+            $em->persist($document);
+//            $em->refresh($document);
+//            $this->addFlash(
+//                'success',
+//                'User details have been updated'
+//            );
+            $em->flush();
+
+            return $this->redirectToRoute('index');
+        }
+
+        return $this->render('RecordBundle:song:new.html.twig', array(
+            'form' => $form->createView(),
+        ));
+//        return array('form' => $form->createView());
     }
 
     /**

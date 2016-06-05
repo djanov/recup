@@ -84,6 +84,14 @@ Add later:
 * **Maj 31**:
    **!!!The 404 error page need to be customise!!!**
 
+Jun 5, 2016 (VichUploaderBundle)
+================================
+
+- finish installing [VichUploaderBundle][84] and don't install propel!
+
+> The upload is hapening but the file is missing from the /web directory
+
+
 Jun 4, 2016 (VichUploaderBundle)
 ================================
 

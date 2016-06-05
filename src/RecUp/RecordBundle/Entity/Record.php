@@ -10,6 +10,8 @@ namespace RecUp\RecordBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass="RecUp\RecordBundle\Repository\SongsRepository")
@@ -50,6 +52,61 @@ class Record
      */
     private $comments;
 
+    /**
+     * @Vich\UploadableField(mapping="record_song", fileNameProperty="songName")
+     *
+     * @var File
+     */
+    private $songFile;
+
+    /**
+     * @ORM\Column(type="datetime")
+     *
+     * @var \DateTime
+     */
+    private $updatedAt;
+
+    /**
+     * @return Record
+     */
+    public function setSongFile($song = null)
+    {
+        $this->songFile = $song;
+
+        if ($song){
+            $this->updatedAt = new \DateTime('now');
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return File
+     */
+    public function getSongFile()
+    {
+        return $this->songFile;
+    }
+
+    /**
+     * @param string $songName
+     * 
+     * @return Record
+     */
+    public function setSongName($songName)
+    {
+        $this->songName = $songName;
+
+        return $this;
+    }
+
+    public function getSongName()
+    {
+        return $this->songName;
+    }
+
+
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -60,18 +117,18 @@ class Record
      */
     private $isPublished = true;
 
-    public function getSongName()
-    {
-        return $this->songName;
-    }
+//    public function getSongName()
+//    {
+//        return $this->songName;
+//    }
 
-    /**
-     * @param mixed $songName
-     */
-    public function setSongName($songName)
-    {
-        $this->songName = $songName;
-    }
+//    /**
+//     * @param mixed $songName
+//     */
+//    public function setSongName($songName)
+//    {
+//        $this->songName = $songName;
+//    }
 
     /**
      * @return mixed
