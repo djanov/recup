@@ -12,10 +12,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass="RecUp\RecordBundle\Repository\SongsRepository")
  * @ORM\Table(name="record")
+ * @Assert\Callback(methods={"validate"})
+ * @Vich\Uploadable()
  */
 class Record
 {
@@ -54,7 +58,6 @@ class Record
 
     /**
      * @Vich\UploadableField(mapping="record_song", fileNameProperty="songName")
-     *
      * @var File
      */
     private $songFile;
@@ -82,6 +85,7 @@ class Record
 
     /**
      * @return File
+     *
      */
     public function getSongFile()
     {
@@ -196,4 +200,21 @@ class Record
         return $this->comments;
     }
 
+    /**
+     * @param ExecutionContextInterface $context
+     */
+    public function validate(ExecutionContextInterface $context)
+    {
+        if (! in_array($this->getSongFile()->getMimeType(), array(
+            'audio/ogg',
+            'audio/mpeg',
+            'audio/x-wav',
+        ))) {
+            $context
+                ->buildViolation('Wrong audio type! allowed (.mp3,.ogg, or .wav)')
+                ->atPath('songFile')
+                ->addViolation()
+            ;
+        }
+    }
 }

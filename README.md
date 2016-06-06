@@ -84,6 +84,39 @@ Add later:
 * **Maj 31**:
    **!!!The 404 error page need to be customise!!!**
 
+Jun 6, 2016 (Forms,VichUploaderBundle)
+======================================
+
+- Adding the **- bootstrap_3_layout.html.twig** for the forms to be pretty and make
+save button separat.
+
+- Making new Folder to separate the Forms from Controller.
+
+- Making own validation for user to only make available to upload mp3,wav,ogg by [$this][86]
+
+- Accessing the url in [twig][85]. Adding the audio to the music page and able to play it
+
+Adding the [namer][87] to the config.yml to make unique names on upload **vich uploader**.
+
+```
+app/config/config.yml
+        ...
+vich_uploader:
+    db_driver: orm
+    mappings:
+         record_song:
+         namer:              vich_uploader.namer_uniqid
+         ...
+```
+
+Links:
+------
+
+* [Allow only mp3,wav,ogg own validation][86]
+* [Accessing the uploaded file url][85]
+* [name in config.yml][87]
+
+
 Jun 5, 2016 (VichUploaderBundle)
 ================================
 
@@ -6250,4 +6283,7 @@ The GenusController is a controller, the function that will (eventually) build t
 [82]:http://mystrd.at/modern-clean-css-sticky-footer/
 [83]:https://stackoverflow.com/questions/24922133/symfony2-ajax-search
 [84]:https://github.com/dustin10/VichUploaderBundle
+[85]:https://github.com/dustin10/VichUploaderBundle/issues/7
+[86]:https://stackoverflow.com/questions/34019407/how-to-use-mimetype-assert-with-vichuploader
+[87]:https://github.com/dustin10/VichUploaderBundle/blob/master/Resources/doc/namers.md
 <!-- / end links-->

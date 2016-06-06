@@ -40,6 +40,9 @@ twig:
 
     number_format:
       thousands_separator: ','
+    form_themes:
+      - bootstrap_3_layout.html.twig
+      - 'VichUploaderBundle:Form:fields.html.twig'
 
 # Doctrine Configuration
 doctrine:
@@ -120,6 +123,7 @@ vich_uploader:
     db_driver: orm
     mappings:
          record_song:
+              namer:              vich_uploader.namer_uniqid
               uri_prefix:         /record/songs
               upload_destination: %kernel.root_dir%/../web/record/songs
 

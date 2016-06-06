@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/record.css'|asset_version) }}"/>
+    <link rel="stylesheet" href="{{ asset('css/record.css'|asset_version) }}" xmlns="http://www.w3.org/1999/html"/>
 {% endblock %}
 
 {% block title %}RecUp {{ name.songName }}{% endblock %}
@@ -22,6 +22,7 @@
                 <dd>{{ name.about|markdownify }}</dd>
                 <dt>Recent Comments</dt>
                 <dd>{{ recentCommentCount }}</dd>
+                <audio src="{{ app.request.getUriForPath(vich_uploader_asset(name, 'songFile')) }}" controls> </audio>
             </dl>
         </div>
     </div>

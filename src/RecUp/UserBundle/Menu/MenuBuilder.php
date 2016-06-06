@@ -34,7 +34,7 @@ class MenuBuilder implements ContainerAwareInterface
         if($this->container->get('security.context')->isGranted(array('ROLE_ADMIN', 'ROLE_USER'))) {} // Check if the visitor has any authenticated roles
         $username = $this->container->get('security.context')->getToken()->getUser()->getUsername(); // Get username of the current logged in user
         */
-        $menu->addChild('New Track', array('route' => 'index'))
+        $menu->addChild('New Track', array('route' => 'record_new'))
             ->setAttribute('icon', 'fa fa-plus');
 
         $username = $this->container->get('security.token_storage')->getToken()->getUser()->getUsername();

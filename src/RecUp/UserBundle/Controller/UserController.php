@@ -177,7 +177,6 @@ class UserController extends Controller
             ))
             ->add('website', TextType::class)
             ->add('about', TextareaType::class)
-            ->add('save', SubmitType::class, array('label' => 'Save'))
             ->getForm();
 
         if ($request->getMethod() == 'POST') {

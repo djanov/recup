@@ -19,3 +19,4 @@ readmetoday.md
 /app/Resources/assets/rev-manifest.json
 /web/video
 /web/uploads/*
+/web/record/*
