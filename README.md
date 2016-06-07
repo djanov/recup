@@ -84,6 +84,76 @@ Add later:
 * **Maj 31**:
    **!!!The 404 error page need to be customise!!!**
 
+Jun 7, 2016 (VichUploaderBundle Upload songs by current logged user)
+==============================================================
+
+- Making the user that is logged in to upload songs
+
+- Key to get the id for the UserProfile to make that happen
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+        ...
+$dataByUser = $this->get('recup_current_user')->getUserProfileDataByUser();
+        $em = $this->getDoctrine()->getManager();
+        $id = $em->getRepository('UserBundle:UserProfile')
+            ->findOneBy(['id' => $dataByUser]);
+        $dataId = $id->getId();
+        ...
+```
+
+The whole NewAction in the DefaultController
+
+```
+src/RecUp/RecordBundle/Controller/DefaultController.php
+
+    ...
+/**
+     * @Route("/record/new", name="record_new")
+     */
+    public function newAction(Request $request)
+    {
+
+        $record = new Record();
+
+        $dataByUser = $this->get('recup_current_user')->getUserProfileDataByUser();
+        $em = $this->getDoctrine()->getManager();
+        $id = $em->getRepository('UserBundle:UserProfile')
+            ->findOneBy(['id' => $dataByUser]);
+        $dataId = $id->getId();
+
+        $form = $this->createForm(RecordFormType::class, $record , array(
+            'username' =>$dataId
+
+        ));
+        ...
+```
+
+Then in the RecordFormType.php to get the username I need an EntityType of the **UserProfile**
+ and the **query_builder** to get the current user UserProfile Id.
+
+ ```
+ ...
+  public function buildForm(FormBuilderInterface $builder, array $options)
+     {
+         $builder
+          ->add('username',  EntityType::class, array(
+              'class' => 'RecUp\UserBundle\Entity\UserProfile',
+              'property' => 'username',
+              'query_builder' => function(EntityRepository $er) use ($options) {
+                  return $er->createQueryBuilder('u')
+                    ->where('u.id = :username' )
+                     ->setParameter('username', $options['username']);
+              },
+              'attr' => array('style' => 'display:none'),
+              'label_attr' => array('style' => 'display:none')
+          ))
+        ...
+ ```
+ Then the 'attr' and the 'label_attr' is for hide this from the user.
+
+
+
 Jun 6, 2016 (Forms,VichUploaderBundle)
 ======================================
 

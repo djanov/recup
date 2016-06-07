@@ -8,9 +8,11 @@
 
 namespace RecUp\UserBundle\Entity;
 
+use RecUp\RecordBundle\Entity\Record;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass="RecUp\UserBundle\Repository\UserRepository")
@@ -80,6 +82,27 @@ class UserProfile
      * @ORM\JoinColumn(name="username", referencedColumnName="id")
      */
     private $username;
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="RecUp\RecordBundle\Entity\Record", mappedBy="username"))
+     *
+     */
+    private $songs;
+    
+    
+    public function __construct()
+    {
+        $this->songs = new ArrayCollection();
+    }
+
+    /**
+     * @return ArrayCollection|Record[]
+     */
+    public function getSongs()
+    {
+        return $this->songs;
+    }
     
     
     /**

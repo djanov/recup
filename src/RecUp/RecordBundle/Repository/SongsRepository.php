@@ -27,5 +27,4 @@ class SongsRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
-    
 }

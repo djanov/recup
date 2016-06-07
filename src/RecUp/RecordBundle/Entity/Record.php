@@ -10,6 +10,7 @@ namespace RecUp\RecordBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use RecUp\UserBundle\Entity\UserProfile;
 use Symfony\Component\Validator\Constraints\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -63,12 +64,53 @@ class Record
     private $songFile;
 
     /**
+     * @ORM\ManyToOne(targetEntity="RecUp\UserBundle\Entity\UserProfile", inversedBy="songs")
+     * @ORM\OrderBy({"createdAt" = "DESC"})
+     */
+    private $username;
+    
+
+    /**
      * @ORM\Column(type="datetime")
      *
      * @var \DateTime
      */
+
     private $updatedAt;
 
+    /**
+     * @return mixed
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+    
+    
+    /**
+     * @param mixed $userProfile
+     */
+    public function setUsername(UserProfile $userProfile)
+    {
+       $this->username = $userProfile;  
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+    
     /**
      * @return Record
      */

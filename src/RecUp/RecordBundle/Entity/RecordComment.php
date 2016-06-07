@@ -64,7 +64,6 @@ class RecordComment
     {
         return $this->username;
     }
-
     /**
      * @param mixed $username
      */

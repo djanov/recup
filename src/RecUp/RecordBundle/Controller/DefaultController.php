@@ -48,7 +48,19 @@ class DefaultController extends Controller
      */
     public function newAction(Request $request)
     {
-        $form = $this->createForm(RecordFormType::class);
+
+        $record = new Record();
+
+        $dataByUser = $this->get('recup_current_user')->getUserProfileDataByUser();
+        $em = $this->getDoctrine()->getManager();
+        $id = $em->getRepository('UserBundle:UserProfile')
+            ->findOneBy(['id' => $dataByUser]);
+        $dataId = $id->getId();
+
+        $form = $this->createForm(RecordFormType::class, $record , array(
+            'username' =>$dataId
+            
+        ));
 
         $form->handleRequest($request);
 
@@ -132,7 +144,7 @@ class DefaultController extends Controller
         if(!$songs) {
           throw $this->createNotFoundException('song not found');
         }
-
+    
         $markdownTransformer =  $this->get('app.markdown_transformer');
         $about = $markdownTransformer->parse($songs->getAbout());
     
