@@ -9,7 +9,7 @@
             <div class="genus-details">
                 <dl class="genus-details-list">
                     <dt>Profile Picture</dt>
-                    <dd><img class="user-img" src="/../{{ file }}" alt="test"></dd>
+                    <dd><img class="user-img" src="/../{{ file }}" alt="profile-img"></dd>
                     <dt>Name</dt>
                     <dd>{{ name }}</dd>
                     <dt>Country</dt>
@@ -36,6 +36,8 @@
                     {% else %}
                         <dd>not applicable</dd>
                     {% endif %}
+                    <dt>Songs</dt>
+                    {#<dd>{{ dump(songs) }}</dd>#}
                 </dl>
             </div>
         </div>

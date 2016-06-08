@@ -18,7 +18,7 @@ class MenuBuilder implements ContainerAwareInterface
         $menu->addChild('Home', array('route' => 'index'))
             ->setAttribute('icon', 'fa fa-home');
 
-        $menu->addChild('Notifications', array('route' => 'record_songs'))
+        $menu->addChild('My Tracks', array('route' => 'record_songs'))
               ->setAttribute('icon', 'glyphicon glyphicon-cd');
 //            ->setAttribute('class', 'badge')
 //            ->setLabel('2');

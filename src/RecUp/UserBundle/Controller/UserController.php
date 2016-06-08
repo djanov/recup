@@ -222,6 +222,8 @@ class UserController extends Controller
         $user = $em->getRepository('UserBundle:UserProfile')
             ->findOneBy(['username' => $userByName]);
 
+        $songs = $user->getSongs();
+//        dump($songs);die;
 //        dump($user);die;
 
         if(!$user) {

@@ -126,6 +126,14 @@ class Record
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
      * @return File
      *
      */
@@ -224,10 +232,10 @@ class Record
         $this->about = $about;
     }
 
-    public function getUpdatedAt()
-    {
-        return new \DateTime('-'.rand(0, 100).' days');
-    }
+//    public function getUpdatedAt()
+//    {
+//        return new \DateTime('-'.rand(0, 100).' days');
+//    }
 
     public function setIsPublished($isPublished)
     {

@@ -6,8 +6,10 @@ use RecUp\RecordBundle\Entity\Record;
 use RecUp\RecordBundle\Entity\RecordComment;
 use RecUp\RecordBundle\Form\RecordFormType;
 use RecUp\RecordBundle\Service\MarkdownTransformer;
+use RecUp\UserBundle\Entity\UserProfile;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bridge\Doctrine\Tests\Fixtures\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 //use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -115,16 +117,26 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/songs", name="record_songs")
+     * @Route("/songs/{id}", defaults={"id" = null}, name="record_songs")
      */
     public function listAction()
     {
+        $dataByUser = $this->get('recup_current_user')->getUserProfileDataByUser();
         $em = $this->getDoctrine()->getManager();
+        $dataId = $em->getRepository('UserBundle:UserProfile')
+            ->findOneBy(['id' => $dataByUser]);
 
-//        dump($em->getRepository('RecordBundle:Record'));die;
+        if(!$dataId)
+        {
+            throw $this->createNotFoundException('yo are retarded you don\'t have any songs so upload it');
+        }
+        $id = $dataId->getId();
 
+        $em = $this->getDoctrine()->getManager();
         $songs = $em->getRepository('RecordBundle:Record')
-            ->findAllPublishedOrderedByRecentlyActive();
+            ->findBy(['username' => $id]);
+//            ->findAllPublishedOrderedByRecentlyActive();
+
 
         return $this->render('@Record/song/list.html.twig', [
            'songs' => $songs
@@ -140,7 +152,6 @@ class DefaultController extends Controller
 
     $songs = $em->getRepository('RecordBundle:Record')
         ->findOneBy(['songName' => $track]);
-    
         if(!$songs) {
           throw $this->createNotFoundException('song not found');
         }
@@ -153,13 +164,13 @@ class DefaultController extends Controller
 
     $recentComments = $em->getRepository('RecordBundle:RecordComment')
         ->findAllRecentCommentsForRecord($songs);
-
     return $this->render('@Record/Default/show.html.twig', array(
         'name' => $songs,
         'recentCommentCount' => count($recentComments),
         'about' => $about,
     ));
 }
+
 
     /**
      * @Route("/test/{songName}/notes", name="record_show_notes")
@@ -184,5 +195,30 @@ class DefaultController extends Controller
         ];
 
         return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/test/{username}/record", name="songs_show")
+     * @Method("GET")
+     */
+    public function getSongsAction(UserProfile $userProfile)
+    {
+        $songs = [];
+
+        foreach ($userProfile->getSongs() as $song) {
+//            dump($song);die;
+            $songs[] = [
+              'id' => $song->getId(),
+              'songname' => $song->getSongName(),
+               'artist' => $song->getArtist(),
+                'genre' => $song->getGenre(),
+                'about' => $song->getAbout(),
+                'updatedat' => $song->getUpdatedAt()
+            ];
+            $data = [
+                'songs' => $songs,
+            ];
+            return new JsonResponse($data);
+        }
     }
 }

@@ -84,6 +84,32 @@ Add later:
 * **Maj 31**:
    **!!!The 404 error page need to be customise!!!**
 
+Jun 8, 2016 (VichUploaderBundle list show songs, search)
+========================================================
+
+- Making To show the currently logged in user tracks and error handling
+
+ > Need to add this to User Profile and then access to other profiles too
+
+
+- The search was not working it was a bug needed to [Ignoring Attributes][88] to make able to work
+again
+
+```
+src/RecUp/UserBundle/Controller/SearchController.php
+
+    ...
+        $normalizer = new GetSetMethodNormalizer();
+        $normalizer->setIgnoredAttributes(array('country','birth','about','website', 'songs'));
+        $serializer = new Serializer(array($normalizer), $encoders);
+    ...
+```
+
+Links:
+------
+
+* [Ignoring Attributes normalizer][88]
+
 Jun 7, 2016 (VichUploaderBundle Upload songs by current logged user)
 ==============================================================
 
@@ -6356,4 +6382,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [85]:https://github.com/dustin10/VichUploaderBundle/issues/7
 [86]:https://stackoverflow.com/questions/34019407/how-to-use-mimetype-assert-with-vichuploader
 [87]:https://github.com/dustin10/VichUploaderBundle/blob/master/Resources/doc/namers.md
+[88]:https://symfony.com/doc/current/components/serializer.html#ignoring-attributes
 <!-- / end links-->

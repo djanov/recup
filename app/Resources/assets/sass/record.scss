@@ -1,11 +1,11 @@
 @import "var/colors";
 @import "var/mixins";
 
-.genus-photo {
+.user-song-photo {
   width: 200px;
   height: 200px;
   border: 1px solid #000;
-  background: url('../images/octopus-rubescens.jpg');
+  //background: url('../images/octopus-rubescens.jpg');
   border-radius: 50%;
   margin-bottom: 30px;
 }

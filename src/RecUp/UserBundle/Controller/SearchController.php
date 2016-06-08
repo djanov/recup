@@ -31,15 +31,15 @@ class SearchController extends Controller
     {
         $string = $this->getRequest()->request->get('searchText');
 //        $string = 'Da';
-        
         $users = $this->getDoctrine()
                       ->getRepository('UserBundle:UserProfile')
                       ->findByLetters($string);
         // return users on json format
         
         $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new GetSetMethodNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
+        $normalizer = new GetSetMethodNormalizer();
+        $normalizer->setIgnoredAttributes(array('country','birth','about','website', 'songs'));
+        $serializer = new Serializer(array($normalizer), $encoders);
 
 
         $jsonContent = $serializer->serialize($users, 'json');

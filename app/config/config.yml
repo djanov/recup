@@ -123,7 +123,10 @@ vich_uploader:
     db_driver: orm
     mappings:
          record_song:
-              namer:              vich_uploader.namer_uniqid
+#              namer:              vich_uploader.namer_uniqid
+              namer:
+                  service:            vich_uploader.namer_property
+                  options:            { property: 'songname'}
               uri_prefix:         /record/songs
               upload_destination: %kernel.root_dir%/../web/record/songs
 

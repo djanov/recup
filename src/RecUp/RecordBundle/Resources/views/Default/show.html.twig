@@ -7,23 +7,24 @@
 {% block title %}RecUp {{ name.songName }}{% endblock %}
 
 {% block body %}
-    <h2 class="genus-name">{{ name.songName }}</h2>
+    <h2 class="genus-name"> <i class="fa fa-headphones fa-2x"></i> {{ name.songName }}</h2>
 
     <div class="sea-creature-container">
-        <div class="genus-photo"></div>
+        <div ><img class="user-song-photo" src="/../{{ name.username.webpath }}">
+             <h3><small>by:</small> <b>{{ name.username.username }}</b></h3>
+        </div>
         <div class="genus-details">
             <dl class="genus-details-list">
-                <dd>{{ '99999'|number_format }}</dd>
-                <dt>Subfamily:</dt>
-                <dd>{{ name.artist }} <i class="fa fa-heart"></i></dd>
-                <dt>Known Species:</dt>
+                <dt>Artist:</dt>
+                <dd>{{ name.artist }}</dd>
+                <dt>Genre:</dt>
                 <dd>{{ name.genre }}</dd>
                 <dt>About:</dt>
                 <dd>{{ name.about|markdownify }}</dd>
                 <dt>Recent Comments</dt>
                 <dd>{{ recentCommentCount }}</dd>
                 <audio src="{{ app.request.getUriForPath(vich_uploader_asset(name, 'songFile')) }}" controls> </audio>
-                {{ name.username.username }}
+
             </dl>
         </div>
     </div>
