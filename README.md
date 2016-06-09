@@ -84,6 +84,60 @@ Add later:
 * **Maj 31**:
    **!!!The 404 error page need to be customise!!!**
 
+* **Jun 9**:
+   - Make the songs downloadable (isDownlodable set by the user)
+   - Upvote song (Like)
+   - Edit song/delete
+
+Jun 9, 2016 (VichUploaderBundle user profile)
+========================================================
+
+- The users now on the user profile can se the user songs if they have and if they click on
+ the song then more detailed version is displayed where user can play the song.
+
+To make this possible in the UserController
+```
+  ...
+    /**
+     * @Route("/user/{userFind}", defaults={"userFind" =  null}, name="user")
+     */
+    public function userAction($userFind)
+    {
+   ...
+     $record = $user->getSongs()->toArray();
+
+        $songs = [];
+
+        foreach ($record as $song) {
+            $songs[] = [
+                'id' => $song->getId(),
+                'songname' => $song->getSongName(),
+                'artist' => $song->getArtist(),
+                'genre' => $song->getGenre(),
+                'about' => $song->getAbout(),
+                'updatedat' => $song->getUpdatedAt()
+            ];
+        }
+         return $this->render('@User/User/user_profile.html.twig', array(
+   ...
+                    'songs' => $songs,
+                ));
+            }
+    ...
+```
+Need to get the songs by the **userProfile** and then call the **getSongs()** this
+will get **Record** songs in ArrayCollection but it will return on object not an array?!
+wut!? so to work properly I need to manually use the **toArray()** function. After that i will
+get all the songs by the user. Then just return and render in twig template.
+
+Links:
+------
+
+* [Class PersistentCollection][89]
+* [Class ArrayCollection][90]
+
+
+
 Jun 8, 2016 (VichUploaderBundle list show songs, search)
 ========================================================
 
@@ -6383,4 +6437,6 @@ The GenusController is a controller, the function that will (eventually) build t
 [86]:https://stackoverflow.com/questions/34019407/how-to-use-mimetype-assert-with-vichuploader
 [87]:https://github.com/dustin10/VichUploaderBundle/blob/master/Resources/doc/namers.md
 [88]:https://symfony.com/doc/current/components/serializer.html#ignoring-attributes
+[89]:http://www.doctrine-project.org/api/orm/2.1/class-Doctrine.ORM.PersistentCollection.html
+[90]:http://www.doctrine-project.org/api/common/2.1/class-Doctrine.Common.Collections.ArrayCollection.html
 <!-- / end links-->

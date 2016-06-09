@@ -144,7 +144,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/test/{track}", name="record_show")
+     * @Route("/song/{track}", name="record_show")
      */
     public function showAction($track)
 {
@@ -197,28 +197,28 @@ class DefaultController extends Controller
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/test/{username}/record", name="songs_show")
-     * @Method("GET")
-     */
-    public function getSongsAction(UserProfile $userProfile)
-    {
-        $songs = [];
-
-        foreach ($userProfile->getSongs() as $song) {
-//            dump($song);die;
-            $songs[] = [
-              'id' => $song->getId(),
-              'songname' => $song->getSongName(),
-               'artist' => $song->getArtist(),
-                'genre' => $song->getGenre(),
-                'about' => $song->getAbout(),
-                'updatedat' => $song->getUpdatedAt()
-            ];
-            $data = [
-                'songs' => $songs,
-            ];
-            return new JsonResponse($data);
-        }
-    }
+//    /**
+//     * @Route("/test/{username}/record", name="songs_show")
+//     * @Method("GET")
+//     */
+//    public function getSongsAction(UserProfile $userProfile)
+//    {
+//        $songs = [];
+//
+//        foreach ($userProfile->getSongs() as $song) {
+////            dump($song);die;
+//            $songs[] = [
+//              'id' => $song->getId(),
+//              'songname' => $song->getSongName(),
+//               'artist' => $song->getArtist(),
+//                'genre' => $song->getGenre(),
+//                'about' => $song->getAbout(),
+//                'updatedat' => $song->getUpdatedAt()
+//            ];
+//            $data = [
+//                'songs' => $songs,
+//            ];
+//            return new JsonResponse($data);
+//        }
+//    }
 }

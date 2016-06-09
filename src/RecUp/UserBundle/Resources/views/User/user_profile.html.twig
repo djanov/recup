@@ -37,7 +37,12 @@
                         <dd>not applicable</dd>
                     {% endif %}
                     <dt>Songs</dt>
-                    {#<dd>{{ dump(songs) }}</dd>#}
+                    {% for song in songs %}
+                    {#<a class="songs" href="{{ path('songs_show', {'username': username}) }}">#}
+                        <a class="songs" href="{{ path('record_show', {'track': song.songname }) }}">
+                        <dd>{{ song.songname }}</dd>
+                        </a>
+                        {% endfor %}
                 </dl>
             </div>
         </div>

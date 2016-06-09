@@ -12,9 +12,11 @@ namespace RecUp\UserBundle\Controller;
 use Doctrine\ORM\EntityRepository;
 use Faker\Provider\Text;
 use FOS\UserBundle\Form\Type\ProfileFormType;
+use RecUp\RecordBundle\Entity\Record;
 use RecUp\UserBundle\Entity\UserProfile;
 use RecUp\UserBundle\Form\UserFormType;
 use RecUp\UserBundle\Service\FindCurrentUser;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -27,6 +29,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends Controller
@@ -213,6 +216,8 @@ class UserController extends Controller
 
         $userByName = $userManager->findUserByUsername($userFind);
 
+        $usernameId = $userByName->getId();
+
         if(!$userByName) {
             throw $this->createNotFoundException('user not found');
         }
@@ -220,11 +225,8 @@ class UserController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $user = $em->getRepository('UserBundle:UserProfile')
-            ->findOneBy(['username' => $userByName]);
+            ->findOneBy(['username' => $usernameId]);
 
-        $songs = $user->getSongs();
-//        dump($songs);die;
-//        dump($user);die;
 
         if(!$user) {
             // need to add first a flash message for the user that he is not set the profile
@@ -245,9 +247,21 @@ class UserController extends Controller
         $file = $user->getWebPath();
         $name = $user->getName();
         $website = $user->getWebsite();
-//        dump($file);die;
-//        dump($dataByUser);die;
 
+        $record = $user->getSongs()->toArray();
+
+        $songs = [];
+
+        foreach ($record as $song) {
+            $songs[] = [
+                'id' => $song->getId(),
+                'songname' => $song->getSongName(),
+                'artist' => $song->getArtist(),
+                'genre' => $song->getGenre(),
+                'about' => $song->getAbout(),
+                'updatedat' => $song->getUpdatedAt()
+            ];
+        }
 
         return $this->render('@User/User/user_profile.html.twig', array(
 //        'name' => $dataByUser,
@@ -260,8 +274,49 @@ class UserController extends Controller
             'file' => $file,
             'name' => $name,
             'website' => $website,
+            'songs' => $songs,
         ));
     }
 
+        /**
+     * @Route("/user/{username}/songs", name="songs_show")
+     * @Method("GET")
+     */
+    public function getSongsAction($username)
+    {
+        $userManager = $this->get('fos_user.user_manager');
+
+        $userByName = $userManager->findUserByUsername($username);
+        if(!$userByName) {
+            return $this->redirect($this->generateUrl('index'));
+        }
+        $userId = $userByName->getId();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $em->getRepository('UserBundle:UserProfile')
+            ->findOneBy(['username' => $userId]);
+
+        $record = $user->getSongs()->toArray();
+
+        $songs = [];
+
+        foreach ($record as $song) {
+            $songs[] = [
+              'id' => $song->getId(),
+              'songname' => $song->getSongName(),
+               'artist' => $song->getArtist(),
+                'genre' => $song->getGenre(),
+                'about' => $song->getAbout(),
+                'updatedat' => $song->getUpdatedAt()
+            ];
+//            $data = [
+//                'Record' => $songs,
+//            ];
+//            dump($data);die;
+//            return new JsonResponse($data);
+        }
+        return new JsonResponse($songs);
+    }
 
 }

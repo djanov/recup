@@ -8,6 +8,7 @@
 
 namespace RecUp\UserBundle\Entity;
 
+use Doctrine\Common\Collections\Criteria;
 use RecUp\RecordBundle\Entity\Record;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\Mapping as ORM;
@@ -103,8 +104,13 @@ class UserProfile
     {
         return $this->songs;
     }
-    
-    
+//
+//    public function getSongsFiltered($ids)
+//    {
+//        $criteria = Criteria::create()
+//            ->where(Criteria::expr()->in("id", $ids));
+//       return $this->getSongs()->matching($criteria);
+//    }
     /**
      * @return mixed
      */
