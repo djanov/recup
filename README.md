@@ -89,6 +89,14 @@ Add later:
    - Upvote song (Like)
    - Edit song/delete
 
+Jun 10, 2016 (index)
+===================
+
+- Getting the users songs in the index page, picture and name. The problem is to sort in date
+
+
+
+
 Jun 9, 2016 (VichUploaderBundle user profile)
 ========================================================
 

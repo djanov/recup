@@ -6,12 +6,26 @@
     <h1 class="text-uppercase text-center">INDEX PAGE</h1>
 
     {#{{ users[0].name }}#}
-    {% for key,val in users %}
-        <tr>
-            <li class="user-profile"> <a class="songs" href="{{ path('user', {'userFind': val.username}) }}">
-                    {{ val.name }} </a> {% if val.webPath %}<img class="img-circle user-img" src="{{ val.webPath }}">{% endif %} </li>
+    {#{% for key,val in users %}#}
+        {#<div class="col-md-3">#}
+        {#<tr>#}
+            {#<li class="user-profile"> <a class="songs" href="{{ path('user', {'userFind': val.username}) }}">#}
+                    {#{{ val.name }} </a> {% if val.webPath %}<img class="img-circle user-img" src="{{ val.webPath }}">{% endif %} </li>#}
             {#<a href="{{ path('profile') }}">{{ val.name }}</a>#}
-        </tr>
+        {#</tr>#}
+        {#</div>#}
+    {#{% endfor %}#}
+
+    {% for recent in recentSongs %}
+        <div>
+            <div class="col-md-offset-2">{% if recent.songs %}
+                    {% for songs in recent.songs %}
+                        {{ dump(songs.updatedAt|sort) }}
+                        {#{% if songs.up %}#}
+                       <div> {{ songs.songName }} </div>
+                    {% endfor %}
+                {% endif %}</div>
+        </div>
     {% endfor %}
 
 {% endblock %}

@@ -36,12 +36,28 @@ class DefaultController extends Controller
         $users = $em->getRepository('UserBundle:UserProfile')
             ->findAll();
 
+
+        $recentSongs = [];
+//        dump($users)
+        foreach ($users as $user)
+        {
+            $recentSongs[] = [
+//                'id' => $user->getId(),
+//                'username' => $user->getName(),
+                'profilePicture' => $user->getWebPath(),
+                'songs' => $user->getSongs()->toArray(),
+//                'avatarUri' => '/images/'.$user->getUserAvatarFilename(),
+            ];
+        }
+//        dump($recentSongs);die;
+
 //        dump($user);die;
         ;
 
 
         return $this->render('@Record/Default/index.html.twig', array(
             'users' => $users,
+            'recentSongs' => $recentSongs
         ));
     }
     
@@ -73,42 +89,16 @@ class DefaultController extends Controller
             $em = $this->getDoctrine()->getManager();
 
             $em->persist($record);
-            $em->flush();
 
-            return $this->redirectToRoute('index');
-        }
-
-//        $document = new Record();
-//
-//        $form = $this->createFormBuilder($document)
-//            ->add('songName')
-//            ->add('artist')
-//            ->add('about')
-//            ->add('genre')
-//            ->add('songFile', 'vich_file', array(
-//                'required'      => false,
-//                'allow_delete'  => false, // not mandatory, default is true
-//                'download_link' => false, // not mandatory, default is true
-//            ))
-//
-//            ->getForm();
-//
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            // ... perform some action, such as saving the task to the database
-//            $em = $this->getDoctrine()->getManager();
-//
-//            $em->persist($document);
-////            $em->refresh($document);
+ ////            $em->refresh($document);
 ////            $this->addFlash(
 ////                'success',
 ////                'User details have been updated'
 ////            );
-//            $em->flush();
-//
-//            return $this->redirectToRoute('index');
-//        }
+            $em->flush();
+
+            return $this->redirectToRoute('index');
+        }
 
         return $this->render('RecordBundle:song:new.html.twig', array(
             'form' => $form->createView(),

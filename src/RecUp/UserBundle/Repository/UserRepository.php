@@ -36,4 +36,17 @@ class UserRepository extends EntityRepository
                                          ->setParameter('string','%'.$string.'%')
                                          ->getResult();
     }
+
+//    /**
+//     * @return UserProfile[]
+//     */
+//    public function findLatestSongsByRecentUpload()
+//    {
+//        $record = [];
+//
+//        foreach ()
+//
+//        return $this->createQueryBuilder('s')
+//            ->andWhere('s.songs =');
+//    }
 }
