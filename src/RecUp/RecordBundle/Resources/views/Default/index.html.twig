@@ -20,7 +20,7 @@
         <div>
             <div class="col-md-offset-2">{% if recent.songs %}
                     {% for songs in recent.songs %}
-                        {{ dump(songs.updatedAt|sort) }}
+                        {{ dump(sortDate(songs.updatedAt)) }}
                         {#{% if songs.up %}#}
                        <div> {{ songs.songName }} </div>
                     {% endfor %}

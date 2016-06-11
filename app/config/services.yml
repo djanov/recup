@@ -29,6 +29,10 @@ services:
         class: RecUp\UserBundle\Security\UserVoter
         tags:
           - { name: security.voter }
+     twig_date_sort_extension:
+          class: RecUp\RecordBundle\Twig\SortByDateExtension
+          tags:
+            - { name: twig.extension }
 #        public: false
 #    service_name:
 #        class: AppBundle\Directory\ClassName

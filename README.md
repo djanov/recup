@@ -89,6 +89,13 @@ Add later:
    - Upvote song (Like)
    - Edit song/delete
 
+Jun 11, 2016 (index, twig)
+==========================
+
+- Make custom twig extension for sorting the date by time.
+
+
+
 Jun 10, 2016 (index)
 ===================
 
