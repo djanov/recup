@@ -25,12 +25,22 @@ class SortByDateExtension extends \Twig_Extension
         );
     }
 
-    public function sortByDate($data = array())
+
+    public function sortByDate($data)
     {
+//        dump($data);die;
+        
        foreach ($data as $key => $row) {
-           $sort[$key] = strtotime($row['data']);
+//           dump($sort[$key] = strtotime($row));die;
+           $sort[$key] = strtotime($row);
+
+//                      $sort[$key] = strtotime($row['date']);
+//          dump($sort['date']);die;
        }
-        return array_multisort($sort, SORT_DESC, $data);
+//         return array_sort($sort, 'date', SORT_DESC);
+        return array($data, SORT_DESC);
+//        return array_multisort($sort, SORT_DESC, $data);
+
     }
 
 

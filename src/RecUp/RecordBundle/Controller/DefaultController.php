@@ -38,7 +38,8 @@ class DefaultController extends Controller
 
 
         $recentSongs = [];
-//        dump($users)
+
+
         foreach ($users as $user)
         {
             $recentSongs[] = [

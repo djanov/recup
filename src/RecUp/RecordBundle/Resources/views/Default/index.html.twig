@@ -2,31 +2,46 @@
 
 {% block body %}
 
-
-    <h1 class="text-uppercase text-center">INDEX PAGE</h1>
-
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+    <h1 class="text-uppercase text-center">Users</h1>
     {#{{ users[0].name }}#}
-    {#{% for key,val in users %}#}
-        {#<div class="col-md-3">#}
-        {#<tr>#}
-            {#<li class="user-profile"> <a class="songs" href="{{ path('user', {'userFind': val.username}) }}">#}
-                    {#{{ val.name }} </a> {% if val.webPath %}<img class="img-circle user-img" src="{{ val.webPath }}">{% endif %} </li>#}
-            {#<a href="{{ path('profile') }}">{{ val.name }}</a>#}
-        {#</tr>#}
-        {#</div>#}
-    {#{% endfor %}#}
+    {% for key,val in users %}
 
-    {% for recent in recentSongs %}
-        <div>
-            <div class="col-md-offset-2">{% if recent.songs %}
-                    {% for songs in recent.songs %}
-                        {{ dump(sortDate(songs.updatedAt)) }}
-                        {#{% if songs.up %}#}
-                       <div> {{ songs.songName }} </div>
-                    {% endfor %}
-                {% endif %}</div>
-        </div>
+        <tr>
+            <li class="user-profile"> {% if val.webPath %}<a class="songs" href="{{ path('user', {'userFind': val.username}) }}">
+                    {{ val.name }} </a>  <img class="img-circle user-img" src="{{ val.webPath }}">{% endif %} </li>
+        </tr>
+
     {% endfor %}
-
+            </div>
+    {#</div>#}
+        <h2 class="text-uppercase text-center">Latest songs</h2>
+    {% for recent in recentSongs %}
+            {#<div class="row">#}
+            <div class="col-md-offset-5 text-left">{% if recent.songs %}
+                    {% for songs in recent.songs %}
+                        {% if date(songs.updatedat.date) > date('-1days') %}
+                        {#{{ dump(songs.updatedat.date) }}#}
+                        {#{{ dump(sortDate(songs.updatedat.date))}}#}
+                        {#{% if songs.up %}#}
+                        <p><img class="img-circle user-img" src="{{ songs.username.webPath }}"> <b>{{ songs.username.username }}</b> {{ songs.updatedat|date }}</p>
+                            <p> <b>Name:</b> {{ songs.songname }}</p>
+                            <p> <b>About:</b> {{ songs.about }}</p>
+                            <p> <b>Genre </b>{{ songs.genre }}</p>
+                            <a class="songs" href="{{ path('record_show', {'track': songs.songname }) }}">
+                                <button class="btn btn-info">more</button>
+                            </a>
+                       {#<div> {{ songs.songName }} </div>#}
+                            <br/><br/>
+                            {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+    {% endfor %}
+    </div>
+</div>
 {% endblock %}
+
 

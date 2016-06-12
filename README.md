@@ -89,6 +89,13 @@ Add later:
    - Upvote song (Like)
    - Edit song/delete
 
+Jun 12, 2016 (index, twig)
+==========================
+
+- improving the index page.
+
+
+
 Jun 11, 2016 (index, twig)
 ==========================
 
