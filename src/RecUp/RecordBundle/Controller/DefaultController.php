@@ -48,13 +48,58 @@ class DefaultController extends Controller
                 'profilePicture' => $user->getWebPath(),
                 'songs' => $user->getSongs()->toArray(),
 //                'avatarUri' => '/images/'.$user->getUserAvatarFilename(),
+                'latest' => $user->getSongs()->last(),
             ];
         }
-//        dump($recentSongs);die;
+        
+        
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////// TESTING LATEST SONG ONLY TO SHOW /////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////      
+//        $data = [
+//            'latestSong' => $recentSongs,
+//        ];
+////        dump($recentSongs);die;
+//
+////        dump($user);die;
+////        dump($data);die;
+//        $length = count($recentSongs);
+////        dump($recentSongs);die;
+////        dump($recentSongs[5]['latest']);die;
+//        $test = array();
+//        for($x = 0; $x < $length; $x++){
+//            if($recentSongs[$x]['latest']){
+//              $recentLatest =  $recentSongs[$x]['latest']->getUpdatedAt();
+//                $test = $recentLatest;
+////                var_dump($test);
+//                $val = get_object_vars($test);
+////                $valDate = strtotime($val['date']);
+////                $usort =  usort($val, $valDate['date']);
+//                };
+//            }
+//        var_dump($val);
 
-//        dump($user);die;
-        ;
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////// END => TESTING LATEST SONG ONLY TO SHOW //////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////         
+        
+        
+        
+        
+//        function latestDate($val, $b){
+//            var_dump(strtotime($val['date'])<strtotime($b['date'])?1:-1);
+//            uasort($val, 'cmp');
+//            print_r($val);
+//        };
+//    dump($recentLatest);die;
+//        dump($recentOne);die;
+//            dump($recentSongs[7]['latest']->getUpdatedAt());die;
+//        $allSortedSongs = usrot($data, function($a, $b){
+//           if($a['latest']['updatedAt'] == $b['latest']['updatedAt'])
+//           {
+//               return
+//           }
+//        });
 
         return $this->render('@Record/Default/index.html.twig', array(
             'users' => $users,

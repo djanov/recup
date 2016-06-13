@@ -89,6 +89,13 @@ Add later:
    - Upvote song (Like)
    - Edit song/delete
 
+Jun 13, 2016 (index,defaultController, twig)
+============================================
+
+- Trying to access the songs date.
+
+
+
 Jun 12, 2016 (index, twig)
 ==========================
 

@@ -87,7 +87,7 @@ class UserProfile
 
     /**
      * @ORM\OneToMany(targetEntity="RecUp\RecordBundle\Entity\Record", mappedBy="username"))
-     *
+     * @ORM\OrderBy({"updatedAt" = "DESC"})
      */
     private $songs;
     

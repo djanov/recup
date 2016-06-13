@@ -4,28 +4,44 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-3">
-    <h1 class="text-uppercase text-center">Users</h1>
+        <div class="col-md-2">
+    <h2 class="text-center">Recent users active:</h2>
     {#{{ users[0].name }}#}
     {% for key,val in users %}
 
+        {#{{ dump(val.username.lastlogin) }}#}
+        {% if date(val.username.lastlogin) > date('-7days') %}
         <tr>
             <li class="user-profile"> {% if val.webPath %}<a class="songs" href="{{ path('user', {'userFind': val.username}) }}">
                     {{ val.name }} </a>  <img class="img-circle user-img" src="{{ val.webPath }}">{% endif %} </li>
         </tr>
+        {% endif %}
 
     {% endfor %}
             </div>
     {#</div>#}
-        <h2 class="text-uppercase text-center">Latest songs</h2>
+        <div class="col-md-offset-2 col-md-5 text-left">
+         <h2 class="text-center">Latest songs</h2>
     {% for recent in recentSongs %}
+        {#{{ dump(recent) }}#}
+        {#{{ dump(recent) }}#}
             {#<div class="row">#}
-            <div class="col-md-offset-5 text-left">{% if recent.songs %}
+        {#{% if recent.latest %}#}
+        {#{{ dump(recent) }}#}
+        {#{{ attribute(['latest'], record.artist) }}#}
+            {#{% endif %}#}
+         {% if recent.songs %}
                     {% for songs in recent.songs %}
-                        {% if date(songs.updatedat.date) > date('-1days') %}
+                        {% if date(songs.updatedat.date) > date('-2days') %}
                         {#{{ dump(songs.updatedat.date) }}#}
                         {#{{ dump(sortDate(songs.updatedat.date))}}#}
                         {#{% if songs.up %}#}
+                            {#{{ dump(songs.username) }}#}
+                            {#{{ dump(recent) }}#}
+
+                   <div class="index-border">
+                    <div class="index-songs">
+                        {#{{ attribute(latest, latest, songname) }}#}
                         <p><img class="img-circle user-img" src="{{ songs.username.webPath }}"> <b>{{ songs.username.username }}</b> {{ songs.updatedat|date }}</p>
                             <p> <b>Name:</b> {{ songs.songname }}</p>
                             <p> <b>About:</b> {{ songs.about }}</p>
@@ -34,12 +50,13 @@
                                 <button class="btn btn-info">more</button>
                             </a>
                        {#<div> {{ songs.songName }} </div>#}
-                            <br/><br/>
+                    </div>
+                   </div>
                             {% endif %}
                     {% endfor %}
                 {% endif %}
-            </div>
     {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}
