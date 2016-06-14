@@ -1,11 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+<div class="container">
 <div class="row">
-   <div class="col-lg-offset-2"> {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
+   <div class="col-lg-offset-2">
+       {{ form_start(form) }}
+         {{ form_widget(form) }}
+        {{ form_end(form) }}
        </div>
+    </div>
 </div>
 
     {#<article>#}

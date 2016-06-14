@@ -7,47 +7,69 @@
 {% block title %}RecUp {{ name.songName }}{% endblock %}
 
 {% block body %}
-    <h2 class="genus-name"> <i class="fa fa-headphones fa-2x"></i> {{ name.songName }}</h2>
 
-    <div class="sea-creature-container">
+
+    {#<div class="song-container">#}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <h2> <i class="fa fa-headphones fa-2x"></i> {{ name.songName }}</h2>
         <div ><img class="user-song-photo" src="/../{{ name.username.webpath }}">
              <h3><small>by:</small> <b>{{ name.username.username }}</b></h3>
         </div>
-        <div class="genus-details">
-            <dl class="genus-details-list">
+        <div class="song-details">
+            <dl class="song-details-list">
                 <dt>Artist:</dt>
                 <dd>{{ name.artist }}</dd>
                 <dt>Genre:</dt>
                 <dd>{{ name.genre }}</dd>
                 <dt>About:</dt>
                 <dd>{{ name.about|markdownify }}</dd>
-                <dt>Recent Comments</dt>
-                <dd>{{ recentCommentCount }}</dd>
+                {# ADD LATER MAYBE #}
+                {#<dt>Recent Comments</dt>#}
+                {#<dd>{{ recentCommentCount }}</dd>#}
                 <audio src="{{ app.request.getUriForPath(vich_uploader_asset(name, 'songFile')) }}" controls> </audio>
 
             </dl>
         </div>
+                </div>
+        <div class="col-md-offset-1 col-md-4">
+            {% set user = name.username.name %}
+            {#{% if currentU == username.username %}#}
+                {% include 'FOSCommentBundle:Thread:async.html.twig' with {'id': user } %}
+            {#{% endif %}#}
+        </div>
+         </div>
     </div>
-  <div id="js-notes-wrapper"></div>
-{% endblock %}
 
-{%  block javascripts %}
-{{ parent() }}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react-dom.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
 
-    <script src="{{ asset('js/site.js'|asset_version) }}"></script>
-    <script type="text/babel" src="{{ asset('js/notes.react.js') }}"></script>
 
-    <script type="text/babel">
-        var notesUrl = '{{ path('record_show_notes', {'songName': name.songName}) }}'
 
-        ReactDOM.render(
-            <NoteSection url={notesUrl} />,
-            document.getElementById('js-notes-wrapper')
-        );
-    </script>
+
+    {#//////////////////////////////////////////////////////////////////////#}
+    {#//////// REACT DYNAMIC COMMENTING SYSTEM /////////////////////////////#}
+    {#//////////////////////////////////////////////////////////////////////#}
+
+  {#<div id="js-notes-wrapper"></div>#}
+{#{% endblock %}#}
+
+{#{%  block javascripts %}#}
+{#{{ parent() }}#}
+    {#<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react.js"></script>#}
+    {#<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react-dom.js"></script>#}
+    {#<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>#}
+
+    {#<script src="{{ asset('js/site.js'|asset_version) }}"></script>#}
+    {#<script type="text/babel" src="{{ asset('js/notes.react.js') }}"></script>#}
+
+    {#<script type="text/babel">#}
+        {#var notesUrl = '{{ path('record_show_notes', {'songName': name.songName}) }}'#}
+
+        {#ReactDOM.render(#}
+            {#<NoteSection url={notesUrl} />,#}
+            {#document.getElementById('js-notes-wrapper')#}
+        {#);#}
+    {#</script>#}
 
 {% endblock %}
 

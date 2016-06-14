@@ -89,6 +89,16 @@ Add later:
    - Upvote song (Like)
    - Edit song/delete
 
+*  **Jun13**:
+  - Adding main instrument to the userProfile
+
+Jun 14, 2016 (prepare for laptop)
+=================================
+
+- Improving the site style
+
+
+
 Jun 13, 2016 (index,defaultController, twig)
 ============================================
 

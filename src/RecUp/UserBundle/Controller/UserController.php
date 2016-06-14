@@ -209,9 +209,16 @@ class UserController extends Controller
     /**
      * @Route("/user/{userFind}", defaults={"userFind" =  null}, name="user")
      */
-    public function userAction($userFind)
+    public function userAction($userFind, Request $request)
     {
-//        $dataByUser =  $this->get('recup_current_user')->getUserProfileDataByUser();
+
+        $dataByUser =  $this->get('recup_current_user')->getUserProfileDataByUser();
+        $em = $this->getDoctrine()->getManager();
+        $currentUser = $em->getRepository('UserBundle:UserProfile')
+            ->findOneBy(['id' => $dataByUser]);
+        $currentU = $currentUser->getUsername();
+//        dump($currentU);die;
+
         $userManager = $this->get('fos_user.user_manager');
 
         $userByName = $userManager->findUserByUsername($userFind);
@@ -221,8 +228,6 @@ class UserController extends Controller
         if(!$userByName) {
             throw $this->createNotFoundException('user not found');
         }
-
-        $em = $this->getDoctrine()->getManager();
 
         $user = $em->getRepository('UserBundle:UserProfile')
             ->findOneBy(['username' => $usernameId]);
@@ -247,6 +252,24 @@ class UserController extends Controller
         $file = $user->getWebPath();
         $name = $user->getName();
         $website = $user->getWebsite();
+
+        /////////////////////////////////////////////////
+        //////////// FOSCOMMENTBUNDLE //////////////////
+        ///////////////////////////////////////////////
+//        dump($username->getUsername());die;
+        $id = $username->getUsername();
+        $thread = $this->container->get('fos_comment.manager.thread')->findThreadById($id);
+        if (null === $thread) {
+            $thread = $this->container->get('fos_comment.manager.thread')->createThread();
+            $thread->setId($id);
+            $thread->setPermalink($request->getUri());
+
+            // Add the thread
+            $this->container->get('fos_comment.manager.thread')->saveThread($thread);
+        }
+
+        $comments = $this->container->get('fos_comment.manager.comment')->findCommentTreeByThread($thread);
+
 
         $record = $user->getSongs()->toArray();
 
@@ -275,6 +298,9 @@ class UserController extends Controller
             'name' => $name,
             'website' => $website,
             'songs' => $songs,
+            'currentU' => $currentU,
+            'comments' => $comments,
+            'thread' => $thread,
         ));
     }
 
