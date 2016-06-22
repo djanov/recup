@@ -156,3 +156,8 @@ vich_uploader:
               uri_prefix:         /record/songs
               upload_destination: %kernel.root_dir%/../web/record/songs
 
+services:
+  time_diff.twig.extension:
+    class: Twig_Extensions_Extension_Date
+    tags:
+      - { name: twig.extension}

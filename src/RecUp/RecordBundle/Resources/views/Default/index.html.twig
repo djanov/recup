@@ -7,7 +7,7 @@
         <div class="col-md-2">
     <h2 class="text-center">Recent users active:</h2>
     {#{{ users[0].name }}#}
-    {% for key,val in users %}
+    {% for key,val in users|slice(0,10) %}
 
         {#{{ dump(val.username.lastlogin) }}#}
         {% if date(val.username.lastlogin) > date('-7days') %}
@@ -22,40 +22,26 @@
     {#</div>#}
         <div class="col-md-offset-2 col-md-5 text-left">
          <h2 class="text-center">Latest songs</h2>
-    {% for recent in recentSongs %}
-        {#{{ dump(recent) }}#}
-        {#{{ dump(recent) }}#}
-            {#<div class="row">#}
-        {#{% if recent.latest %}#}
-        {#{{ dump(recent) }}#}
-        {#{{ attribute(['latest'], record.artist) }}#}
-            {#{% endif %}#}
-         {% if recent.songs %}
-                    {% for songs in recent.songs %}
-                        {% if date(songs.updatedat.date) > date('-2days') %}
-                        {#{{ dump(songs.updatedat.date) }}#}
-                        {#{{ dump(sortDate(songs.updatedat.date))}}#}
-                        {#{% if songs.up %}#}
-                            {#{{ dump(songs.username) }}#}
-                            {#{{ dump(recent) }}#}
+            {% for recent in recentSongs %}
+            {#{% for recent in recentSongs|slice(0,3) %}#}
+                {% if date(recent.latest) > date('-1days') %}
+                <div class="index-border js-songs">
+                    <div class="index-songs js-post">
+                        <p><img class="img-circle user-img" src="{{ recent.user.webPath }}" alt="user picture"><b>{{ recent.user.username }}</b>
+                        {{ recent.latest|date|time_diff }}</p>
 
-                   <div class="index-border">
-                    <div class="index-songs">
-                        {#{{ attribute(latest, latest, songname) }}#}
-                        <p><img class="img-circle user-img" src="{{ songs.username.webPath }}"> <b>{{ songs.username.username }}</b> {{ songs.updatedat|date }}</p>
-                            <p> <b>Name:</b> {{ songs.songname }}</p>
-                            <p> <b>About:</b> {{ songs.about }}</p>
-                            <p> <b>Genre </b>{{ songs.genre }}</p>
-                            <a class="songs" href="{{ path('record_show', {'track': songs.songname }) }}">
-                                <button class="btn btn-info">more</button>
-                            </a>
-                       {#<div> {{ songs.songName }} </div>#}
+                        <p><b>Name: </b> {{ recent.songname }}</p>
+                        <p><b>About: </b>{{ recent.about }}</p>
+                        <p><b>Genre: </b> {{ recent.genre }}</p>
+                        <a class="songs" href="{{ path('record_show', {'track': recent.songname }) }}">
+                            <button class="btn btn-info">more</button>
+                        </a>
                     </div>
-                   </div>
-                            {% endif %}
-                    {% endfor %}
+                </div>
                 {% endif %}
-    {% endfor %}
+
+                {#{{ dump(recent) }}#}
+            {% endfor %}
         </div>
     </div>
 </div>

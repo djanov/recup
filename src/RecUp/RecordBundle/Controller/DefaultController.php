@@ -35,24 +35,32 @@ class DefaultController extends Controller
 
         $users = $em->getRepository('UserBundle:UserProfile')
             ->findAll();
+        $records = $em->getRepository('RecordBundle:Record')
+            ->findBy(array(), array('updatedAt' => 'DESC'));
 
-
+//        dump($records);die;
         $recentSongs = [];
 
 
-        foreach ($users as $user)
+        foreach ($records as $record)
         {
             $recentSongs[] = [
 //                'id' => $user->getId(),
 //                'username' => $user->getName(),
-                'profilePicture' => $user->getWebPath(),
-                'songs' => $user->getSongs()->toArray(),
+//                'profilePicture' => $user->getWebPath(),
+//                'songs' => $user->getSongs()->toArray(),
 //                'avatarUri' => '/images/'.$user->getUserAvatarFilename(),
-                'latest' => $user->getSongs()->last(),
+//                'username' => $record->getUsername(),
+                'user' => $record->getUsername(),
+                'songname' => $record->getSongName(),
+                'about' => $record->getAbout(),
+                'artitst' => $record->getArtist(),
+                'genre' => $record->getGenre(),
+                'latest' => $record->getUpdatedAt(),
             ];
         }
-        
-        
+
+//        dump($recentSongs);die;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////// TESTING LATEST SONG ONLY TO SHOW /////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////      
@@ -105,6 +113,53 @@ class DefaultController extends Controller
             'users' => $users,
             'recentSongs' => $recentSongs
         ));
+    }
+
+    /**
+     * @Route("/songs/all", name="get_all_songs")
+     */
+    public function songsAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $records = $em->getRepository('RecordBundle:Record')
+            ->findBy(array(), array('updatedAt' => 'DESC'));
+//
+//        $users = $em->getRepository('UserBundle:UserProfile')
+//            ->findAll();
+//
+//
+//        $allusers = [];
+////        dump($user);die;
+//        foreach ($users as $user)
+//        {
+//            $allusers[] = [
+//                'picture' => $user->getWebPath()
+//            ];
+//        }
+
+//        dump($records);die;
+        $recentSongs = [];
+
+
+        foreach ($records as $record)
+        {
+            $recentSongs[] = [
+//                'user' => $record->getUsername(),
+//                 'user' => $user->getUsername(),
+                'user' => $record->getUsername()->getWebPath(),
+                'songname' => $record->getSongName(),
+                'about' => $record->getAbout(),
+                'artitst' => $record->getArtist(),
+                'genre' => $record->getGenre(),
+                'latest' => $record->getUpdatedAt(),
+            ];
+        }
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($recentSongs));
+        return $response;
     }
     
     /**

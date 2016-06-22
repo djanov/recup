@@ -34,7 +34,8 @@
         </div>
                 </div>
         <div class="col-md-offset-1 col-md-4">
-            {% set user = name.username.name %}
+            {#{% set user = name.songName + 'by:' + name.username.username %}#}
+            {% set user = name.songName %}
             {#{% if currentU == username.username %}#}
                 {% include 'FOSCommentBundle:Thread:async.html.twig' with {'id': user } %}
             {#{% endif %}#}

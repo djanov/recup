@@ -72,7 +72,7 @@ class Record
 
     /**
      * @ORM\Column(type="datetime")
-     *
+     * 
      * @var \DateTime
      */
 

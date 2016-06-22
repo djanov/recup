@@ -60,6 +60,9 @@ Important changes:
 * **Jun 1**:
    - edit_profile route change to /user/{userFind}
 
+IF I NEED TO RUN IN COMMERCIAL WEBSITES and APPLICATIONS [infiniteajaxscroll][91]
+=================================================================================
+
 Add later:
 ================
 * **April 30**:
@@ -6478,4 +6481,5 @@ The GenusController is a controller, the function that will (eventually) build t
 [88]:https://symfony.com/doc/current/components/serializer.html#ignoring-attributes
 [89]:http://www.doctrine-project.org/api/orm/2.1/class-Doctrine.ORM.PersistentCollection.html
 [90]:http://www.doctrine-project.org/api/common/2.1/class-Doctrine.Common.Collections.ArrayCollection.html
+[91]:http://infiniteajaxscroll.com/download.html
 <!-- / end links-->
