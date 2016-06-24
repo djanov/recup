@@ -13,6 +13,7 @@ namespace RecUp\RecordBundle\Form;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Form\Type\VichFileType;
@@ -36,7 +37,10 @@ class RecordFormType extends AbstractType
         ->add('songName')
         ->add('artist')
         ->add('about')
-        ->add('genre')
+//        ->add('genre')
+        ->add('isDownloadable', CheckboxType::class, array(
+            'label' => 'Free download'
+        ))
         ->add('songFile', VichFileType::class, array(
             'required'      => false,
             'allow_delete'  => true, // not mandatory, default is true

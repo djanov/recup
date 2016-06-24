@@ -10,6 +10,7 @@ namespace RecUp\RecordBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use RecUp\UserBundle\Entity\User;
 use RecUp\UserBundle\Entity\UserProfile;
 use Symfony\Component\Validator\Constraints\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -40,12 +41,8 @@ class Record
      * @ORM\Column(type="string")
      */
     private $artist;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $genre;
-
+    
+    
     /**
      * @ORM\Column(type="string", nullable=true)
      */
@@ -78,6 +75,41 @@ class Record
 
     private $updatedAt;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="RecUp\UserBundle\Entity\User")
+     */
+    private $likes;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="RecUp\UserBundle\Entity\User"))
+     * @ORM\JoinTable(name="user_favorite")
+     */
+    private $favorites;
+
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isDownloadable;
+
+    /**
+     * @return mixed
+     */
+    public function getIsDownloadable()
+    {
+        return $this->isDownloadable;
+    }
+
+    /**
+     * @param mixed $isDownloadable
+     */
+    public function setIsDownloadable($isDownloadable)
+    {
+        $this->isDownloadable = $isDownloadable;
+    }
+    
+    
+    
     /**
      * @return mixed
      */
@@ -164,8 +196,30 @@ class Record
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->likes = new ArrayCollection();
+        $this->favorites = new ArrayCollection();
     }
-
+    
+    public function getLikes()
+    {
+        return $this->likes;
+    }
+    
+    public function getFavorites()
+    {
+        return $this->favorites;
+    }
+    
+    public function hasLikes(User $user)
+    {
+        return $this->getLikes()->contains($user);
+    }
+    
+    public function hasFavorites(User $user)
+    {
+        return $this->getFavorites()->contains($user);
+    }
+    
     /**
      * @ORM\Column(type="boolean")
      */
@@ -203,22 +257,6 @@ class Record
     /**
      * @return mixed
      */
-    public function getGenre()
-    {
-        return $this->genre;
-    }
-
-    /**
-     * @param mixed $genre
-     */
-    public function setGenre($genre)
-    {
-        $this->genre = $genre;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getAbout()
     {
         return $this->about;
@@ -241,6 +279,7 @@ class Record
     {
         $this->isPublished = $isPublished;
     }
+
 
     /**
      * @return ArrayCollection|RecordComment[]

@@ -22,6 +22,8 @@ class MenuBuilder implements ContainerAwareInterface
               ->setAttribute('icon', 'glyphicon glyphicon-cd');
 //            ->setAttribute('class', 'badge')
 //            ->setLabel('2');
+        $menu->addChild('Favorites', array('route' => 'record_favorites'))
+              ->setAttribute('icon', 'glyphicon glyphicon-star' );
 
         return $menu;
     }

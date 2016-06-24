@@ -55,59 +55,13 @@ class DefaultController extends Controller
                 'songname' => $record->getSongName(),
                 'about' => $record->getAbout(),
                 'artitst' => $record->getArtist(),
-                'genre' => $record->getGenre(),
+//                'genre' => $record->getGenre(),
                 'latest' => $record->getUpdatedAt(),
+                'likes' => $record->getLikes(),
+                'isDownloadable' => $record->getIsDownloadable(),
             ];
         }
-
-//        dump($recentSongs);die;
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////// TESTING LATEST SONG ONLY TO SHOW /////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////      
-//        $data = [
-//            'latestSong' => $recentSongs,
-//        ];
-////        dump($recentSongs);die;
-//
-////        dump($user);die;
-////        dump($data);die;
-//        $length = count($recentSongs);
-////        dump($recentSongs);die;
-////        dump($recentSongs[5]['latest']);die;
-//        $test = array();
-//        for($x = 0; $x < $length; $x++){
-//            if($recentSongs[$x]['latest']){
-//              $recentLatest =  $recentSongs[$x]['latest']->getUpdatedAt();
-//                $test = $recentLatest;
-////                var_dump($test);
-//                $val = get_object_vars($test);
-////                $valDate = strtotime($val['date']);
-////                $usort =  usort($val, $valDate['date']);
-//                };
-//            }
-//        var_dump($val);
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////// END => TESTING LATEST SONG ONLY TO SHOW //////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////         
         
-        
-        
-        
-//        function latestDate($val, $b){
-//            var_dump(strtotime($val['date'])<strtotime($b['date'])?1:-1);
-//            uasort($val, 'cmp');
-//            print_r($val);
-//        };
-//    dump($recentLatest);die;
-//        dump($recentOne);die;
-//            dump($recentSongs[7]['latest']->getUpdatedAt());die;
-//        $allSortedSongs = usrot($data, function($a, $b){
-//           if($a['latest']['updatedAt'] == $b['latest']['updatedAt'])
-//           {
-//               return
-//           }
-//        });
 
         return $this->render('@Record/Default/index.html.twig', array(
             'users' => $users,
@@ -124,29 +78,13 @@ class DefaultController extends Controller
 
         $records = $em->getRepository('RecordBundle:Record')
             ->findBy(array(), array('updatedAt' => 'DESC'));
-//
-//        $users = $em->getRepository('UserBundle:UserProfile')
-//            ->findAll();
-//
-//
-//        $allusers = [];
-////        dump($user);die;
-//        foreach ($users as $user)
-//        {
-//            $allusers[] = [
-//                'picture' => $user->getWebPath()
-//            ];
-//        }
-
-//        dump($records);die;
+        
         $recentSongs = [];
 
 
         foreach ($records as $record)
         {
             $recentSongs[] = [
-//                'user' => $record->getUsername(),
-//                 'user' => $user->getUsername(),
                 'user' => $record->getUsername()->getWebPath(),
                 'songname' => $record->getSongName(),
                 'about' => $record->getAbout(),
@@ -252,9 +190,12 @@ class DefaultController extends Controller
     
     $this->get('logger')
         ->info('Showing records: '.$track);
+    
 
     $recentComments = $em->getRepository('RecordBundle:RecordComment')
         ->findAllRecentCommentsForRecord($songs);
+
+    
     return $this->render('@Record/Default/show.html.twig', array(
         'name' => $songs,
         'recentCommentCount' => count($recentComments),
@@ -288,28 +229,166 @@ class DefaultController extends Controller
         return new JsonResponse($data);
     }
 
-//    /**
-//     * @Route("/test/{username}/record", name="songs_show")
-//     * @Method("GET")
-//     */
-//    public function getSongsAction(UserProfile $userProfile)
-//    {
-//        $songs = [];
+    /**
+     * @Route("/song/{id}/like.{format}", name="record_likes",
+     *  defaults={"format" = "html"}, requirements={"format" = "json"})
+     */
+    public function likeAction($id, $format)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+//        dump($id);die;
+        $getLikes = $em->getRepository('RecordBundle:Record')
+            ->findOneBy(['songName' => $id]);
+
+        if(!$getLikes->hasLikes($this->getUser())){
+            $getLikes->getLikes()->add($this->getUser());
+        }
+
+
+//    dump($getLikes);die;
+        $em->persist($getLikes);
+        $em->flush();
+
+        if($format == 'json'){
+            $data = array(
+              'like' => true
+            );
+            $response = new JsonResponse($data);
+
+            return $response;
+        }
+        return $this->redirect($this->generateUrl('record_show', array('track' => $id)));
+    }
 //
-//        foreach ($userProfile->getSongs() as $song) {
-////            dump($song);die;
-//            $songs[] = [
-//              'id' => $song->getId(),
-//              'songname' => $song->getSongName(),
-//               'artist' => $song->getArtist(),
-//                'genre' => $song->getGenre(),
-//                'about' => $song->getAbout(),
-//                'updatedat' => $song->getUpdatedAt()
-//            ];
-//            $data = [
-//                'songs' => $songs,
-//            ];
-//            return new JsonResponse($data);
+    /**
+     * @Route("/song/{id}/unlike.{format}", name="record_unlikes",
+     *     defaults={"format" = "html"}, requirements={"format" = "json"})
+     */
+    public function unlikeAction($id, $format)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+//        dump($id);die;
+        $getLikes = $em->getRepository('RecordBundle:Record')
+            ->findOneBy(['songName' => $id]);
+
+//        if(!$getLikes) {
+//            throw $this->createNotFoundException('No song found for '. $id);
 //        }
-//    }
+
+        if($getLikes->hasLikes($this->getUser())){
+            $getLikes->getLikes()->removeElement($this->getUser());
+        }
+
+
+//    dump($getLikes);die;
+        $em->persist($getLikes);
+        $em->flush();
+
+        if($format == 'json') {
+            $data = array(
+                'like' => false
+            );
+            $response = new JsonResponse($data);
+
+            return $response;
+        }
+
+        return $this->redirect($this->generateUrl('record_show', array('track' => $id)));
+    }
+
+    /**
+     * @Route("/song/{id}/add", name="record_add_favorites")
+     */
+    public function addFavoritesAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $favorite = $em->getRepository('RecordBundle:Record')
+            ->findOneBy(['songName' => $id]);
+
+        
+        if(!$favorite->hasFavorites($this->getUser())){
+            $favorite->getFavorites()->add($this->getUser());
+        }
+        
+        
+        $em->persist($favorite);
+        $em->flush();
+        
+        return $this->redirect($this->generateUrl('record_show', array('track' => $id)));
+    }
+
+    /**
+     * @Route("/song/{id}/remove", name="record_remove_favorites")
+     */
+    public function removeFavoritesAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+//        dump($id);die;
+        $favorite = $em->getRepository('RecordBundle:Record')
+            ->findOneBy(['songName' => $id]);
+
+//        if(!$getLikes->hasLikes($this->getUser())){
+//            $getLikes->getLikes()->add($this->getUser());
+//        }
+        if($favorite->hasFavorites($this->getUser())){
+            $favorite->getFavorites()->removeElement($this->getUser());
+        }
+
+        $em->persist($favorite);
+        $em->flush();
+
+        return $this->redirect($this->generateUrl('record_show', array('track' => $id)));
+    }
+
+
+
+    /**
+     * @Route("/favorites/{id}", defaults={"id" = null}, name="record_favorites")
+     */
+    public function favoriteAction()
+    {
+
+
+        $id = $this->getUser()->getId();
+
+//        dump($id);die;
+
+        $em = $this->getDoctrine()->getManager();
+        $songs = $em->getRepository('RecordBundle:Record');
+        $query = $songs->createQueryBuilder('u')
+            ->innerJoin('u.favorites', 'g')
+            ->where('g.id = :user_id')
+            ->setParameter('user_id', $id)
+            ->getQuery()->getResult();
+
+//            ->findBy(['favorites' => $id]);
+
+//        $test = $songs->getFavorites();
+//        dump($query);die;
+//
+//        $favoriteSongs = [];
+//
+//
+//        foreach ($query as $favorite)
+//        {
+//            $favoriteSongs[] = [
+//                'user' => $favorites->g
+//                'songname' => $record->getSongName(),
+//                'about' => $record->getAbout(),
+//                'artitst' => $record->getArtist(),
+//                'genre' => $record->getGenre(),
+//                'latest' => $record->getUpdatedAt(),
+//            ];
+//        }
+
+
+        return $this->render('@Record/song/favorite.html.twig', [
+            'songs' => $query
+        ]);
+    }
+
+
 }

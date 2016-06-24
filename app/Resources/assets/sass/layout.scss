@@ -142,10 +142,40 @@ h1 {
   box-shadow: 0 0 0 4px white, inset 0 2px 0 rgba(0, 0, 0, 0.08), 0 3px 0 4px rgba(0, 0, 0, 0.05);
 }
 
+.css-label {
+  padding:10px 14px;
+  margin-right:5px;
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.user-img-index {
+  margin-right:20px;
+}
+
 .user-profile {
   text-decoration: none;
   list-style-type: none;
   margin-bottom:15px;
+}
+
+.disabled-btn {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid grey;
+  border-radius: 4px;
 }
 
 .fos_comment_comment_replies {
@@ -167,7 +197,11 @@ h1 {
   margin-bottom: 30px;
 }
 
-.songs {
+.songs:hover {
+  color: red;
+}
+
+.songs{
   color: #000;
 }
 

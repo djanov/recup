@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <table class="table table-responsive table-hover">
+        <thead>
+        <tr>
+            <th><i class="fa fa-user" aria-hidden="true"></i> By</th>
+            <th>genre</th>
+            <th>Published</th>
+            <th><i class="fa fa-youtube-play" aria-hidden="true"></i> Play the song</th>
+            <th><i class="fa fa-info-circle" aria-hidden="true"></i> More details</th>
+            <th>Download</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for key,value in songs %}
+            {#{{ dump(key, value.songname) }}#}
+            <tr class="text-left">
+             <td><a class="songs" href="{{ path('user', {'userFind': value.username.username}) }}">
+                 {{ value.username.username }}
+                     </a>
+             </td>
+            <td> {% for genre in value.username.genre %} {{ genre }}  {% if not loop.last %},{% endif %} {% endfor %}</td>
+            <td> {{ value.updatedAt|date('Y-m-d') }} </td>
+            <td>
+                <audio src="/../{{ app.request.getUriForPath(vich_uploader_asset(value, 'songFile')) }}" controls> </audio>
+            </td>
+            <td>
+                <a class="songs" href="{{ path('record_show', {'track': value.songName}) }}">
+                {{ value.songName }}
+                </a>
+            </td>
+                <td>
+                    {%  if value.isDownloadable %}
+                        <a href="{{ app.request.getUriForPath(vich_uploader_asset(value, 'songFile')) }}" class="btn btn-info" download>
+                            <span class="glyphicon glyphicon-save"></span>
+                        </a>
+                        {% else %}
+                            <i class="fa fa-ban disabled-btn" aria-hidden="true"></i>
+                    {% endif %}
+                </td>
+            </tr>
+
+        {% endfor %}
+        {#{% for song in songs %}#}
+            {#{{ dump(songs) }}#}
+            {#<tr class="text-left">#}
+                {#<td>#}
+                    {#<a class="songs" href="{{ path('record_show', {'track': song.songName}) }}">#}
+                        {#{{ song.songName }}#}
+                    {#</a>#}
+                {#</td>#}
+                {#<td> {% for genre in song.username.genre %} {{ genre }}  {% if not loop.last %},{% endif %} {% endfor %}</td>#}
+                {#<td> {{ song.updatedAt|date('Y-m-d') }} </td>#}
+            {#</tr>#}
+        {#{% endfor %}#}
+        </tbody>
+    </table>
+{% endblock %}

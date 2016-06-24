@@ -4,7 +4,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-2">
+        <div class="col-md-2 hidden-xs hidden-sm">
     <h2 class="text-center">Recent users active:</h2>
     {#{{ users[0].name }}#}
     {% for key,val in users|slice(0,10) %}
@@ -13,26 +13,50 @@
         {% if date(val.username.lastlogin) > date('-7days') %}
         <tr>
             <li class="user-profile"> {% if val.webPath %}<a class="songs" href="{{ path('user', {'userFind': val.username}) }}">
-                    {{ val.name }} </a>  <img class="img-circle user-img" src="{{ val.webPath }}">{% endif %} </li>
+                    {{ val.name }} </a>  <img class="img-circle user-img" src="/../{{ val.webPath }}">{% endif %} </li>
         </tr>
         {% endif %}
 
     {% endfor %}
             </div>
     {#</div>#}
+
+
+        {#<div class="col-md-offset-2 col-md-5 text-left index-border" id="js-container">#}
+            {#<div class="index-songs" id="js-item"></div>#}
+        {#</div>#}
+
+        {#<div id="js-pagination">#}
+            {#<a href="#"></a>#}
+            {#<a href="#" class="js-next"></a>#}
+        {#</div>#}
+
+
+
+
+
+
         <div class="col-md-offset-2 col-md-5 text-left">
          <h2 class="text-center">Latest songs</h2>
-            {% for recent in recentSongs %}
-            {#{% for recent in recentSongs|slice(0,3) %}#}
+            {#{% for recent in recentSongs %}#}
+            {% for recent in recentSongs|slice(0,5) %}
                 {% if date(recent.latest) > date('-1days') %}
-                <div class="index-border js-songs">
-                    <div class="index-songs js-post">
-                        <p><img class="img-circle user-img" src="{{ recent.user.webPath }}" alt="user picture"><b>{{ recent.user.username }}</b>
+                <div class="index-border">
+                    <div class="index-songs">
+                        <p><img class="img-circle user-img user-img-index" src="/../{{ recent.user.webPath }}" alt="user picture">
+                            <b>
+                                <a class="songs" href="{{ path('user', {'userFind': recent.user.username}) }}">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                    {{ recent.user.username }}
+                                </a>
+                            </b>
                         {{ recent.latest|date|time_diff }}</p>
 
                         <p><b>Name: </b> {{ recent.songname }}</p>
                         <p><b>About: </b>{{ recent.about }}</p>
-                        <p><b>Genre: </b> {{ recent.genre }}</p>
+                        <p><b>Genre: </b>{% for genre in recent.user.genre %} {{ genre }}  {% if not loop.last %},{% endif %} {% endfor %}</p>
+                        <p><b>Likes: </b>{{ recent.likes|length }}</p>
+                        <p><b>Free Download: </b>{% if recent.isDownloadable %}Yes {% else %} Nope {% endif %}</p>
                         <a class="songs" href="{{ path('record_show', {'track': recent.songname }) }}">
                             <button class="btn btn-info">more</button>
                         </a>
@@ -40,7 +64,6 @@
                 </div>
                 {% endif %}
 
-                {#{{ dump(recent) }}#}
             {% endfor %}
         </div>
     </div>

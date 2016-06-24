@@ -280,7 +280,6 @@ class UserController extends Controller
                 'id' => $song->getId(),
                 'songname' => $song->getSongName(),
                 'artist' => $song->getArtist(),
-                'genre' => $song->getGenre(),
                 'about' => $song->getAbout(),
                 'updatedat' => $song->getUpdatedAt()
             ];

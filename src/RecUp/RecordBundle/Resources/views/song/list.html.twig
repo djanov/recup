@@ -18,7 +18,7 @@
           {{ song.songName }}
         </a>
       </td>
-      <td> {{ song.genre }}</td>
+      <td> {% for genre in song.username.genre %} {{ genre }}  {% if not loop.last %},{% endif %} {% endfor %}</td>
       <td> {{ song.updatedAt|date('Y-m-d') }} </td>
     </tr>
     {% endfor %}

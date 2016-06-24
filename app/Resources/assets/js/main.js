@@ -34,4 +34,46 @@ $(document).ready(function() {
             }
         });
     });
+
+    // $( window ).load(function() {
+    //
+    // $.ajax({
+    //     type: 'GET',
+    //     url: '/songs/all',
+    //     dataType: 'json',
+    //     success: function(data) {
+    //         var songs = '';
+    //         for(var i=0; i<data.length;++i) {
+    //             songs += '<p>' + data[i].about + '</p>';
+    //             console.log(songs);
+    //         }
+    //         $('#js-item').html(songs);
+    //         console.log(songs);
+    //     }
+    //  })
+    // });
+    $('.js-like-toggle').on('click', function (r) {
+        // preventing the browser form "following" the link
+        r.preventDefault();
+
+        var $anchor = $(this);
+        var url = $(this).attr('href')+'.json';
+
+        $.post(url, null, function(data){
+            if(data.like){
+                // var message = 'thanks for the like!';
+                // $anchor.after('<span class="label label-success">'+message+'</span>');
+                // $anchor.hide();
+                $anchor.after('<span class="label label-success css-label"> Thanks </span>');
+                $anchor.hide();
+            } else {
+                // var message = 'sorry to see tha';
+                $anchor.after('<span class="label label-danger css-label"> :( </span>');
+                $anchor.hide();
+            }
+            // $anchor.after('<span class="label label-default">&#1004; '+message+'</span>');
+            $anchor.hide();
+        });
+    });
+
 });

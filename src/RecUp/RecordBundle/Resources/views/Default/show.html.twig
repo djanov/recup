@@ -22,14 +22,46 @@
                 <dt>Artist:</dt>
                 <dd>{{ name.artist }}</dd>
                 <dt>Genre:</dt>
-                <dd>{{ name.genre }}</dd>
+                <dd>{% for genre in name.username.genre %} {{ genre }}  {% if not loop.last %},{% endif %} {% endfor %}</p></dd>
                 <dt>About:</dt>
                 <dd>{{ name.about|markdownify }}</dd>
                 {# ADD LATER MAYBE #}
                 {#<dt>Recent Comments</dt>#}
                 {#<dd>{{ recentCommentCount }}</dd>#}
-                <audio src="{{ app.request.getUriForPath(vich_uploader_asset(name, 'songFile')) }}" controls> </audio>
+                <audio src="{{ app.request.getUriForPath(vich_uploader_asset(name,'songFile')) }}" controls> </audio>
+                <dt></dt>
+                <dd>   {% if name.hasLikes(app.user) %}
+                        <a href="{{ path('record_unlikes', {'id': name.songName}) }}" class="btn btn-danger js-like-toggle">
+                            Unlike
+                        </a>
+                    {% else %}
+                        <a href="{{ path('record_likes', {'id': name.songName}) }}" class="btn btn-success js-like-toggle">
+                            <i class="fa fa-thumbs-up" aria-hidden="true"></i> Like
+                        </a>
+                    {% endif %}
+                    {%  if name.isDownloadable %}
+                        <a href="{{ app.request.getUriForPath(vich_uploader_asset(name, 'songFile')) }}" class="btn btn-info" download>
+                            <span class="glyphicon glyphicon-save"></span>  Download
+                        </a>
+                    {% endif %}
 
+                    {% if name.hasFavorites(app.user) %}
+                    <a href="{{ path('record_remove_favorites', {'id': name.songName}) }}" class="btn btn-danger">
+                        <i class="fa fa-ban" aria-hidden="true"></i> Remove from favorites
+                    </a>
+                    {% else %}
+                    <a href="{{ path('record_add_favorites', {'id': name.songName}) }}" class="btn btn-warning">
+                        <span class="glyphicon glyphicon-heart"></span> Add To Favorites
+                    </a>
+                    {% endif %}
+                </dd>
+
+                {#<dd>{{ name.likes|length }} likes</dd>#}
+                {#{% for like in name.likes %}#}
+                {#<dd>{{ like }} liking</dd>#}
+                {#{% else %}#}
+                {#<li>nobody yet!</li>#}
+                {#{% endfor %}#}
             </dl>
         </div>
                 </div>
