@@ -24,7 +24,8 @@
             <td> {% for genre in value.username.genre %} {{ genre }}  {% if not loop.last %},{% endif %} {% endfor %}</td>
             <td> {{ value.updatedAt|date('Y-m-d') }} </td>
             <td>
-                <audio src="/../{{ app.request.getUriForPath(vich_uploader_asset(value, 'songFile')) }}" controls> </audio>
+                <audio src="{{ app.request.getUriForPath(vich_uploader_asset(value, 'songFile')) }}" controls> </audio>
+                {# preload="none" #}
             </td>
             <td>
                 <a class="songs" href="{{ path('record_show', {'track': value.songName}) }}">

@@ -66,3 +66,8 @@ DirectoryIndex app.php
         # RedirectTemp cannot be used instead
     </IfModule>
 </IfModule>
+
+#RewriteEngine on
+#RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost:8000 [NC]
+#RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost:8000.*$ [NC]
+#RewriteRule \.(mp3|jpg)$ - [F]
