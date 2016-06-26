@@ -39,7 +39,8 @@ class RecordFormType extends AbstractType
         ->add('about')
 //        ->add('genre')
         ->add('isDownloadable', CheckboxType::class, array(
-            'label' => 'Free download'
+            'label' => 'Free download',
+                'required' => false,
         ))
         ->add('songFile', VichFileType::class, array(
             'required'      => false,

@@ -55,6 +55,16 @@ DirectoryIndex app.php
 
     # Rewrite all other queries to the front controller.
     RewriteRule .? %{ENV:BASE}/app.php [L]
+
+#     RewriteCond %{HTTP_REFERER} !^$
+#     RewriteCond %{HTTP_REFERER} !^http://localhost:8000/record/songs/*% [NC]
+#     RewriteRule .(flv|mp4|ogg|mp3) / [NC,L]
+
+#RewriteEngine on
+#RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost [NC]
+#RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost.*$ [NC]
+#RewriteRule \.(ogg|mp3|jpeg)$ - [F]
+
 </IfModule>
 
 <IfModule !mod_rewrite.c>

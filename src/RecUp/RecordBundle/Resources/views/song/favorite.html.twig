@@ -24,7 +24,8 @@
             <td> {% for genre in value.username.genre %} {{ genre }}  {% if not loop.last %},{% endif %} {% endfor %}</td>
             <td> {{ value.updatedAt|date('Y-m-d') }} </td>
             <td>
-                <audio src="{{ app.request.getUriForPath(vich_uploader_asset(value, 'songFile')) }}" controls> </audio>
+                {#<audio src="{{ app.request.getUriForPath(vich_uploader_asset(value, 'songFile')) }}" controls> </audio>#}
+                <audio src="{{ path('download', {'record': value.songName }) }}" controls> </audio>
                 {# preload="none" #}
             </td>
             <td>
@@ -34,9 +35,12 @@
             </td>
                 <td>
                     {%  if value.isDownloadable %}
-                        <a href="{{ app.request.getUriForPath(vich_uploader_asset(value, 'songFile')) }}" class="btn btn-info" download>
+
+                        {#<a href="{{ app.request.getUriForPath(vich_uploader_asset(value, 'songFile')) }}" class="btn btn-info" download>#}
+                        <a href="{{ path('download', {'record': value.songName }) }}" class="btn btn-info" download>
                             <span class="glyphicon glyphicon-save"></span>
-                        </a>
+                            </a>
+                        {#</a>#}
                         {% else %}
                             <i class="fa fa-ban disabled-btn" aria-hidden="true"></i>
                     {% endif %}

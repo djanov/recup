@@ -28,7 +28,8 @@
                 {# ADD LATER MAYBE #}
                 {#<dt>Recent Comments</dt>#}
                 {#<dd>{{ recentCommentCount }}</dd>#}
-                <audio src="{{ app.request.getUriForPath(vich_uploader_asset(name,'songFile')) }}" controls> </audio>
+                {#<audio src="{{ app.request.getUriForPath(vich_uploader_asset(name,'songFile')) }}" controls> </audio>#}
+                <audio src="{{ path('download', {'record': name.songName }) }}" controls> </audio>
                 <dt></dt>
                 <dd>   {% if name.hasLikes(app.user) %}
                         <a href="{{ path('record_unlikes', {'id': name.songName}) }}" class="btn btn-danger js-like-toggle">

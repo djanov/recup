@@ -390,5 +390,14 @@ class DefaultController extends Controller
         ]);
     }
 
+    /**
+     * @Route("/../record/songs/{record}", name="download", defaults={"record" = null})
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
+    public function downLoadSongAction(Record $record)
+    {
+        $downloadHandler = $this->get('vich_uploader.download_handler');
 
+        return $downloadHandler->downloadObject($record, $fileField = 'songFile');
+    }
 }

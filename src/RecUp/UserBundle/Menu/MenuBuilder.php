@@ -50,10 +50,10 @@ class MenuBuilder implements ContainerAwareInterface
             ->setAttribute('dropdown', true)
             ->setAttribute('icon', 'fa fa-user');
 //              need to change 'uri' later for dynamic.
-        $menu['User']->addChild('Profile', array('uri' => '/user/'.$username))
+        $menu['User']->addChild('Profile', array('uri' => '/app.php/user/'.$username))
             ->setAttribute('icon', 'glyphicon glyphicon-user')
             ->setAttribute('divider_append', true);
-        $menu['User']->addChild('Settings', array('uri' => '/../'.$username.'/edit'))
+        $menu['User']->addChild('Settings', array('uri' => '/app.php/'.$username.'/edit'))
             ->setAttribute('icon', 'fa fa-edit');
         $menu['User']->addChild('Logout', array('uri' => '/logout'))
         ->setAttribute('icon', 'glyphicon glyphicon-log-out');
