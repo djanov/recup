@@ -161,8 +161,8 @@ vich_uploader:
                   service:            vich_uploader.namer_property
                   options:            { property: 'songname'}
               uri_prefix:         /record/songs
-              upload_destination: %kernel.root_dir%/../web/record/songs
-#              upload_destination: %kernel.root_dir%/../app/Resources/songs
+#              upload_destination: %kernel.root_dir%/../web/record/songs
+              upload_destination: %kernel.root_dir%/../app/Resources/songs
 
 services:
   time_diff.twig.extension:

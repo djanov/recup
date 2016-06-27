@@ -14,9 +14,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 //use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class DefaultController extends Controller
 {
@@ -391,13 +393,44 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/../record/songs/{record}", name="download", defaults={"record" = null})
+     * @Route("download/song/{record}", name="download", defaults={"record" = null})
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public function downLoadSongAction(Record $record)
+    public function downLoadSongAction($record)
     {
-        $downloadHandler = $this->get('vich_uploader.download_handler');
+        $em = $this->getDoctrine()->getManager();
+        $getId= $em->getRepository('RecordBundle:Record')
+            ->findOneBy(['id' => $record]);
+        $getName = $getId->getSongName();
 
-        return $downloadHandler->downloadObject($record, $fileField = 'songFile');
+        $path = $this->get('kernel')->getRootDir(). "/Resources/songs/" . $getName;
+
+//        dump($path);die;
+//        $content = file_get_contents($path);
+
+//        $response = new Response();
+//
+//        $response->headers->set('Content-Type', 'audio/mpeg3');
+//        $response->headers->set('Content-Disposition', '');
+//
+//        $response->setContent($content);
+
+        if($record){
+            $response = new BinaryFileResponse($path);
+
+            $em = $this->getDoctrine()->getManager();
+            $download = $em->getRepository('RecordBundle:Record')
+                ->findOneBy(['id' => $record]);
+            if($download->getIsDownloadable() == true)
+            {
+                return $response;
+            } else
+//            $response = '';
+            return $response;
+        }
+
+//        dump($response);die;
+
+//        return $response;
     }
 }

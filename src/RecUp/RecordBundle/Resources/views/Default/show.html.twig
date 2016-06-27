@@ -14,8 +14,14 @@
         <div class="row">
             <div class="col-md-4 text-center">
                 <h2> <i class="fa fa-headphones fa-2x"></i> {{ name.songName }}</h2>
-        <div ><img class="user-song-photo" src="/../{{ name.username.webpath }}">
-             <h3><small>by:</small> <b>{{ name.username.username }}</b></h3>
+        <div ><img class="user-song-photo" src="/../{{ name.username.webpath }}"/>
+             <h3><small>by:</small>
+                 <b>
+                     <a href="{{ path('user', {'userFind': name.username.username}) }}" class="songs" >
+                         {{ name.username.username }}
+                     </a>
+                 </b>
+             </h3>
         </div>
         <div class="song-details">
             <dl class="song-details-list">
@@ -29,10 +35,10 @@
                 {#<dt>Recent Comments</dt>#}
                 {#<dd>{{ recentCommentCount }}</dd>#}
                 {#<audio src="{{ app.request.getUriForPath(vich_uploader_asset(name,'songFile')) }}" controls> </audio>#}
-                <audio src="{{ path('download', {'record': name.songName }) }}" controls> </audio>
+                <audio src="{{ path('download', {'record': name.id }) }}" controls> </audio>
                 <dt></dt>
                 <dd>   {% if name.hasLikes(app.user) %}
-                        <a href="{{ path('record_unlikes', {'id': name.songName}) }}" class="btn btn-danger js-like-toggle">
+                        <a href="{{path('record_unlikes', {'id': name.songName}) }}" class="btn btn-danger js-like-toggle">
                             Unlike
                         </a>
                     {% else %}
@@ -41,7 +47,7 @@
                         </a>
                     {% endif %}
                     {%  if name.isDownloadable %}
-                        <a href="{{ app.request.getUriForPath(vich_uploader_asset(name, 'songFile')) }}" class="btn btn-info" download>
+                        <a href="{{ path('download', {'record': name.id }) }}" class="btn btn-info" download>
                             <span class="glyphicon glyphicon-save"></span>  Download
                         </a>
                     {% endif %}
