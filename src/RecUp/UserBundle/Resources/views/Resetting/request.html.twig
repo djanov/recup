@@ -1,0 +1,7 @@
+{% extends "base_login.html.twig" %}
+
+{% block body %}
+{% block fos_user_content %}
+{% include "@User/Resetting/request_content.html.twig" %}
+{% endblock fos_user_content %}
+{% endblock body %}

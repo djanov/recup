@@ -72,8 +72,9 @@ swiftmailer:
     host:      "%mailer_host%"
     username:  "%mailer_user%"
     password:  "%mailer_password%"
-    spool:     { type: memory }
-
+    encryption: "%mailer_encryption%"
+    auth_mode: "%mailer_auth_mode%"
+    spool: {type: memory}
 
 doctrine_cache:
   providers:
@@ -90,20 +91,14 @@ fos_user:
       confirmation:
         from_email:
           address: "%mailer_user%"
-          sender_name: daniel
+          sender_name: RecUp
         enabled: true
         template: FOSUserBundle:Registration:email.txt.twig
-
-#  EMAIL: need to make smtp to work in parameters.yml
-#  https://www.sitepoint.com/basic-user-management-in-symfony2-with-fosuserbundle/
-#
-#    from_email:
-#        address: admin@recup.com
-#        sender_name: djanov
-#    registration:
-#      confirmation:
-#        enabled: true
-#        template: FOSUserBundle:Registration:email.txt.twig
+    resetting:
+        email:
+          from_email:
+            address: "%mailer_user%"
+            sender_name: RecUp
 
 knp_menu:
     twig:

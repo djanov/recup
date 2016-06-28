@@ -25,7 +25,7 @@
             <td> {{ value.updatedAt|date('Y-m-d') }} </td>
             <td>
                 {#<audio src="{{ app.request.getUriForPath(vich_uploader_asset(value, 'songFile')) }}" controls> </audio>#}
-                <audio src="{{ path('download', {'record': value.songName }) }}" controls> </audio>
+                <audio src="{{ path('download', {'record': value.id }) }}" controls preload="none"> </audio>
                 {# preload="none" #}
             </td>
             <td>
@@ -37,7 +37,7 @@
                     {%  if value.isDownloadable %}
 
                         {#<a href="{{ app.request.getUriForPath(vich_uploader_asset(value, 'songFile')) }}" class="btn btn-info" download>#}
-                        <a href="{{ path('download', {'record': value.songName }) }}" class="btn btn-info" download>
+                        <a href="{{ path('download', {'record': value.id }) }}" class="btn btn-info" download>
                             <span class="glyphicon glyphicon-save"></span>
                             </a>
                         {#</a>#}

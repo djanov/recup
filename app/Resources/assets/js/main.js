@@ -32,7 +32,7 @@ var timeoutId = 0;
                     // var attrValue = obj[key];
                     // html = "<img src = '" + obj.webPath + "'>";
 
-                    images += '<img class ="img-circle user-img" src="' + response[i].webPath + '" />';
+                    images += '<img class ="img-circle user-img" src="/../' + response[i].webPath + '" />';
                     images += '<a href="/user/'+ response[i].username.username + ' ">' + '<p class="label-danger">' + response[i].name + '</p>' + '<a/>';
                 }
                 images += '</div>';

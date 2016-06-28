@@ -20,8 +20,6 @@
                     <dd>{{ birth|date('Y-m-d') }}</dd>
                     <dt>Website</dt>
                     <dd>{{ website }}</dd>
-                    <dt>About</dt>
-                    <dd>{{ about }}</dd>
                     <dt>Genres</dt>
                     {% for genre in genres %}
                         <dd>{{ genre }} </dd>
@@ -48,10 +46,12 @@
         </div>
         <div id="js-notes-wrapper"></div>
     </div>
-    <div class="col-md-10">
-        <h1 class="text-center songs">Luckily friends do ashamed to do suppose. Tried meant mr smile so. Exquisite behaviour as to middleton perfectly. Chicken no wishing waiting am. Say concerns dwelling graceful six humoured. Whether mr up savings talking an. Active mutual nor father mother exeter change six did all</h1>
+    <div class="col-md-10 text-left">
+        <h2><b>About</b></h2>
+        <p>{{ about }}</p>
+        {#<h1 class="text-center songs">Luckily friends do ashamed to do suppose. Tried meant mr smile so. Exquisite behaviour as to middleton perfectly. Chicken no wishing waiting am. Say concerns dwelling graceful six humoured. Whether mr up savings talking an. Active mutual nor father mother exeter change six did all</h1>#}
     </div>
-    <div class="col-md-offset-3 col-md-4">
+    <div class="col-md-offset-3 col-md-3">
         {# setting the value because in the FOSCommentBundle I cant set it directly with twig#}
         {% set user = username.username %}
         {% if currentU == username.username %}
