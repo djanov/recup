@@ -425,7 +425,11 @@ class DefaultController extends Controller
             {
                 return $response;
             } else
-//            $response = '';
+            $response->trustXSendfileTypeHeader();
+            $response->setContentDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $record
+            );
             return $response;
         }
 

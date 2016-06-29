@@ -65,6 +65,12 @@ DirectoryIndex app.php
 #RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost.*$ [NC]
 #RewriteRule \.(ogg|mp3|jpeg)$ - [F]
 
+#RewriteEngine on
+#RewriteCond %{HTTP_REFERER} !^$
+#RewriteCond %{HTTP_REFERER} !^https://(www.)?recup.com/.*$ [NC]
+#RewriteRule \.(gif|jpe?g|png|mov|avi|wmv|mpe?g|mp3)$ - [R=403,L]
+
+
 </IfModule>
 
 <IfModule !mod_rewrite.c>
